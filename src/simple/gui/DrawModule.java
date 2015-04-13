@@ -80,10 +80,10 @@ public class DrawModule {
 		}
 	}
 	/** Draws an oval. The outline is specified by stroke, the fill by fill. 
-	 * @param x			x coordinate of the center. 
-	 * @param y			y coordinate of the center. 
-	 * @param w			x radius of the oval. 
-	 * @param h			y radius of the oval. **/
+	 * @param x			x coordinate of the top left of the bounding box. 
+	 * @param y			y coordinate of the top left of the bounding box. 
+	 * @param w			x diameter of the oval. 
+	 * @param h			y diameter of the oval. **/
 	public static void oval(int x, int y, int w, int h) {
 		if (fill != null) {
 			g.setColor(fill);
