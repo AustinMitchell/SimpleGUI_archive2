@@ -1,0 +1,1 @@
+Simple to use, loop-based graphics library for java. Based on swing, it combines the idea of GUI application software like Swing with easy to use graphics like Processing into one java library.
