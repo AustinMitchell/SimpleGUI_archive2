@@ -50,7 +50,7 @@ public class Test extends SimpleGUIApp{
 		textBox.draw();
 		
 		draw.setStroke(new Color(100, 200, 255), 4);
-		draw.line(400, 400, 400+v.getX(), 400+v.getY());
+		draw.line(400, 400, 400+v.x(), 400+v.y());
 		v = v.rotate(Math.PI/90);
 		
 		draw.setStroke(new Color (255, 50, 255), 1);

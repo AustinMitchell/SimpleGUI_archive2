@@ -4,9 +4,9 @@ public class Vector {
 	public double x, y;
 	
 	/** Returns x as an integer */
-	public int getX() { return (int)x; }
+	public int x() { return (int)x; }
 	/** Returns y as an integer */
-	public int getY() { return (int)y; }
+	public int y() { return (int)y; }
 	
 	/** Creates a new vector [x, y] */
 	public Vector(double x, double y) {
@@ -25,6 +25,11 @@ public class Vector {
 			this.x = m*Math.cos(Math.toRadians(t));
 			this.y = m*Math.sin(Math.toRadians(t));
 		}
+	}
+	
+	public void bound(Vector a, Vector b) {
+		x = Math.max(a.x, Math.min(b.x, x));
+		y = Math.max(a.y, Math.min(b.y, y));
 	}
 	
 	public Vector copy() { return new Vector(x, y); }
