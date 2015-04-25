@@ -14,6 +14,8 @@ public class Input {
 		public void keyReleased(KeyEvent e) {
 			keyChars[e.getKeyChar()] = false;
 			keyCodes[e.getKeyCode()] = false;
+			codeReleasedBuffer.add(e.getKeyCode());
+			charReleasedBuffer.add(e.getKeyChar());
 		}
 
 		public void keyTyped(KeyEvent e) {
@@ -41,8 +43,12 @@ public class Input {
 	
 	private static Queue<Integer> codeBuffer = new LinkedList<Integer>();
 	private static Queue<Character> charBuffer = new LinkedList<Character>();
+	private static Queue<Integer> codeReleasedBuffer = new LinkedList<Integer>();
+	private static Queue<Character> charReleasedBuffer = new LinkedList<Character>();
 	private static char currentChar = 0;
 	private static int currentCode = 0;
+	private static char currentReleasedChar = 0;
+	private static int currentReleasedCode = 0;
 
 	public static boolean mousePressed() { return mouseDown; }
 	public static int mouseOldX() { return oldx; }
@@ -54,6 +60,8 @@ public class Input {
 	public static boolean keyDown(char key) { return (key>=0 && key<65536) ? (keyChars[key]) : false; }
 	public static int getCode() { return currentCode; }
 	public static char getChar() { return currentChar; }
+	public static int releasedCode() { return currentReleasedCode; }
+	public static char releasedChar() { return currentReleasedChar; }
 	
 	public static void update() {
 		oldx = x;
@@ -71,6 +79,18 @@ public class Input {
 			currentChar = charBuffer.poll();
 		} else {
 			currentChar = 0;
+		}
+		
+		if (codeReleasedBuffer.peek() != null) {
+			currentReleasedCode = codeReleasedBuffer.poll();
+		} else {
+			currentReleasedCode = 0;
+		}
+		
+		if (charReleasedBuffer.peek() != null) {
+			currentReleasedChar = charReleasedBuffer.poll();
+		} else {
+			currentReleasedChar = 0;
 		}
 	}
 	
