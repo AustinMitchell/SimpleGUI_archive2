@@ -16,7 +16,7 @@ public class DrawModule {
 	
 	private static Graphics2D g;
 	private static BufferedImage image;
-	
+		
 	public static void initialize(SimpleGUIApp app) {
 		DrawModule.app = app;
 		image = new BufferedImage(app.getWidth(), app.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -37,7 +37,7 @@ public class DrawModule {
 	public static FontMetrics getFontMetrics() { return g.getFontMetrics(); }
 	/** Returns a FontMetrics object from the given font throught the stored Graphics2D object. **/
 	public static FontMetrics getFontMetrics(Font font) { return g.getFontMetrics(font); }
-		
+			
 	/** Sets the class's local fill field. **/
 	public static void setFill(Color fill) { DrawModule.fill = fill; }
 	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/

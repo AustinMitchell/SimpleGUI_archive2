@@ -16,7 +16,7 @@ public class Vector {
 	/** Creates a new vector as [m*cos(t), m*sin(t)] 
 	 * @param m			magnitude of vector
 	 * @param t			angle of vector
-	 * @param isPolar 	denotes whether to use t as degrees or radians */
+	 * @param isRad 	denotes whether to use t as degrees or radians */
 	public Vector(double m, double t, boolean isRad) {
 		if (isRad) {
 			this.x = m*Math.cos(t);
