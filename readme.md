@@ -266,4 +266,12 @@ public class Test extends SimpleGUIApp {
 }
 ```
 
-Essentially all this adds is the ability to exit with a button on screen, change the ball's color and change the maximum speed. 
+Essentially all this adds is the ability to exit with a button on screen, change the ball's color and change the maximum speed. All widgets have an update() and draw() function, and various other functions to change the state of the widget (position, size, color, etc.)
+
+Button: Basic widget. It's a square that changes color slightly when you hover over and click it. All widgets can be clicked and have the isClicked(), isClicking() and isHovering() functions, but Button in particular displays it, as well as an image overlaying the button and text if you choose. In this case, if the button is clicked it will trigger the quit() function which is the same as exiting the program.
+
+Slider: You give it a range and an orientation (you can tell it if it is reversed and if it's horizontal, as those things change the display and how it determines the value), and it will keep track of the relative position on the slider you clicked at. For instance, in this example, it has a range from 2 to 30, and if you click right in the middle it will change to about 16 or 17. It has functions to tell you if the value has been recently changed, which is used to fix the speed of th ball here.
+
+ScrollListBox<WidgetType>: This is a bit more complex. There's a ScrollDialogBox which displays lines of text that you can scroll through. This one though has a list of widgets that it uses for display. It can only use objects that are of type widget. For instance, in our program we have a scrollbox of Buttons, and so the scrollbox treats all the items as buttons without us having to cast it. We first make a list of colours and add new buttons to the scrollbox with a different fill color. In our case we go through the list of widgets and check to see if any have been clicked. If they have, then we set the color of the ball to the fill color that was clicked. Note that for this widget, it automatically sets the size and position of buttons for us.
+
+Label: The label simply displays text. It is bounded to a specified box, and can be set to display the lines centered.
