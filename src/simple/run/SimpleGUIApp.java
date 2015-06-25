@@ -55,6 +55,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
 	public int getFPS() { return fps; }
+	public int getDelay() { return delayTime; }
 	public Color getBackgroundColor() { return backgroundColor; }
 	public JFrame getJFrame() { return frame; }
 	
@@ -72,7 +73,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 		this.width = width;
 		this.height = height;
 		this.fps = fps;
-		this.delayTime = fps;
+		this.delayTime = 1000/fps;
 		this.frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 		setPreferredSize(new Dimension(width, height));
 		setFocusable(true);

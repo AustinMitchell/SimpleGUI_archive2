@@ -116,21 +116,21 @@ public abstract class Widget {
 	public Font getFont() { return font; }
 
 	/** Sets the widget's x variable **/
-	public void setX(int x) { this.x = x; }
+	public void setX(int x) { setLocation(x, this.y); }
 	/** Sets the widget's y variable **/
-	public void setY(int y) { this.y = y; }
+	public void setY(int y) { setLocation(this.x, y); }
 	/** Adds to the widget's x variable **/
 	public void addX(int ix) { setX(x+ix); }
 	/** Adds to the widget's y variable **/
 	public void addY(int iy) { setY(y+iy); }
 	/** Sets the widget's x and y variables **/
-	public void setLocation(int x, int y) { setX(x); setY(y); }
+	public void setLocation(int x, int y) { this.x = x; this.y = y; }
 	/** Sets the widget's w variable **/
-	public void setWidth(int w) { this.w=w; }
+	public void setWidth(int w) { setSize(w, this.h); }
 	/** Sets the widget's h variable **/
-	public void setHeight(int h) { this.h=h; }
+	public void setHeight(int h) { setSize(this.w, h); }
 	/** Sets the widget's w and h variables **/
-	public void setSize(int w, int h) { setWidth(w); setHeight(h); }
+	public void setSize(int w, int h) { this.w = w; this.h = h; }
 	/** Sets the widget's enabled variable, and sets false for all mouse interaction variables **/
 	public void setEnabled(boolean enabled) { 
 		this.enabled = enabled; 

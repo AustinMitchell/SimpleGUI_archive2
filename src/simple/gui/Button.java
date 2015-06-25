@@ -48,13 +48,17 @@ public class Button extends Widget {
 	public Button(String text, Image image) {
 		this(0, 0, 10, 10, text, image);
 	}
+	/** Creates a button with position, size and a title **/
+	public Button(int x, int y, int w, int h, String text) {
+		this(x, y, w, h, text, null);
+	}
 	public Button(int x, int y, int w, int h) {
 		this(x, y, w, h, null, null);
 	}
 	/** Create's a Button object. **/
 	public Button(int x, int y, int w, int h, String text, Image image) {
 		super(x, y, w, h);
-		this.text = text;
+		this.text = (text==null)?"":text;
 		this.imageBox = new ImageBox(x, y, w, h, image);
 		
 		this.clicking = false;

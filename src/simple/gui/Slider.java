@@ -3,11 +3,15 @@ package simple.gui;
 //Creates a slider with a given range, associates value according to where the mouse is on the slider.
 public class Slider extends Widget {
 	private int value, low, high;
-	boolean isHorizontal, isReversed;
+	private boolean isHorizontal, isReversed;
+	private int oldValue;
+	private boolean valueChanged;
 	
 	public int getValue() { return value; }
 	public int getLow() { return low; }
 	public int getHigh() { return high; }
+	
+	public boolean valueHasChanged() { return valueChanged; }
 	
 	
 	public void setValue(int newValue) { value = Math.max(Math.min(newValue, high), low); }
@@ -23,6 +27,7 @@ public class Slider extends Widget {
 	public Slider (int x_, int y_, int w_, int h_, int low_, int high_, boolean isRev_, boolean isHoriz_) {
 		super(x_, y_, w_, h_);
 
+		oldValue = low_;
 		value = low_;
 		low = low_;
 		high = high_;
@@ -41,6 +46,9 @@ public class Slider extends Widget {
 
 	@Override
 	public void update() {
+		valueChanged = (oldValue != value);
+		oldValue = value;
+		
 		if (!enabled || !visible)
 			return;
 			
@@ -66,7 +74,7 @@ public class Slider extends Widget {
 		draw.setColors(fillColor, borderColor);
 		draw.rect(x, y, w, h);
 
-		draw.setStroke(borderColor);
+		draw.setFill(borderColor);
 		if (!isHorizontal) {
 			draw.line(x + w/2, y+10, x + w/2, y+h-10);
 			if (isReversed) {

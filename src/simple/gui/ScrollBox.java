@@ -1,5 +1,7 @@
 package simple.gui;
 
+import java.awt.Color;
+
 /** Provides the basic framework for other ScrollBox types. Essentially handles the background of the widget and the up/down buttons, and the side slider. 
  * <P>Like the Widget class, it is abstract as it is the framework for scrollboxes, not a functional scrollbox. **/
 public abstract class ScrollBox extends Widget {
@@ -15,6 +17,9 @@ public abstract class ScrollBox extends Widget {
 	protected Slider scrollBar;
 	/** Up/Down buttons to navigate through the ScrollBox. **/
 	protected Button scrollUp, scrollDown;
+	protected boolean widgetColorsDefaultToScrollBox;
+	
+	public void setWidgetColorsDefaultToScrollBox(boolean b) { widgetColorsDefaultToScrollBox = b; }
 	
 	/** Returns the Button object for scrolling up. **/
 	public Button getScrollUpButton() { return scrollUp; }
@@ -22,6 +27,50 @@ public abstract class ScrollBox extends Widget {
 	public Button getScrollDownButton() { return scrollDown; }
 	/** Returns the Slider object for scrolling. **/
 	public Slider getScrollBar() { return scrollBar; }
+	
+	/** Sets the widget's fillColor variable **/
+	public void setFillColor(Color fillColor) { 
+		super.setFillColor(fillColor);
+		if (widgetColorsDefaultToScrollBox) {
+			scrollUp.setFillColor(fillColor);
+			scrollDown.setFillColor(fillColor);
+			scrollBar.setFillColor(fillColor);
+		}
+	}
+	/** Sets the widget's borderColor variable **/
+	public void setBorderColor(Color borderColor) { 
+		super.setBorderColor(borderColor); 
+		if (widgetColorsDefaultToScrollBox) {
+			scrollUp.setBorderColor(borderColor);
+			scrollDown.setBorderColor(borderColor);
+			scrollBar.setBorderColor(borderColor);
+		}
+	}
+	/** Sets the widget's textAreaColor variable **/
+	public void setTextAreaColor(Color textAreaColor) { 
+		super.setTextAreaColor(textAreaColor); 
+		if (widgetColorsDefaultToScrollBox) {
+			scrollUp.setTextAreaColor(textAreaColor);
+			scrollDown.setTextAreaColor(textAreaColor);
+			scrollBar.setTextAreaColor(textAreaColor);
+		}
+	}
+	/** Sets the widget's textColor variable **/
+	public void setTextColor(Color textColor) { 
+		super.setTextColor(textColor); 
+		if (widgetColorsDefaultToScrollBox) {
+			scrollUp.setTextColor(textColor);
+			scrollDown.setTextColor(textColor);
+			scrollBar.setTextColor(textColor);
+		}
+	}
+	/** Sets all the widget's color variables **/
+	public void setWidgetColors(Color fillColor, Color borderColor, Color textAreaColor, Color textColor) {
+		setFillColor(fillColor);
+		setBorderColor(borderColor);
+		setTextAreaColor(textAreaColor);
+		setTextColor(textColor);
+	}
 	
 	/** Sets the size for the scrollBox, and resizes/repositions the scroll widgets. **/
 	public void setSize(int newWidth, int newHeight) {
@@ -54,6 +103,8 @@ public abstract class ScrollBox extends Widget {
 		scrollUp = new Button(x+w-BAR_WIDTH, y, BAR_WIDTH, BAR_WIDTH, "", null);
 		scrollDown = new Button(x+w-BAR_WIDTH, y+h-BAR_WIDTH, BAR_WIDTH, BAR_WIDTH, "", null);
 		scrollBar = new Slider(x+w-BAR_WIDTH, y+BAR_WIDTH, BAR_WIDTH, h-BAR_WIDTH*2, 0, 0, false, false);
+		
+		widgetColorsDefaultToScrollBox = true;
 		
 		scrollUp.setCustomDraw(new CustomDraw() {
 			public void draw(Widget w) {

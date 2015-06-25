@@ -9,11 +9,9 @@ public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
 	protected ArrayList<WidgetType> widgetList; 
 	protected int numWidgetsToDisplay, firstIndex;
 	protected float widgetWidth, widgetHeight;
-	protected boolean widgetColorsDefaultToScrollBox;
 	
 	public WidgetType getWidget(int widgetID) { return widgetList.get(widgetID); }
-	
-	public void setWidgetColorsDefaultToScrollBox(boolean b) { widgetColorsDefaultToScrollBox = b; }
+	public int getNumWidgets() { return widgetList.size(); }
 	
 	public void setNumWidgetsToDisplay(int num) { 
 		numWidgetsToDisplay = num;
@@ -55,7 +53,6 @@ public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
 		widgetWidth = w-BAR_WIDTH;
 		widgetHeight = (float)h/numWidgetsToDisplay;
 		firstIndex = 0;
-		widgetColorsDefaultToScrollBox = true;
 	}
 	
 	public void setWidgetPosition() {
