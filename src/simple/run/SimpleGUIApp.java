@@ -33,7 +33,9 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 		}
 	}
 	
+	/** Maximum width the window can be for you screen size **/
 	public static final int MAXWIDTH = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	/** Maximum height the window can be for your sceen size **/
 	public static final int MAXHEIGHT = (int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	
 	public static void start(SimpleGUIApp mainProgram, String name, boolean isUndecorated) {
