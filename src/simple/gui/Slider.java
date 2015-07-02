@@ -1,29 +1,41 @@
 package simple.gui;
 
-//Creates a slider with a given range, associates value according to where the mouse is on the slider.
+/** Silder widget class. Creates a slider object with minimum and maximum integer values. Value of the slider depends on where the mouse
+ * was last clicking on the slider. Value starts at the minimum, and can be adjusted manually. **/
 public class Slider extends Widget {
 	private int value, low, high;
 	private boolean isHorizontal, isReversed;
 	private int oldValue;
 	private boolean valueChanged;
 	
+	/** Returns the current value of the slider **/
 	public int getValue() { return value; }
+	/** Returns the minimum value of the slider **/
 	public int getLow() { return low; }
+	/** Returns the maximum value of the slider **/
 	public int getHigh() { return high; }
 	
+	/** Returns whether or not the value of the slider has changed since last frame **/
 	public boolean valueHasChanged() { return valueChanged; }
 	
-	
+	/** Sets the current value of the slider. Value is bounded within [low, high] **/
 	public void setValue(int newValue) { value = Math.max(Math.min(newValue, high), low); }
+	/** Sets the new range for the slider. If newHigh is greater than newLow, they will switch. Value is bounded by [newLow, newHigh] **/
 	public void setRange(int newLow, int newHigh) { 
-		low = newLow;
-		high = newHigh;
+		low = Math.min(newLow, newHigh);
+		high = Math.max(newLow, newHigh);
 		setValue(value);
 	}
 	
+	/** Creates a new slider object with no given dimensions 
+	 * @param isRev_		Sets what end of the slider is high and what is low. 
+	 * @param isHoriz_		Sets what the orientation of the slider is. **/
 	public Slider (int low_, int high_, boolean isRev_, boolean isHoriz_) {
 		this(0, 0, 10, 10, low_, high_, isRev_, isHoriz_);
 	}
+	/** Creates a new slider object with the given dimensions 
+	 * @param isRev_		Sets what end of the slider is high and what is low. 
+	 * @param isHoriz_		Sets what the orientation of the slider is. **/
 	public Slider (int x_, int y_, int w_, int h_, int low_, int high_, boolean isRev_, boolean isHoriz_) {
 		super(x_, y_, w_, h_);
 

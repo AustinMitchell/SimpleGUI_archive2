@@ -10,7 +10,7 @@ import simple.run.Input;
  * Many generic widgets are defined here, but the goal behind this class was to create a system to easily allow you to make your own components.
  * <P>Note that if you decide to make your own Widget object, they have access to a DrawObject named draw. Drawing should be done with this object.
  * <P>Widget is an abstract class, as it's meant to be the framework for other widgets. 
- * @author Austin
+ * @author Austin Mitchell
  *
  */
 public abstract class Widget {

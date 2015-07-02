@@ -11,7 +11,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListener {
+public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	private static class GUIRunWindow extends JFrame{
 		public GUIRunWindow(SimpleGUIApp programToRun, String title, boolean isUndecorated) {
 			super(title);
@@ -51,23 +51,36 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 	private JFrame frame;
 	private Thread thread;
 		
+	/** DrawModule object, for shorthand calls to DrawModule **/
 	protected DrawModule draw;
+	/** Input object, for shorthand calls to Input **/
 	protected Input input;
+	/** Timer object, for shorthand calls to Timer **/
+	protected Timer time;
 	
+	/** Returns the width of the window frame **/
 	public int getWidth() { return width; }
+	/** Returns the height of the window frame **/
 	public int getHeight() { return height; }
+	/** Returns the target frames per second for the program **/
 	public int getFPS() { return fps; }
+	/** Returns the target delay time for the program given the FPS **/
 	public int getDelay() { return delayTime; }
+	/** Returns the current background color (color that each frame starts as) **/
 	public Color getBackgroundColor() { return backgroundColor; }
+	/** Returns the JFrame object for the window **/
 	public JFrame getJFrame() { return frame; }
-	
-	public void setBackgroundColor(Color c) { backgroundColor = c; }
-	
-	public void quit() { running = false; }
-	public void minimize() { frame.setState(Frame.ICONIFIED); }
-	
 	private void setFrame(JFrame frame_) { frame = frame_; }
 	
+	/** Sets the background color to the given color **/
+	public void setBackgroundColor(Color c) { backgroundColor = c; }
+	
+	/** Signals the program to terminate **/
+	public void quit() { running = false; }
+	/** Minimizes the window into the explorer bar **/
+	public void minimize() { frame.setState(Frame.ICONIFIED); }
+	
+	/** Creates a new SimpleGUIApp with a given width, height and target frames per second **/
 	public SimpleGUIApp(int width, int height, int fps) {
 		super();
 		this.backgroundColor = new Color(180, 180, 180);
@@ -88,6 +101,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 		running = true;
 	}
 	
+	/** Method required for the Runnable Interface; Contains the program loop **/
 	public void run() {
 		initGraphics();
 		setup();
@@ -98,33 +112,30 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable, KeyListen
 		System.exit(0);
 	}
 	
-	// Method to initialize main program
+	/** Method called before the loop begins; Set up variables here, not in your contructor **/
 	public abstract void setup();
-	// Program loop is setup here
+	/** Method called each frame **/
 	public abstract void loop();
 	
-	// Physically updates the screen and draws whatever is on the buffer
+	/** Draws whatever is on the DrawModule image buffer to the program window **/
 	protected void DrawToScreen() {
 		Graphics g2 = getGraphics();
 		g2.drawImage(DrawModule.getImage(), 0, 0, null);
 		g2.dispose();
 	}
-	// Made to wipe the screen after drawing is complete
+	/** Covers the DrawModule image buffer with the background color, effectively clearing it **/
 	protected void cls() {
 		draw.setColors(backgroundColor, null);
 		draw.rect(0, 0, width, height);
 	}
-	
+	/** Calls DrawToScreen(), Timer.correctedDelay() with your target FPS in mind and cls(). This is the most convenient way to update the screen **/
 	protected void updateView() {
 		DrawToScreen();
-		Timer.correctedDelay(delayTime);
+		time.correctedDelay(delayTime);
 		cls();
 	}
 	
-	public void keyTyped(KeyEvent e) {}
-	public void keyPressed(KeyEvent e) {}
-	public void keyReleased(KeyEvent e) {}
-	
+	/** Method required for the Runnable interface. **/
 	public void addNotify() {
 		super.addNotify();
 		if(thread == null) {

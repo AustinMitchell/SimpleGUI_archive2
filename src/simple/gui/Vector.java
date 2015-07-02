@@ -1,5 +1,8 @@
 package simple.gui;
 
+/** The Vector class simply holds two double values, x and y, and has a variety of ways to manipulate them. 
+ * <P>Notice the difference between the intance and the static functions: Static functions return a new Vector object with the results of an
+ * operation on a vector, while instance functions directly act on the vector itself and the vector it returns is itself. **/
 public class Vector {
 	/** Returns the negative of the given vector **/
 	public static Vector neg(Vector v) { return new Vector(-v.x, -v.y); }
@@ -74,9 +77,10 @@ public class Vector {
 	
 	/** Bounds the vector inside a box with (a.x, a.y) as the bottom left corner and (b.x, b.y) as the upper right corner. When called, 
 	 * 		this method will adjust the x and y components of this vector to keep them within the bounding box.**/
-	public void bound(Vector a, Vector b) {
+	public Vector bound(Vector a, Vector b) {
 		x = Math.max(a.x, Math.min(b.x, x));
 		y = Math.max(a.y, Math.min(b.y, y));
+		return this; 
 	}
 	
 	/** Returns a vector with the same component values **/
@@ -95,51 +99,53 @@ public class Vector {
 	public double angle() { return this.angle(new Vector(1, 0)); }
 	
 	/** Normalizes this vector (adjust the x and y components so the magnitude is 1) **/
-	public void normalize() { double m = mag(); x/=m; y/=m; }
+	public Vector normalize() { double m = mag(); x/=m; y/=m; return this; }
 	/** Normalizes this vector and multiplies it by a scalar (adjust the x and y components so the magnitude is c) **/
-	public void normalize(double c) { double m = mag(); x*=(c/m); y*=(c/m); }
+	public Vector normalize(double c) { double m = mag(); x*=(c/m); y*=(c/m); return this; }
 	/** Rotates this vector by the given angle **/
-	public void rotate(double angle) {
+	public Vector rotate(double angle) {
 	    double newx = x*Math.cos(angle) - y*Math.sin(angle);
 	    y = y*Math.cos(angle) + x*Math.sin(angle);
 	    x = newx;
+	    return this; 
 	}
 	/** Adjusts the x and y components of this vector to match a vector of the given angle with the same magnitude **/
-	public void setAngle(double angle) { 
+	public Vector setAngle(double angle) { 
 		double m = mag();
 		x = Math.cos(angle)*m;
 	    y = Math.sin(angle)*m;
+	    return this; 
 	}
 
 	/** Multiplies the components of this vector by -1 **/
-	public void neg() { x*=-1; y*=-1; }
+	public Vector neg() { x*=-1; y*=-1; return this; }
 	
 	/** Adds the components of another vector to components of this vector **/
-	public void add (Vector v) { x+=v.x; y+=v.y; }
+	public Vector add (Vector v) { x+=v.x; y+=v.y; return this; }
 	/** Subtracts the components of another vector from components of this vector **/
-	public void sub (Vector v) { x-=v.x; y-=v.y; }
+	public Vector sub (Vector v) { x-=v.x; y-=v.y; return this; }
 	/** Multiplies the components of this vector by components of another vector **/
-	public void mult(Vector v) { x*=v.x; y*=v.y; }
+	public Vector mult(Vector v) { x*=v.x; y*=v.y; return this; }
 	/** Divides the components of this vector by the components of another vector. WARNING: Does not check for 0 **/
-	public void div (Vector v) { x/=v.x; y/=v.y; }
+	public Vector div (Vector v) { x/=v.x; y/=v.y; return this; }
 	
 	/** Adds the given scalar to each component of this vector **/
-	public void add (double c) { x+=c; y+=c; }
+	public Vector add (double c) { x+=c; y+=c; return this; }
 	/** Subtracts the given scalar from each component of this vector **/
-	public void sub (double c) { x-=c; y-=c; }
+	public Vector sub (double c) { x-=c; y-=c; return this; }
 	/** Multiplies each component of this vector by the given scalar **/
-	public void mult(double c) { x*=c; y*=c; }
+	public Vector mult(double c) { x*=c; y*=c; return this; }
 	/** Divides each component of this vector by the given scalar **/
-	public void div (double c) { x/=c; y/=c; }
+	public Vector div (double c) { x/=c; y/=c; return this; }
 	
 	/** Adds each given scalar to each component of this vector respectively **/
-	public void add (double cx, double cy) { x+=cx; y+=cy; }
+	public Vector add (double cx, double cy) { x+=cx; y+=cy; return this; }
 	/** Subtracts each given scalar from each component of this vector respectively **/
-	public void sub (double cx, double cy) { x-=cx; y-=cy; }
+	public Vector sub (double cx, double cy) { x-=cx; y-=cy; return this; }
 	/** Multiplies each component of this vector by each given scalar respectively **/
-	public void mult(double cx, double cy) { x*=cx; y*=cy; }
+	public Vector mult(double cx, double cy) { x*=cx; y*=cy; return this; }
 	/** Divides each component of this vector by each given scalar respectively **/
-	public void div (double cx, double cy) { x/=cx; y/=cy; }
+	public Vector div (double cx, double cy) { x/=cx; y/=cy; return this; }
 	
 	/** Returns a string representation of this vector **/
 	public String toString() {

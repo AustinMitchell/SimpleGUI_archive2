@@ -9,6 +9,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+/** This class allows you to create sound objects that can play in your program **/
 public class Sound {
     private Clip clip;
     public Sound(String fileName) {
@@ -43,16 +44,17 @@ public class Sound {
             e.printStackTrace();
             throw new RuntimeException("Sound: Line Unavailable Exception Error: " + e);
         }
-
-    // play, stop, loop the sound clip
     }
+    /** Plays the sound file once **/
     public void play(){
         clip.setFramePosition(0);  // Must always rewind!
         clip.start();
     }
+    /** Plays and repeats the sound file until directly stopped **/
     public void loop(){
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
+    /** Stops the sound file from playing **/
     public void stop(){
             clip.stop();
         }

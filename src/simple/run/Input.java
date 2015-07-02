@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/** This is a static class which allows for a simple interface with the mouse and keyboard. **/
 public class Input {
 	static class Listener implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 		public void keyPressed(KeyEvent e) {

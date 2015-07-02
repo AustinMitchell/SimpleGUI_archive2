@@ -3,7 +3,8 @@ package simple.gui;
 import java.awt.Color;
 
 /** Provides the basic framework for other ScrollBox types. Essentially handles the background of the widget and the up/down buttons, and the side slider. 
- * <P>Like the Widget class, it is abstract as it is the framework for scrollboxes, not a functional scrollbox. **/
+ * <P>Like the Widget class, it is abstract as it is the framework for scrollboxes, not a functional scrollbox. However, as a programmer you must define
+ * how the buttons and slider will interact with the class. **/
 public abstract class ScrollBox extends Widget {
 	/** Width of sidebar for all new ScrollBoxes. The default value of 20 is typically a good size in all cases, but this may be changed. **/
 	protected static int BAR_WIDTH = 20;
