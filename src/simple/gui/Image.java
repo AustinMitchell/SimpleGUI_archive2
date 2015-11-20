@@ -22,6 +22,7 @@ public final class Image {
     public int getHeight() { return h; }
     /** Returns the BufferedImage object from the image. **/
     public BufferedImage getBufferedImage() { return image; }
+    public Graphics2D getGraphics() { return image.createGraphics(); }
     /** Returns the filename of the image. If it is an image created without a filename, then a default filename is used:
      *the String (image width) + "-by-" + (image height). **/
     public String getFileName() { return filename; }
@@ -132,47 +133,80 @@ public final class Image {
 		return newImage;
     }
     
-    /** Returns the color data of the image at the pixel (w, h). Note that the point (0, 0) is the origin of the image, not the screen. **/
-    public Color get(int x, int y) {
+    /** Returns the color data of the image at the pixel (w, h) as an integer. Note that the point (0, 0) is the origin of the image, not the screen. **/
+    public int get(int x, int y) {
+        if (x < 0 || x >= w)  throw new IndexOutOfBoundsException("x must be between 0 and " + (w-1) + ", recieved " + x);
+        if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
+        return image.getRGB(x, y);
+    }
+    /** Returns the color data of the image at the pixel (w, h) as a Color object. Note that the point (0, 0) is the origin of the image, not the screen. **/
+    public Color getColor(int x, int y) {
         if (x < 0 || x >= w)  throw new IndexOutOfBoundsException("x must be between 0 and " + (w-1) + ", recieved " + x);
         if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
         return new Color(image.getRGB(x, y), true);
     }
-    /** Returns the color data of all the pixels as an array. Returns column first. **/
-    public Color[] getPixels() {
-    	Color[] pixelData = new Color[w*h];
+    /** Returns the color data of all the pixels as an array of integers. Returns column first. **/
+    public int[] getPixels() {
+    	int[] pixelData = new int[w*h];
     	for (int x=0; x<w; x++)
     		for (int y=0; y<h; y++)
-    			pixelData[x*w + y] = this.get(x, y);
+    			pixelData[x*h + y] = this.get(x, y);
+    	
+    	return pixelData;
+    }
+    /** Returns the color data of all the pixels as an array of Color objects. Returns column first. **/
+    public Color[] getPixelsColor() {
+    	Color[] pixelData = new Color[w*h];
+    	
+    	for (int x=0; x<w; x++)
+    		for (int y=0; y<h; y++)
+    			pixelData[x*h + y] = this.getColor(x, y);
     	
     	return pixelData;
     }
 
-    /** Sets the color data of the image at the pixel (w, h). Note that th point (0, 0) is the origin of the image, not the screen. **/
-    public void set(int x, int y, Color color) {
+    
+    /** Sets the color data of the image at the pixel (w, h) using an integer. Note that th point (0, 0) is the origin of the image, not the screen. **/
+    public void set(int x, int y, int color) {
+        if (x < 0 || x >= w)  throw new IndexOutOfBoundsException("x must be between 0 and " + (w-1) + ", recieved " + x);
+        if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
+        image.setRGB(x, y, color);
+    }
+    /** Sets the color data of the image at the pixel (w, h) using a Color object. Note that th point (0, 0) is the origin of the image, not the screen. **/
+    public void setColor(int x, int y, Color color) {
         if (x < 0 || x >= w)  throw new IndexOutOfBoundsException("x must be between 0 and " + (w-1) + ", recieved " + x);
         if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
         if (color == null) throw new NullPointerException("can't set Color to null");
         image.setRGB(x, y, color.getRGB());
     }
-    /** Sets all the color data of the image from an aray. Sets column first. **/
-    public void setPixels(Color[] pixelData) {
+    /** Sets all the color data of the image from an array of integers. Sets column first. **/
+    public void setPixels(int[] pixelData) {
     	if (w*h != pixelData.length) throw new IndexOutOfBoundsException("number of pixels in pixelData(" + pixelData.length +") must equal number of pixels in Image Object(" + (w*h) + ").");
     	for (int x=0; x<w; x++)
     		for (int y=0; y<h; y++)
-    			this.set(x, y, pixelData[x*w + y]);	
+    			this.set(x, y, pixelData[x*h + y]);	
+    }
+    /** Sets all the color data of the image from an array of Color objects. Sets column first. **/
+    public void setPixelsColor(Color[] pixelData) {
+    	if (w*h != pixelData.length) throw new IndexOutOfBoundsException("number of pixels in pixelData(" + pixelData.length +") must equal number of pixels in Image Object(" + (w*h) + ").");
+    	for (int x=0; x<w; x++)
+    		for (int y=0; y<h; y++)
+    			this.setColor(x, y, pixelData[x*h + y]);	
     }
 
-    /** Draws an image to a Graphics2D object with the origin at point x, y on the screen. **/
-    public void Draw(Graphics2D g, int x, int y) {
+    /** Draws an image to a Graphics2D object with the origin at point x, y on the screen. 
+     * 	Don't call this yourself. Use the DrawModule image() method. **/
+    public void draw(Graphics2D g, int x, int y) {
     	g.drawImage(image, x, y, null);
     }
-    /** Draws an image to a Graphics2D object with the center of the image at point x, y on the screen. **/
-    public void DrawCentered(Graphics2D g, int x, int y) {
+    /** Draws an image to a Graphics2D object with the center of the image at point x, y on the screen. 
+     * 	Don't call this yourself. Use the DrawModule imageCentered() method. **/
+    public void drawCentered(Graphics2D g, int x, int y) {
     	g.drawImage(image, x-(int)image.getWidth()/2, y-(int)image.getHeight()/2, null);
     }
-    /** Draws and image rotated by an angle to a Graphics2D object with the center of the image at point x, y on the screen. **/
-    public void DrawRotated(Graphics2D g, int x, int y, double angle) {
+    /** Draws and image rotated by an angle to a Graphics2D object with the center of the image at point x, y on the screen. 
+     * 	Don't call this yourself. Use the DrawModule imageRotated() method. **/
+    public void drawRotated(Graphics2D g, int x, int y, double angle) {
     	g.rotate(angle, x, y);
     	g.drawImage(image, x-(int)image.getWidth()/2, y-(int)image.getHeight()/2, null);
     	g.rotate(-angle, x, y);
@@ -188,7 +222,7 @@ public final class Image {
         if (this.getHeight() != that.getHeight()) return false;
         for (int x = 0; x < w; x++)
             for (int y = 0; y < h; y++)
-                if (!this.get(x, y).equals(that.get(x, y))) return false;
+                if (this.get(x, y) == that.get(x, y)) return false;
         return true;
     }
 }

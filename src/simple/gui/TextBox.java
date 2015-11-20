@@ -102,6 +102,7 @@ public class TextBox extends Widget {
 	}
 	
 	@Override
+	//TODO: Shitty draw algorithm. Should store the split up string instead of splitting every time
 	public void draw() {
 		if (!visible)
 			return;
@@ -124,9 +125,9 @@ public class TextBox extends Widget {
 				break first;
 			// checks if the partitioned string will fit in the line
 			} else if (fm.stringWidth(currentText) <= w-4) {
-				draw.text(currentText, x+2, y+2 + lineHeight*currentLine);
+				draw.text(currentText, x+2, y+2 + lineHeight*(currentLine-1));
 				if (active && (System.nanoTime() / 500000000) % 2 == 0) {
-					draw.line(x+2 + fm.stringWidth(currentText)+1, y+5 + lineHeight*(currentLine-1), x+2 + fm.stringWidth(currentText)+1, y+2 + lineHeight*currentLine);
+					draw.line(x+2 + fm.stringWidth(currentText)+1, y+5 + lineHeight*(currentLine-1), x+2 + fm.stringWidth(currentText)+1, y+2 + lineHeight*(currentLine-1));
 				}
 				break first;
 			// Searches for a point in the partitioned string that will fit in the box's bounds. Takes formation of words into account
@@ -142,7 +143,7 @@ public class TextBox extends Widget {
 								}
 							}
 						}
-						draw.text(currentText.substring(0, lastIndex+1), x+2, y+2 + lineHeight*currentLine);
+						draw.text(currentText.substring(0, lastIndex+1), x+2, y+2 + lineHeight*(currentLine-1));
 						currentText = currentText.substring(lastIndex+1);
 						currentLine += 1;
 						break;
