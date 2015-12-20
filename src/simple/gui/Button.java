@@ -74,7 +74,7 @@ public class Button extends Widget {
 		updateClickingState();
 	}
 	
-	/** Draws the button to the ScreenPanel graphics buffer. **/
+	/** Draws the button to the SimpleGUIApp's graphics buffer. **/
 	public void draw () {
 		if (!visible) 
 			return;

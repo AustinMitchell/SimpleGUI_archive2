@@ -88,6 +88,7 @@ public class Label extends Widget {
 	}
 	
 	/** Draws the label. If boxIsDrawable is true, it will draw a box with this widget's color values, but it will use textAreaColor for the fill instead of fillColor. **/
+	//TODO: Shitty draw algorithm. Should store the split up string instead of splitting every time
 	public void draw() {
 		if (!visible)
 			return;
@@ -113,9 +114,9 @@ public class Label extends Widget {
 			// checks if the partitioned string will fit in the line
 			} else if (fm.stringWidth(currentText) <= w-4) {
 				if (isCentered) {
-					draw.textCentered(currentText, x+w/2, y+2 + lineHeight*currentLine);
+					draw.textCentered(currentText, x+w/2, y+2 + lineHeight*(currentLine-1));
 				} else {
-					draw.text(currentText, x+2, y+2 + lineHeight*currentLine);
+					draw.text(currentText, x+2, y+2 + lineHeight*(currentLine-1));
 				}
 				break first;
 			// Searches for a point in the partitioned string that will fit in the box's bounds. Takes formation of words into account
@@ -132,9 +133,9 @@ public class Label extends Widget {
 							}
 						}
 						if (isCentered) {
-							draw.text(currentText.substring(0, lastIndex+1), x+w/2, y+2 + lineHeight*currentLine);
+							draw.text(currentText.substring(0, lastIndex+1), x+w/2, y+2 + lineHeight*(currentLine-1));
 						} else {
-							draw.text(currentText.substring(0, lastIndex+1), x+2, y+2 + lineHeight*currentLine);
+							draw.text(currentText.substring(0, lastIndex+1), x+2, y+2 + lineHeight*(currentLine-1));
 						}
 						currentText = currentText.substring(lastIndex+1);
 						currentLine += 1;

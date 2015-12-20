@@ -8,8 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	private static class GUIRunWindow extends JFrame{
