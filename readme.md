@@ -3,16 +3,16 @@ Simple to use, loop-based graphics library for java. Based on swing, it combines
 Here is a basic program:
 
 ```java
-import simple.run*;
+import simple.run.*;
 
 public class Main extends SimpleGUIApp {
 	public static void main(String[]args) { Main.start(new Main(), "Test Program"); } // Boilerplate code to start program
 	public Main() { super(1025, 1025, 30); } // More boilerplate, arguments are screen dimensions and frames per second desired
 
-	public void setup {
+	public void setup() {
 		// All initialization should be done here
 	}
-	public void loop {
+	public void loop() {
 		// This method will loop until program ends (with a function call or by closing the window)
 	}
 }
@@ -233,8 +233,8 @@ public class Test extends SimpleGUIApp {
 			}
 		}
 		
-		dir = dir.mult(0.9).add(acc.mult(0.1));
-		pos = pos.add(dir);
+		dir.mult(0.9).add(acc.mult(0.1));
+		pos.add(dir);
 		
 		if (pos.x > 600-20 || pos.x < 20) {
 			pos.x = Math.min(Math.max(20, pos.x), 600-20);
