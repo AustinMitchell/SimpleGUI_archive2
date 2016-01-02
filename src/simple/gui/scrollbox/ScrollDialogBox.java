@@ -1,4 +1,4 @@
-package simple.gui;
+package simple.gui.scrollbox;
 
 import java.awt.Font;
 import java.awt.FontMetrics;

@@ -44,6 +44,9 @@ public class Button extends Widget {
 	/** Sets the button's height, as well as resizes the imageBox. **/
 	public void setHeight(int h) { setSize(this.w, h); }
 	
+	public Button() {
+		this(0, 0, 10, 10, "", null);
+	}
 	/** Creates a button with unspecified position and size, for the case where it's irrelevant. **/
 	public Button(String text, Image image) {
 		this(0, 0, 10, 10, text, image);
@@ -105,7 +108,7 @@ public class Button extends Widget {
 			FontMetrics fm = draw.getFontMetrics(font);
 			draw.setFont(font);
 			draw.setStroke(DrawModule.scaleColor(textColor, clrRatio));
-			draw.text(text, x + w/2 - fm.stringWidth(text)/2, y + h/2 + fm.getMaxAscent()/2);
+			draw.textCentered(text, x+w/2, y+h/2);
 		}
 	}
 }

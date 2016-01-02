@@ -6,6 +6,8 @@ package simple.gui;
 public class Vector {
 	/** Returns the negative of the given vector **/
 	public static Vector neg(Vector v) { return new Vector(-v.x, -v.y); }
+	/** Returns the inverse of the given vector **/
+	public static Vector inv(Vector v) { return new Vector(v.y, v.x); }
 			
 	/** Returns the normalization of the given vector **/
 	public static Vector normalize(Vector v) { double m = v.mag(); return new Vector(v.x/m, v.y/m); }
@@ -119,6 +121,8 @@ public class Vector {
 
 	/** Multiplies the components of this vector by -1 **/
 	public Vector neg() { x*=-1; y*=-1; return this; }
+	/** Inverts the components with regards to the line y = x **/
+	public Vector inv() { double temp = x; x = y; y = temp; return this; }
 	
 	/** Adds the components of another vector to components of this vector **/
 	public Vector add (Vector v) { x+=v.x; y+=v.y; return this; }

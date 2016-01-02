@@ -1,6 +1,8 @@
-package simple.gui;
+package simple.gui.scrollbox;
 
 import java.util.ArrayList;
+
+import simple.gui.Widget;
 
 // Creates a list of a given widget
 public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {

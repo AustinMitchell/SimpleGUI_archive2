@@ -1,6 +1,11 @@
-package simple.gui;
+package simple.gui.scrollbox;
 
 import java.awt.Color;
+
+import simple.gui.Button;
+import simple.gui.CustomDraw;
+import simple.gui.Slider;
+import simple.gui.Widget;
 
 /** Provides the basic framework for other ScrollBox types. Essentially handles the background of the widget and the up/down buttons, and the side slider. 
  * <P>Like the Widget class, it is abstract as it is the framework for scrollboxes, not a functional scrollbox. However, as a programmer you must define
