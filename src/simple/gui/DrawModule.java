@@ -20,7 +20,7 @@ public class DrawModule {
 	/** Called within SimpleGUIApp to initialize the DrawModule. Don't call this yourself unless you know what you're doing. **/
 	public static void initialize(SimpleGUIApp app) {
 		DrawModule.app = app;
-		image = new BufferedImage(app.getWidth(), app.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = (Graphics2D) image.getGraphics();
 	}
 	/** Called within SimpleGUIApp. Don't call this yourself unless you know what you're doing. **/
@@ -212,6 +212,26 @@ public class DrawModule {
 			g2D.drawString(textToDraw, x, y + fm.getMaxAscent());
 		}
 	}
+	
+	/** Draws text on the screen aligned to the right with whatever font the graphics object is using, with the text starting at the point x, y.
+	 * for the given graphics object. 
+	 * @param textToDraw	Text to draw to the screen. 
+	 * @param x				x coordinate to start the drawing of the text.
+	 * @param y				y coordinate to start the drawing of the text.**/
+	public static void textRight(String textToDraw, int x, int y) {
+		textRight(g, textToDraw, x, y);
+	}
+	public static void textRight(Image image, String textToDraw, int x, int y) {
+		textRight(image.getGraphics(), textToDraw, x, y);
+	}
+	private static void textRight(Graphics2D g2D, String textToDraw, int x, int y) {
+		if (stroke != null) {
+			g2D.setColor(stroke);
+			FontMetrics fm = getFontMetrics(g2D);
+			g2D.drawString(textToDraw, x-fm.stringWidth(textToDraw), y + fm.getMaxAscent());
+		}
+	}
+	
 	/** Draws text on the screen with whatever font the graphics object is using, with the text center at the point x, y.
 	 * for the given graphics object. 
 	 * @param textToDraw	Text to draw to the screen. 

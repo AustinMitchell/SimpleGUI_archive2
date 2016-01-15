@@ -147,6 +147,9 @@ public abstract class Widget {
 	}
 	public void blockWidget() { 
 		blocked = true;
+		hovering = false;
+		clicking = false;
+		clicked = false;
 	}
 	
 	/** Sets the widget's fillColor variable **/

@@ -31,7 +31,7 @@ public abstract class Panel extends Widget {
 	protected int     defaultPriority;
 	protected boolean drawContainingPanel;
 	
-	protected TreeMap<Integer, Set<Widget>> priorityMap;
+	protected TreeMap<Integer, List<Widget>> priorityMap;
 	protected Map<Widget, Integer>          widgetMap;
 	protected List<Widget>                  widgetList;
 	
@@ -111,7 +111,7 @@ public abstract class Panel extends Widget {
 			throw new RuntimeException("Each instance of Widget may only be referenced in (i.e. added to) each Panel one time.");
 		}
 		if (!priorityMap.containsKey(priority)) {
-			priorityMap.put(priority, new HashSet<Widget>());
+			priorityMap.put(priority, new ArrayList<Widget>());
 		}
 		priorityMap.get(priority).add(newWidget);
 		widgetMap.put(newWidget, priority);

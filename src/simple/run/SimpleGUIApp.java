@@ -55,11 +55,15 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	protected Input input;
 	/** Timer object, for shorthand calls to Timer **/
 	protected Timer time;
-	
+		
 	/** Returns the width of the window frame **/
 	public int getWidth() { return width; }
 	/** Returns the height of the window frame **/
 	public int getHeight() { return height; }
+	/** Returns the width of the window frame **/
+	public int windowWidth() { return width; }
+	/** Returns the height of the window frame **/
+	public int windowHeight() { return height; }
 	/** Returns the target frames per second for the program **/
 	public int getFPS() { return fps; }
 	/** Returns the target delay time for the program given the FPS **/

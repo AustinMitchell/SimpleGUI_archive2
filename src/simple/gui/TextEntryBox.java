@@ -36,15 +36,13 @@ public class TextEntryBox extends TextBox {
 		if (input.getChar() != 0) {
 			if (active) {
 				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {
-					if (text.length() > 0) {
-						text = text.substring(0, text.length()-1);
-					}
+					removeChar();
 				} else if (input.getChar() == KeyEvent.VK_ENTER) {
 					textIsEntered = true;
 					enteredText = text;
-					text = "";
+					clear();
 				} else if (input.getChar() >= 32 && input.getChar() <= 127) {
-					text += input.getChar();
+					addChar(input.getChar());
 				}
 			}
 		}
