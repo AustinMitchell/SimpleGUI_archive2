@@ -164,6 +164,8 @@ public abstract class TextArea extends Widget{
 		
 		for (int i=0; i<currentNumDisplayLines; i++) {
 			String currentText = textDisplay.get(i);
+			if (i != currentNumDisplayLines-1) { currentText = currentText.trim(); }
+			
 			int currentY = baseY + lineHeight*i;
 			if (Alignment.isLeftAligned(alignment)) {
 				draw.text(currentText, x+2, currentY);

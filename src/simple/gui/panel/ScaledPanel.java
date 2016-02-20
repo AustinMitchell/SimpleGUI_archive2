@@ -20,6 +20,35 @@ public class ScaledPanel extends Panel {
 	int rows, cols;
 	double boxWidth, boxHeight;
 
+	public Dimensions getWidgetDimensions(Widget widget) { 
+		if (!hasWidget(widget)) {
+			throw new RuntimeException("Panel does not contain the given widget");
+		}
+		return widgetModifiersMap.get(widget).dimensions;
+	}
+	
+	public int getRows() { return rows; }
+	public int getCols() { return cols; }
+	
+	public double getBoxWidth() { return boxWidth; }
+	public double getBoxHeight() { return boxHeight; }
+	
+	@Override
+	public void setWidgetDimensions(Widget widget, Dimensions d) {
+		if (!hasWidget(widget)) {
+			return;
+		}
+		
+		Constraints c = widgetModifiersMap.get(widget).constraints;
+		
+		widget.setX(this.x + (int)Math.ceil(boxWidth*(d.x)) - c.x1);
+		widget.setY(this.y + (int)Math.ceil(boxHeight*(d.y)) - c.y1);
+		widget.setWidth((int)Math.ceil(boxWidth*d.w) + c.x2);
+		widget.setHeight((int)Math.ceil(boxHeight*d.h) + c.y2);
+		
+		widgetModifiersMap.put(widget, new Modifiers(d, c));
+	}
+	
 	@Override
 	public void setSize(int w, int h) { 
 		super.setSize(w, h); 
@@ -89,6 +118,13 @@ public class ScaledPanel extends Panel {
 		newWidget.setWidth((int)Math.ceil(boxWidth*d.w) + c.x2);
 		newWidget.setHeight((int)Math.ceil(boxHeight*d.h) + c.y2);
 		
+//		System.out.println("Dimensions: " + d.x + ", " + d.y + ", " + d.w + ", " + d.h);
+//		System.out.println("Constraints: " + c.x1 + ", " + c.y1 + ", " + c.x2 + ", " + c.y2);
+//		System.out.println("Boxwidth/height on pos: " + (int)Math.ceil(boxWidth*d.x) + ", " + (int)Math.ceil(boxHeight*d.y));
+//		System.out.println("Widget pos:" + newWidget.getX() + ", " + newWidget.getY());
+//		System.out.println("Boxwidth/height on size: " + (int)Math.ceil(boxWidth*d.w) + ", " + (int)Math.ceil(boxHeight*d.h));
+//		System.out.println("Widget size:" + newWidget.getWidth() + ", " + newWidget.getHeight());
+				
 		widgetModifiersMap.put(newWidget, new Modifiers(d, c));
 		
 		addWidgetToCollection(newWidget, priority);
@@ -111,5 +147,4 @@ public class ScaledPanel extends Panel {
 		
 		return widgetToRemove;
 	}
-
 }

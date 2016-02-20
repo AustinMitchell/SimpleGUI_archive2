@@ -12,20 +12,66 @@ import javax.imageio.ImageIO;
  * with the BufferedImage, you can get this from the Image object. Ths object's funcionality is currently limited as it's meant to have
  * only simple and easy to understand usage. **/
 public final class Image {
+	public static enum Orientation {
+		UP, RIGHT, DOWN, LEFT;
+		public static String toString(Orientation o) {
+			switch(o) {
+				case UP:
+					return "UP";
+				case RIGHT:
+					return "RIGHT";
+				case DOWN:
+					return "DOWN";
+				case LEFT:
+					return "LEFT";
+				default:
+					return "";
+			}
+		}
+		public static int[][] getRotationMatrix(Orientation o1, Orientation o2) {
+			int[][] matrix = new int[2][2];
+			switch((o2.ordinal() - o1.ordinal()) % 4) {
+				case 0:
+					matrix[0][0]=1; matrix[0][1]=0;
+					matrix[1][0]=0; matrix[1][1]=1;
+					break;
+				case 1:
+					matrix[0][0]=0; matrix[0][1]=-1;
+					matrix[1][0]=1; matrix[1][1]=0;
+					break;
+				case 2:
+					matrix[0][0]=-1; matrix[0][1]=0;
+					matrix[1][0]=0; matrix[1][1]=-1;
+					break;
+				case 3:
+					matrix[0][0]=0; matrix[0][1]=1;
+					matrix[1][0]=-1; matrix[1][1]=0;
+					break;
+			}
+			return matrix;
+		}
+	}
+	
     private BufferedImage image;            
     private String filename;                   
     private int w, h;          
+    private Orientation orientation;
 
     /** Returns the width of the image. **/
     public int getWidth() { return w; }
     /** Returns the height of the image. **/
     public int getHeight() { return h; }
+    /** Returns orientation of the image **/
+    public Orientation getOrientation() { return orientation; }
     /** Returns the BufferedImage object from the image. **/
     public BufferedImage getBufferedImage() { return image; }
     public Graphics2D getGraphics() { return image.createGraphics(); }
     /** Returns the filename of the image. If it is an image created without a filename, then a default filename is used:
      *the String (image width) + "-by-" + (image height). **/
     public String getFileName() { return filename; }
+    
+    /** Set the orientation of the image. This does not affect the image, but it will affect the output of reorient() **/
+    public void setOrientation(Orientation orientation) { this.orientation = orientation; }
     
     /** Sets the image's filename (name stored in the object, not the actual filename on the computer). **/
     public void setFileName(String newFileName) { filename = newFileName; }
@@ -39,6 +85,7 @@ public final class Image {
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         // set to TYPE_INT_ARGB to support transparency
         filename = w + "-by-" + h;
+        orientation = Orientation.UP;
     }
 
     /** Creates an image using the same filename and color data from another image. **/
@@ -47,9 +94,12 @@ public final class Image {
         h = imageToCopy.getHeight();
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         filename = imageToCopy.getFileName();
-        for (int col = 0; col < w; col++)
-            for (int row = 0; row < h; row++)
+        for (int col = 0; col < w; col++) {
+            for (int row = 0; row < h; row++) {
                 this.set(col, row, imageToCopy.get(col, row));
+            }
+        }
+        orientation = imageToCopy.getOrientation();
     }
     
     /** Creates and image with a default filename using the color data from a BufferedImage. **/
@@ -58,9 +108,12 @@ public final class Image {
         h = imageToCopy.getHeight();
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         filename = w + "-by-" + h;
-        for (int col = 0; col < w; col++)
-            for (int row = 0; row < h; row++)
+        for (int col = 0; col < w; col++) {
+            for (int row = 0; row < h; row++) {
                 image.setRGB(col, row, imageToCopy.getRGB(col, row));
+            }
+        }
+        orientation = Orientation.UP;
     }
 
     /** Creates a new image from a given filename. First searches through working directory, then looks at the directoy of 
@@ -87,6 +140,7 @@ public final class Image {
             e.printStackTrace();
             throw new RuntimeException("Could not open file: " + filename);
         }
+        orientation = Orientation.UP;
     }
 
     /** Creates file from a File object. **/
@@ -99,9 +153,10 @@ public final class Image {
         if (image == null) {
             throw new RuntimeException("Invalid image file: " + file);
         }
-        w  = image.getWidth(null);
-        h = image.getHeight(null);
+        w  = image.getWidth();
+        h = image.getHeight();
         filename = file.getName();
+        orientation = Orientation.UP;
     }
     
     /** Returns a copy of an image object resized to new bounds. Scales pixels by deciding which pixel has the best claim (which pixel is closest
@@ -113,6 +168,12 @@ public final class Image {
     public static Image resize(Image image, int newWidth, int newHeight) {
     	return image.resize(newWidth, newHeight);
     }
+    public static Image resizeScaledWidth(Image image, int newWidth) {
+    	return image.resizeScaledWidth(newWidth);
+    }
+    public static Image resizeScaledHeight(Image image, int newHeight) {
+    	return image.resizeScaledHeight(newHeight);
+    }
     /** Returns a copy of the image resized to new bounds. Scales pixels by deciding which pixel has the best claim (which pixel is closest
      * to the empty pixel upon resize). Does not perform any anti-aliasing. WARNING: If you skrink the image and set this image to it, the
      * old data is permanently lost.
@@ -123,6 +184,7 @@ public final class Image {
     		return new Image(this);
     	}
     	Image newImage = new Image(newWidth, newHeight);
+    	newImage.setOrientation(orientation);
     	float newToOldScaleX = (float)w/newWidth;
     	float newToOldScaleY = (float)h/newHeight;
 		for (int x=0; x<newWidth; x++) {
@@ -131,6 +193,42 @@ public final class Image {
     		}
 		}
 		return newImage;
+    }
+    public Image resizeScaledWidth(int newWidth) {
+    	double ratio =  newWidth/(double)w;
+    	return resize(newWidth, (int)(h*ratio));
+    }
+    public Image resizeScaledHeight(int newHeight) {
+    	double ratio =  newHeight/(double)h;
+    	return resize((int)(w*ratio), newHeight);
+    }
+    
+    public static Image reorient(Image image, Orientation newOrientation) {
+    	return image.reorient(newOrientation);
+    }
+    public Image reorient(Orientation newOrientation) {
+    	int[][] matrix = Orientation.getRotationMatrix(this.orientation, newOrientation);
+    	int newWidth = Math.abs(w*matrix[0][0] + h*matrix[0][1]);
+    	int newHeight = Math.abs(w*matrix[1][0] + h*matrix[1][1]);
+    	Image newImage = new Image(newWidth, newHeight);
+    	newImage.setOrientation(newOrientation);
+    	
+    	int newx=0, newy=0;    	
+    	for (int x=0; x<w; x++) {
+    		for (int y=0; y<h; y++) {
+    			newx = x*matrix[0][0] + y*matrix[0][1];
+    			if (newx < 0) {
+    				newx += newWidth;
+    			}
+    	    	newy = x*matrix[1][0] + y*matrix[1][1];
+    	    	if (newy < 0) {
+    				newy += newHeight;
+    			}
+    	    	
+    	    	newImage.set(newx, newy, get(x, y));
+    		}
+    	}
+    	return newImage;
     }
     
     /** Returns the color data of the image at the pixel (w, h) as an integer. Note that the point (0, 0) is the origin of the image, not the screen. **/

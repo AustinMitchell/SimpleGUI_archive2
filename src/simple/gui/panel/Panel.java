@@ -42,7 +42,7 @@ public abstract class Panel extends Widget {
 	
 	public boolean hasWidget(Widget widget) { return widgetMap.containsKey(widget); }
 	public int numWidgets() { return widgetList.size(); }
-	public int getPriority(Widget widget) { 
+	public int getWidgetPriority(Widget widget) { 
 		if (!hasWidget(widget)) {
 			throw new RuntimeException("Panel does not contain the given widget");
 		}
@@ -56,8 +56,11 @@ public abstract class Panel extends Widget {
 	}
 	public List<Widget> getWidgetList() { return widgetList; }
 	
-	
-	
+	public void setWidgetPriority(Widget widget, int priority) {
+		priorityMap.get(widgetMap.get(widget)).remove(widget);
+		widgetMap.put(widget, priority);
+		priorityMap.get(priority).add(widget);
+	}
 	public void setDefaultPriority(int defaultPriority) { this.defaultPriority = defaultPriority; }
 	public void setDrawContainingPanel(boolean drawContainingPanel) { this.drawContainingPanel = drawContainingPanel; }
 	
@@ -66,20 +69,6 @@ public abstract class Panel extends Widget {
 	public void setConstraints(int x1, int y1, int x2, int y2) { constraints = new Constraints(x1, y1, x2, y2); }
 	public void setConstraints(Constraints newConstraints) { constraints.set(newConstraints); }
 		
-	public Panel() {
-		this(0, 0, 10, 10);
-	}
-	public Panel(int x, int y, int w, int h) {
-		super(x, y, w, h);
-		priorityMap = new TreeMap<>();
-		widgetMap = new HashMap<>();
-		widgetList = new ArrayList<>();
-		
-		defaultPriority = DEFAULT_PRIORITY;
-		drawContainingPanel = false;
-		constraints = new Constraints(0, 0, 0, 0);
-	}
-	
 	@Override
 	public void setLocation(int x, int y) {
 		int dx = x - this.x;
@@ -95,6 +84,23 @@ public abstract class Panel extends Widget {
 	public void setX(int x) { setLocation(x, this.y); }
 	@Override
 	public void setY(int y) { setLocation(this.x, y); }
+	
+	public void setWidgetDimensions(Widget widget, int x, int y, int w, int h) { setWidgetDimensions(widget, new Dimensions(x, y, w, h)); }
+	public abstract void setWidgetDimensions(Widget widget, Dimensions d);
+	
+	public Panel() {
+		this(0, 0, 10, 10);
+	}
+	public Panel(int x, int y, int w, int h) {
+		super(x, y, w, h);
+		priorityMap = new TreeMap<>();
+		widgetMap = new HashMap<>();
+		widgetList = new ArrayList<>();
+		
+		defaultPriority = DEFAULT_PRIORITY;
+		drawContainingPanel = false;
+		constraints = new Constraints(0, 0, 0, 0);
+	}
 	
 	public void addWidget(Widget newWidget, int x, int y, int w, int h) { addWidget(newWidget, new Dimensions(x, y, w, h), constraints); }
 	public void addWidget(Widget newWidget, int x, int y, int w, int h, int priority) { addWidget(newWidget, new Dimensions(x, y, w, h), constraints, priority); }
@@ -138,6 +144,11 @@ public abstract class Panel extends Widget {
 		priorityMap.get(widgetMap.get(widgetToRemove)).remove(widgetToRemove);
 		widgetMap.remove(widgetToRemove);
 		return widgetToRemove;
+	}
+	public void clear() {
+		priorityMap = new TreeMap<>();
+		widgetMap = new HashMap<>();
+		widgetList = new ArrayList<>();
 	}
 	
 	@Override
