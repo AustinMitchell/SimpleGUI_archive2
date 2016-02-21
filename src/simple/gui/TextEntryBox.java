@@ -20,19 +20,7 @@ public class TextEntryBox extends TextBox {
 	}
 	
 	@Override
-	public void update() {
-		if (!enabled || !visible) 
-			return;
-		
-		updateClickingState();
-		textIsEntered = false;
-		enteredText = "";
-		
-		if (isClicked()) {
-			active = true;
-		} else if (!containsMouse() && input.mousePressed()) {
-			active = false;
-		}
+	protected void handleInput() {
 		if (input.getChar() != 0) {
 			if (active) {
 				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {

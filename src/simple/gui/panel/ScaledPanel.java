@@ -54,7 +54,7 @@ public class ScaledPanel extends Panel {
 		super.setSize(w, h); 
 		
 		boxWidth  = w / (double)cols;
-		boxHeight = h / (double)cols;
+		boxHeight = h / (double)rows;
 		
 		for (Widget widget: widgetList) {
 			Modifiers m = widgetModifiersMap.get(widget);

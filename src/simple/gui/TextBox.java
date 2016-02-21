@@ -28,6 +28,11 @@ public class TextBox extends TextArea {
 		} else if (!containsMouse() && input.mousePressed()) {
 			active = false;
 		}
+		
+		handleInput();
+	}
+	
+	protected void handleInput() {
 		if (input.getChar() != 0 && editable) {
 			if (active) {
 				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {
