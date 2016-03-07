@@ -56,8 +56,12 @@ public class ScrollDialogBox extends ScrollBox {
 		FontMetrics fm = draw.getFontMetrics(font);
 		numLinesToDisplay = (h-4)/(fm.getMaxAscent()+2);
 		
-		clearDisplay();
+		ArrayList<String> tempLines = new ArrayList<String>();
 		for(String s: lines) 
+			tempLines.add(s);
+		
+		clear();
+		for(String s: tempLines) 
 			addLine(s);
 	}
 	
@@ -76,8 +80,10 @@ public class ScrollDialogBox extends ScrollBox {
 				break first;
 			// Searches for a point in the partitioned string that will fit in the box's bounds. Takes formation of words into account
 			} else {
+				boolean found = false;
 				for (int i=currentText.length()-1; i>=0; i--) {
 					if (fm.stringWidth(currentText.substring(0, i+1)) <= lineWidth) {
+						found = true;
 						int lastIndex = i;
 						for (int j=lastIndex; j>0; j--) {
 							if (currentText.charAt(j) == ' ') {
@@ -92,6 +98,9 @@ public class ScrollDialogBox extends ScrollBox {
 						break;
 					}
 				}
+				if (!found) {
+					break first;
+				}
 			}
 		}
 		if (lineDisplay.size() == 1 && firstIndex == -1) {
@@ -103,12 +112,26 @@ public class ScrollDialogBox extends ScrollBox {
 		scrollBar.setRange(0, lineDisplay.size()-1);
 	}
 	
+	public void addRepeatedTextLine(String pattern) {
+		String result = "";
+		String temp;
+		
+		FontMetrics fm = draw.getFontMetrics(font);		
+		int lineWidth = w-4-BAR_WIDTH;
+		
+		while(true) {
+			temp = result + pattern;
+			if (fm.stringWidth(temp) > lineWidth) {
+				break;
+			}
+			result = temp;
+		}
+		addLine(result);
+	}
+	
 	/** Clears the raw line data and the line display data. **/
 	public void clear() {
 		lines = new ArrayList<String>();
-		lineDisplay = new ArrayList<String>();
-	}
-	private void clearDisplay() {
 		lineDisplay = new ArrayList<String>();
 	}
 	
@@ -150,7 +173,7 @@ public class ScrollDialogBox extends ScrollBox {
 		
 		if (firstIndex != -1) {
 			for (int i=firstIndex; i<firstIndex+numLinesToDisplay && i<lineDisplay.size(); i++) {
-				draw.text(lineDisplay.get(i), x+2, y+2+lineHeight*(i+1-firstIndex));
+				draw.text(lineDisplay.get(i), x+2, y+2+lineHeight*(i-firstIndex));
 			}
 		}
 	}

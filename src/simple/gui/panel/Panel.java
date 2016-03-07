@@ -68,6 +68,13 @@ public abstract class Panel extends Widget {
 	public void setConstraints(int x, int y) { setConstraints(x, y, x, y); }
 	public void setConstraints(int x1, int y1, int x2, int y2) { constraints = new Constraints(x1, y1, x2, y2); }
 	public void setConstraints(Constraints newConstraints) { constraints.set(newConstraints); }
+	
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		for (Widget w: widgetList) {
+			w.setEnabled(enabled);
+		}
+	}
 		
 	@Override
 	public void setLocation(int x, int y) {
@@ -186,6 +193,10 @@ public abstract class Panel extends Widget {
 			draw.setFill(fillColor);
 			draw.setStroke(borderColor);
 			draw.rect(x, y, w, h);
+		}
+		
+		if (customDrawObject != null) {
+			customDrawObject.draw(this);
 		}
 		
 		for (int priority: priorityMap.descendingKeySet()) {

@@ -31,6 +31,9 @@ public class DrawModule {
 		image = newImage;
 	}
 	
+	public static int windowWidth() { return app.windowWidth(); }
+	public static int windowHeight() { return app.windowHeight(); }
+	
 	public static BufferedImage getImage() { return image; }
 	
 	/** Returns the DrawObject's stored Graphics2D object. **/
@@ -50,8 +53,12 @@ public class DrawModule {
 	public static void setStroke(Color stroke, int thickness) { DrawModule.stroke = stroke; g.setStroke(new BasicStroke(thickness)); }
 	/** Sets the class's local color fields. **/
 	public static void setColors(Color fill, Color stroke) {
-		DrawModule.fill = fill;
-		DrawModule.stroke = stroke;
+		setFill(fill);
+		setStroke(stroke);
+	}
+	public static void setColors(Color fill, Color stroke, int thickness) {
+		setFill(fill);
+		setStroke(stroke, thickness);
 	}
 	
 	/** Draws a polygon defined by a series of points. The outline is specified by stroke, the fill by fill. 
@@ -61,8 +68,9 @@ public class DrawModule {
 	public static void polygon(int[] x, int[] y, int numPoints) {
 		polygon(g, x, y, numPoints);
 	}
-	public static void polygon(Image image, int[] x, int[] y, int numPoints) {
+	public static Image polygon(Image image, int[] x, int[] y, int numPoints) {
 		polygon(image.getGraphics(), x, y, numPoints);
+		return image;
 	}
 	private static void polygon(Graphics2D g2D, int[] x, int[] y, int numPoints) {
 		if (fill != null) {
@@ -82,8 +90,9 @@ public class DrawModule {
 	public static void rect(int x, int y, int w, int h) {
 		rect(g, x, y, w, h);
 	}
-	public static void rect(Image image, int x, int y, int w, int h) {
+	public static Image rect(Image image, int x, int y, int w, int h) {
 		rect(image.getGraphics(), x, y, w, h);
+		return image;
 	}
 	private static void rect(Graphics2D g2D, int x, int y, int w, int h) {
 		if (fill != null) {
@@ -103,8 +112,9 @@ public class DrawModule {
 	public static void oval(int x, int y, int w, int h) {
 		oval(g, x, y, w, h);
 	}
-	public static void oval(Image image, int x, int y, int w, int h) {
+	public static Image oval(Image image, int x, int y, int w, int h) {
 		oval(image.getGraphics(), x, y, w, h);
+		return image;
 	}
 	private static void oval(Graphics2D g2D, int x, int y, int w, int h) {
 		if (fill != null) {
@@ -124,8 +134,9 @@ public class DrawModule {
 	public static void ovalCentered(int x, int y, int w, int h) {
 		ovalCentered(g, x, y, w, h);
 	}
-	public static void ovalCentered(Image image, int x, int y, int w, int h) {
+	public static Image ovalCentered(Image image, int x, int y, int w, int h) {
 		ovalCentered(image.getGraphics(), x, y, w, h);
+		return image;
 	}
 	private static void ovalCentered(Graphics2D g2D, int x, int y, int w, int h) {
 		if (fill != null) {
@@ -148,8 +159,9 @@ public class DrawModule {
 	public static void tri(int x1, int y1, int x2, int y2, int x3, int y3) {
 		tri(g, x1, y1, x2, y2, x3, y3);
 	}
-	public static void tri(Image image, int x1, int y1, int x2, int y2, int x3, int y3) {
+	public static Image tri(Image image, int x1, int y1, int x2, int y2, int x3, int y3) {
 		tri(image.getGraphics(), x1, y1, x2, y2, x3, y3);
+		return image;
 	}
 	private static void tri(Graphics2D g2D, int x1, int y1, int x2, int y2, int x3, int y3) {
 		int[] x = {x1, x2, x3};
@@ -164,8 +176,9 @@ public class DrawModule {
 	public static void line(int x1, int y1, int x2, int y2) {
 		line(g, x1, y1, x2, y2);
 	}
-	public static void line(Image image, int x1, int y1, int x2, int y2) {
+	public static Image line(Image image, int x1, int y1, int x2, int y2) {
 		line(image.getGraphics(), x1, y1, x2, y2);
+		return image;
 	}
 	private static void line(Graphics2D g2D, int x1, int y1, int x2, int y2) {
 		if (stroke != null) {
@@ -176,7 +189,7 @@ public class DrawModule {
 	
 	/** Sets the stored Graphics2D object's stored font. **/
 	public static void setFont(Font font) { setFont(g, font); }
-	public static void setFont(Image image, Font font) { setFont(image.getGraphics(), font); }
+	public static Image setFont(Image image, Font font) { setFont(image.getGraphics(), font); return image; }
 	public static void setFont(Graphics2D g2D, Font font) { g2D.setFont(font); }
 	/** Draws text on the screen with a given font, with the text starting at the point x, y. This changes the currently set font
 	 * for the given graphics object. 
@@ -187,8 +200,9 @@ public class DrawModule {
 	public static void text(String textToDraw, Font font, int x, int y) {
 		text(g, textToDraw, font, x, y);
 	}
-	public static void text(Image image, String textToDraw, Font font, int x, int y) {
+	public static Image text(Image image, String textToDraw, Font font, int x, int y) {
 		text(image.getGraphics(), textToDraw, font, x, y);
+		return image;
 	}
 	private static void text(Graphics2D g2D, String textToDraw, Font font, int x, int y) {
 		setFont(g2D, font);
@@ -202,8 +216,9 @@ public class DrawModule {
 	public static void text(String textToDraw, int x, int y) {
 		text(g, textToDraw, x, y);
 	}
-	public static void text(Image image, String textToDraw, int x, int y) {
+	public static Image text(Image image, String textToDraw, int x, int y) {
 		text(image.getGraphics(), textToDraw, x, y);
+		return image;
 	}
 	private static void text(Graphics2D g2D, String textToDraw, int x, int y) {
 		if (stroke != null) {
@@ -221,8 +236,9 @@ public class DrawModule {
 	public static void textRight(String textToDraw, int x, int y) {
 		textRight(g, textToDraw, x, y);
 	}
-	public static void textRight(Image image, String textToDraw, int x, int y) {
+	public static Image textRight(Image image, String textToDraw, int x, int y) {
 		textRight(image.getGraphics(), textToDraw, x, y);
+		return image;
 	}
 	private static void textRight(Graphics2D g2D, String textToDraw, int x, int y) {
 		if (stroke != null) {
@@ -240,8 +256,9 @@ public class DrawModule {
 	public static void textCentered(String textToDraw, Font font, int x, int y) {
 		textCentered(g, textToDraw, font, x, y);
 	}
-	public static void textCentered(Image image, String textToDraw, Font font, int x, int y) {
+	public static Image textCentered(Image image, String textToDraw, Font font, int x, int y) {
 		textCentered(image.getGraphics(), textToDraw, font, x, y);
+		return image;
 	}
 	private static void textCentered(Graphics2D g2D, String textToDraw, Font font, int x, int y) {
 		setFont(g2D, font);
@@ -255,8 +272,9 @@ public class DrawModule {
 	public static void textCentered(String textToDraw, int x, int y) {
 		textCentered(g, textToDraw, x, y);
 	}
-	public static void textCentered(Image image, String textToDraw, int x, int y) {
+	public static Image textCentered(Image image, String textToDraw, int x, int y) {
 		textCentered(image.getGraphics(), textToDraw, x, y);
+		return image;
 	}
 	private static void textCentered(Graphics2D g2D, String textToDraw, int x, int y) {
 		if (stroke != null) {
@@ -274,11 +292,20 @@ public class DrawModule {
 	public static void imageRotated(Image imageToDraw, int x, int y, double angle) { imageRotated(g, imageToDraw, x, y, angle); }
 	
 	/** Calls an Image object's Draw function using the imageBuffer's Graphics2D object. Refer to Image. **/
-	public static void image(Image imageBuffer, Image imageToDraw, int x, int y) { image(imageBuffer.getGraphics(), imageToDraw, x, y); }
+	public static Image image(Image imageBuffer, Image imageToDraw, int x, int y) { 
+		image(imageBuffer.getGraphics(), imageToDraw, x, y);
+		return imageBuffer;
+	}
 	/** Calls an Image object's DrawCentered function using the imageBuffer's Graphics2D object. Refer to Image. **/
-	public static void imageCentered(Image imageBuffer, Image imageToDraw, int x, int y) { imageCentered(imageBuffer.getGraphics(), imageToDraw, x, y); }
+	public static Image imageCentered(Image imageBuffer, Image imageToDraw, int x, int y) { 
+		imageCentered(imageBuffer.getGraphics(), imageToDraw, x, y); 
+		return imageBuffer;
+	}
 	/** Calls an Image object's DrawRotated function using the imageBuffer's Graphics2D object. Refer to Image. **/
-	public static void imageRotated(Image imageBuffer, Image imageToDraw, int x, int y, double angle) { imageRotated(imageBuffer.getGraphics(), imageToDraw, x, y, angle); }
+	public static Image imageRotated(Image imageBuffer, Image imageToDraw, int x, int y, double angle) { 
+		imageRotated(imageBuffer.getGraphics(), imageToDraw, x, y, angle); 
+		return imageBuffer;
+	}
 	
 	/** Calls an Image object's Draw function using the given Graphics2D object. Refer to Image. **/
 	private static void image(Graphics2D g2D, Image imageToDraw, int x, int y) { imageToDraw.draw(g2D, x, y); }

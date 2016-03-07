@@ -117,14 +117,7 @@ public class ScaledPanel extends Panel {
 		newWidget.setY(this.y + (int)Math.ceil(boxHeight*(d.y)) - c.y1);
 		newWidget.setWidth((int)Math.ceil(boxWidth*d.w) + c.x2);
 		newWidget.setHeight((int)Math.ceil(boxHeight*d.h) + c.y2);
-		
-//		System.out.println("Dimensions: " + d.x + ", " + d.y + ", " + d.w + ", " + d.h);
-//		System.out.println("Constraints: " + c.x1 + ", " + c.y1 + ", " + c.x2 + ", " + c.y2);
-//		System.out.println("Boxwidth/height on pos: " + (int)Math.ceil(boxWidth*d.x) + ", " + (int)Math.ceil(boxHeight*d.y));
-//		System.out.println("Widget pos:" + newWidget.getX() + ", " + newWidget.getY());
-//		System.out.println("Boxwidth/height on size: " + (int)Math.ceil(boxWidth*d.w) + ", " + (int)Math.ceil(boxHeight*d.h));
-//		System.out.println("Widget size:" + newWidget.getWidth() + ", " + newWidget.getHeight());
-				
+						
 		widgetModifiersMap.put(newWidget, new Modifiers(d, c));
 		
 		addWidgetToCollection(newWidget, priority);

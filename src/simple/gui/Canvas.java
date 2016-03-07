@@ -20,7 +20,9 @@ public class Canvas extends Widget {
 	public void draw() {
 		if (!visible) 
 			return;
-		customDrawObject.draw(this);
+		if (customDrawObject != null) {
+			customDrawObject.draw(this);
+		}
 	}
 
 }

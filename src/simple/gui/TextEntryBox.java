@@ -12,8 +12,14 @@ public class TextEntryBox extends TextBox {
 	public TextEntryBox() {
 		this(0, 0, 10, 10);
 	}
+	public TextEntryBox(String text) {
+		this(0, 0, 10, 10, text);
+	}
 	public TextEntryBox(int x_, int y_, int w_, int h_) {
-		super(x_, y_, w_, h_);		
+		this(x_, y_, w_, h_, "");
+	}
+	public TextEntryBox(int x_, int y_, int w_, int h_, String text) {
+		super(x_, y_, w_, h_, text);		
 		
 		enteredText = "";
 		textIsEntered = false;
@@ -21,6 +27,11 @@ public class TextEntryBox extends TextBox {
 	
 	@Override
 	protected void handleInput() {
+		if (textIsEntered) {
+			textIsEntered = false;
+			enteredText = "";
+			clear();
+		}
 		if (input.getChar() != 0) {
 			if (active) {
 				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {
@@ -28,7 +39,6 @@ public class TextEntryBox extends TextBox {
 				} else if (input.getChar() == KeyEvent.VK_ENTER) {
 					textIsEntered = true;
 					enteredText = text;
-					clear();
 				} else if (input.getChar() >= 32 && input.getChar() <= 127) {
 					addChar(input.getChar());
 				}

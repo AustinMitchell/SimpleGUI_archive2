@@ -134,16 +134,20 @@ public abstract class Widget {
 	/** Sets the widget's enabled variable, and sets false for all mouse interaction variables **/
 	public void setEnabled(boolean enabled) { 
 		this.enabled = enabled; 
-		this.hovering = false;
-		this.clicking = false;
-		this.clicked = false;
+		if (!enabled) {
+			this.hovering = false;
+			this.clicking = false;
+			this.clicked = false;
+		}
 	}
 	/** Sets the widget's visble variable, and sets false for all mouse interaction variables **/
 	public void setVisible(boolean visible) { 
 		this.visible = visible;
-		this.hovering = false;
-		this.clicking = false;
-		this.clicked = false;
+		if (!visible) {
+			this.hovering = false;
+			this.clicking = false;
+			this.clicked = false;
+		}
 	}
 	public void blockWidget() { 
 		blocked = true;

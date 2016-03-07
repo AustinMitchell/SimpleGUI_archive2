@@ -8,17 +8,25 @@ public class ImageBox extends Widget {
 	/** Angle to draw the image at. Works in terms of radians. Note that if this value is not 0, it will always draw the image rotated and centered even if drawCentered is set to false. **/
 	protected double angle;
 	
+	protected Image.Orientation orientation;
+	
 	/** Returns the imageBox's Image object. **/
 	public Image getImage() { return image; }
 	/** Returns the imageBox's angle. **/
 	public double getAngle() { return angle; }
 	
-	public Image.Orientation getOrientation() { return image.getOrientation(); }
+	public Image.Orientation getOrientation() { return orientation; }
 	
 	/** Sets the imageBox's Image object. Calls the image's resize() function to scale it to the size of the ImageBox. **/
 	public void setImage(Image image) { 
-		this.baseImage = image; 
-		this.image = image.resize(w, h); 
+		if (image == null) {
+			baseImage = null;
+			this.image = null;
+		} else {
+			Image rotatedImage = image.reorient(orientation);
+			this.baseImage = rotatedImage; 
+			this.image = rotatedImage.resize(w, h); 
+		}
 	}
 	/** Sets whether the image to to be drawn centered to the (x, y) position or at the corner. **/
 	public void setDrawCentered(boolean drawCentered) { this.drawCentered = drawCentered; }
@@ -38,49 +46,81 @@ public class ImageBox extends Widget {
 	public void setHeight(int h) { setSize(this.w, h); }
 	
 	public void setScaledWidth(int w) { 
-		image = null;
-	    Image tmp = baseImage.resizeScaledWidth(w);
-		setSize(tmp.getWidth(), tmp.getHeight());
-		image = tmp;
+		if (baseImage == null) {
+			double ratio =  w/(double)this.w;
+	    	setSize(w, (int)(this.h*ratio));
+		} else {
+			image = null;
+		    Image tmp = baseImage.resizeScaledWidth(w);
+			setSize(tmp.getWidth(), tmp.getHeight());
+			image = tmp;
+		}
 	}
 	public void setScaledHeight(int h) { 
-		image = null;
-	    Image tmp = baseImage.resizeScaledHeight(h);
-		setSize(tmp.getWidth(), tmp.getHeight());
-		image = tmp;
+		if (baseImage == null) {
+			double ratio =  h/(double)this.h;
+	    	setSize((int)(this.w*ratio), h);
+		} else {
+			image = null;
+		    Image tmp = baseImage.resizeScaledHeight(h);
+			setSize(tmp.getWidth(), tmp.getHeight());
+			image = tmp;
+		}
 	}
 	
 	public void setOrientation(Image.Orientation orientation) {
-		baseImage = baseImage.reorient(orientation);
-	    Image tmp = image.reorient(orientation);
-	    image = null;
-		setSize(tmp.getWidth(), tmp.getHeight());
-		image = tmp;
+		if (this.orientation != orientation) {
+			this.orientation = orientation;
+			baseImage = baseImage.reorient(orientation);
+		    Image tmp = image.reorient(orientation);
+		    image = null;
+			setSize(tmp.getWidth(), tmp.getHeight());
+			image = tmp;
+		}
 	}
 
+	public ImageBox() {
+		this(0, 0, null, Image.Orientation.UP);
+	}
+	
 	/** Constructor which only takes an Image object. Initial position will be at (0, 0), and the size will be the size of the Image object. **/
-	public ImageBox(Image image_) {
-		this(0, 0, image_);
+	public ImageBox(Image image) {
+		this(0, 0, image);
+	}
+	public ImageBox(Image image, Image.Orientation startingOrientation) {
+		this(0, 0, image, startingOrientation);
 	}
 	/** This constructor is the same as ImageBox(Image image_), but it also sets the initial position. **/
-	public ImageBox(int x_, int y_, Image image_) {
-		setLocation(x_, y_);
+	public ImageBox(int x, int y, Image image) {
+		this(x, y, image, (image==null) ? (Image.Orientation.UP) : (image.getOrientation()));
+	}
+	public ImageBox(int x, int y, Image image, Image.Orientation startingOrientation) {
+		super();
+		setLocation(x, y);
+		orientation = startingOrientation;
 		drawCentered = false;
-		if (image_ != null) { 
-			image = image_;
-			baseImage = image_;
+		if (image != null) {
+			baseImage = new Image(image);
+			this.image = baseImage;
 			setSize(image.getWidth(), image.getHeight());
 		} else {
 			setSize(1, 1);
 		}
 	}
 	/** Constructor which sets the imageBox's position and size, and then scales the Image object's size to match the size of the imageBox. **/
-	public ImageBox(int x_, int y_, int w_, int h_, Image image_) {
-		super(x_, y_, w_, h_);
+	public ImageBox(int x, int y, int w, int h, Image image) {
+		this(x, y, w, h, image, 
+				(image==null) ? (Image.Orientation.UP) : (image.getOrientation()));
+	}
+	
+	public ImageBox(int x, int y, int w, int h, Image image, Image.Orientation startingOrientation) {
+		super(x, y, w, h);
+		orientation = startingOrientation;
 		drawCentered = false;
-		if (image_ != null) {
-			baseImage = image_;
-			image = image_.resize(w, h);
+		if (image != null) {
+			baseImage = new Image(image);
+			baseImage.setOrientation(startingOrientation);
+			this.image = baseImage.resize(w, h);
 		}
 	}
 	

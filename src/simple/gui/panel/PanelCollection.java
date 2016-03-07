@@ -106,6 +106,11 @@ public class PanelCollection extends Widget {
 		}
 	}
 	
+	public void clear() {
+		panelMap = new HashMap<Panel, Integer>();
+		panelList = new ArrayList<Panel>();
+	}
+	
 	@Override
 	public void update() {
 		if (!enabled || !visible) return;

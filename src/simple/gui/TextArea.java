@@ -48,6 +48,7 @@ public abstract class TextArea extends Widget{
 	public void setSize(int w_, int h_) {
 		super.setSize(w_, h_);
 		numLinesToDisplay = Math.max(1, (h-4)/(fm.getMaxAscent()+2));
+		setText(text);
 	}
 	@Override
 	public void setWidth(int w_) {
@@ -62,6 +63,7 @@ public abstract class TextArea extends Widget{
 		super.setFont(f_);
 		fm = draw.getFontMetrics(font);
 		numLinesToDisplay = Math.max(1, (h-4)/(fm.getMaxAscent()+2));
+		setText(text);
 	}
 	
 	public TextArea() {
