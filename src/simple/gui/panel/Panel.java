@@ -41,7 +41,7 @@ public abstract class Panel extends Widget {
 	public boolean doesDrawContainingPanel() { return drawContainingPanel; }
 	
 	public boolean hasWidget(Widget widget) { return widgetMap.containsKey(widget); }
-	public int numWidgets() { return widgetList.size(); }
+	public int size() { return widgetList.size(); }
 	public int getWidgetPriority(Widget widget) { 
 		if (!hasWidget(widget)) {
 			throw new RuntimeException("Panel does not contain the given widget");

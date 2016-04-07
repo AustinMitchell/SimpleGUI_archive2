@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -30,7 +31,7 @@ public final class Image {
 		}
 		public static int[][] getRotationMatrix(Orientation o1, Orientation o2) {
 			int[][] matrix = new int[2][2];
-			switch((o2.ordinal() - o1.ordinal()) % 4) {
+			switch(Math.floorMod(o2.ordinal() - o1.ordinal(), 4)) {
 				case 0:
 					matrix[0][0]=1; matrix[0][1]=0;
 					matrix[1][0]=0; matrix[1][1]=1;
@@ -115,6 +116,28 @@ public final class Image {
         }
         orientation = Orientation.UP;
     }
+    
+    public Image(InputStream is) {
+    	BufferedImage imageToCopy;
+		try {
+			imageToCopy = ImageIO.read(is);
+	    	
+	    	 w = imageToCopy.getWidth();
+	         h = imageToCopy.getHeight();
+	         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	         filename = w + "-by-" + h;
+	         for (int col = 0; col < w; col++) {
+	             for (int row = 0; row < h; row++) {
+	                 image.setRGB(col, row, imageToCopy.getRGB(col, row));
+	             }
+	         }
+	         orientation = Orientation.UP;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException("Could not open file stream: " + is);
+		}
+    }
 
     /** Creates a new image from a given filename. First searches through working directory, then looks at the directoy of 
      * the .class file. **/
@@ -180,9 +203,6 @@ public final class Image {
      * @param newWidth		New width to scale image to.
      * @param newHeight		New height to scale image to. **/
     public Image resize(int newWidth, int newHeight) {
-    	if (newWidth == w && newHeight == h) {
-    		return new Image(this);
-    	}
     	Image newImage = new Image(newWidth, newHeight);
     	newImage.setOrientation(orientation);
     	float newToOldScaleX = (float)w/newWidth;
