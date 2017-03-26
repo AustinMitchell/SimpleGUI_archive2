@@ -2,6 +2,7 @@ package simple.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,11 +96,7 @@ public final class Image {
         h = imageToCopy.getHeight();
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         filename = imageToCopy.getFileName();
-        for (int col = 0; col < w; col++) {
-            for (int row = 0; row < h; row++) {
-                this.set(col, row, imageToCopy.get(col, row));
-            }
-        }
+        setPixels(imageToCopy.getPixelsNoCopy());
         orientation = imageToCopy.getOrientation();
     }
     
@@ -109,11 +106,7 @@ public final class Image {
         h = imageToCopy.getHeight();
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         filename = w + "-by-" + h;
-        for (int col = 0; col < w; col++) {
-            for (int row = 0; row < h; row++) {
-                image.setRGB(col, row, imageToCopy.getRGB(col, row));
-            }
-        }
+        setPixels(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
         orientation = Orientation.UP;
     }
     
@@ -122,16 +115,12 @@ public final class Image {
 		try {
 			imageToCopy = ImageIO.read(is);
 	    	
-	    	 w = imageToCopy.getWidth();
-	         h = imageToCopy.getHeight();
-	         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-	         filename = w + "-by-" + h;
-	         for (int col = 0; col < w; col++) {
-	             for (int row = 0; row < h; row++) {
-	                 image.setRGB(col, row, imageToCopy.getRGB(col, row));
-	             }
-	         }
-	         orientation = Orientation.UP;
+			w = imageToCopy.getWidth();
+			h = imageToCopy.getHeight();
+			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			filename = w + "-by-" + h;
+			setPixels(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
+			orientation = Orientation.UP;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -207,9 +196,12 @@ public final class Image {
     	newImage.setOrientation(orientation);
     	float newToOldScaleX = (float)w/newWidth;
     	float newToOldScaleY = (float)h/newHeight;
+    	
+    	int[] newImagePixels = newImage.getPixelsNoCopy();
+    	int[] oldImagePixels = this.getPixelsNoCopy();
 		for (int x=0; x<newWidth; x++) {
 			for (int y=0; y<newHeight; y++) {
-    			newImage.set(x, y, this.get(Math.min(w-1, Math.round(x*newToOldScaleX)), Math.min(h-1, Math.round(y*newToOldScaleY))));
+				newImagePixels[x + y*newWidth] = oldImagePixels[Math.round(x*newToOldScaleX) + w*Math.round(y*newToOldScaleY)];
     		}
 		}
 		return newImage;
@@ -233,6 +225,8 @@ public final class Image {
     	Image newImage = new Image(newWidth, newHeight);
     	newImage.setOrientation(newOrientation);
     	
+    	int[] newImagePixels = newImage.getPixelsNoCopy();
+    	int[] oldImagePixels = this.getPixelsNoCopy();
     	int newx=0, newy=0;    	
     	for (int x=0; x<w; x++) {
     		for (int y=0; y<h; y++) {
@@ -245,7 +239,7 @@ public final class Image {
     				newy += newHeight;
     			}
     	    	
-    	    	newImage.set(newx, newy, get(x, y));
+    	    	newImagePixels[newx + newy*newWidth] = oldImagePixels[x + w*y];
     		}
     	}
     	return newImage;
@@ -263,26 +257,17 @@ public final class Image {
         if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
         return new Color(image.getRGB(x, y), true);
     }
-    /** Returns the color data of all the pixels as an array of integers. Returns column first. **/
+    /** Returns the color data of all the pixels as an array of integers. **/
     public int[] getPixels() {
     	int[] pixelData = new int[w*h];
-    	for (int x=0; x<w; x++)
-    		for (int y=0; y<h; y++)
-    			pixelData[x*h + y] = this.get(x, y);
-    	
+    	System.arraycopy(((DataBufferInt)image.getRaster().getDataBuffer()).getData(), 0, pixelData, 0, w*h);
     	return pixelData;
     }
-    /** Returns the color data of all the pixels as an array of Color objects. Returns column first. **/
-    public Color[] getPixelsColor() {
-    	Color[] pixelData = new Color[w*h];
-    	
-    	for (int x=0; x<w; x++)
-    		for (int y=0; y<h; y++)
-    			pixelData[x*h + y] = this.getColor(x, y);
-    	
-    	return pixelData;
+    
+    /** Returns the color data of all the pixels as an array of integers. Returns the base array. Changes to the returned array WILL modify the image data. **/
+    public int[] getPixelsNoCopy() {
+    	return ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
     }
-
     
     /** Sets the color data of the image at the pixel (w, h) using an integer. Note that th point (0, 0) is the origin of the image, not the screen. **/
     public void set(int x, int y, int color) {
@@ -297,19 +282,9 @@ public final class Image {
         if (color == null) throw new NullPointerException("can't set Color to null");
         image.setRGB(x, y, color.getRGB());
     }
-    /** Sets all the color data of the image from an array of integers. Sets column first. **/
+    /** Sets all the color data of the image from an array of integers. **/
     public void setPixels(int[] pixelData) {
-    	if (w*h != pixelData.length) throw new IndexOutOfBoundsException("number of pixels in pixelData(" + pixelData.length +") must equal number of pixels in Image Object(" + (w*h) + ").");
-    	for (int x=0; x<w; x++)
-    		for (int y=0; y<h; y++)
-    			this.set(x, y, pixelData[x*h + y]);	
-    }
-    /** Sets all the color data of the image from an array of Color objects. Sets column first. **/
-    public void setPixelsColor(Color[] pixelData) {
-    	if (w*h != pixelData.length) throw new IndexOutOfBoundsException("number of pixels in pixelData(" + pixelData.length +") must equal number of pixels in Image Object(" + (w*h) + ").");
-    	for (int x=0; x<w; x++)
-    		for (int y=0; y<h; y++)
-    			this.setColor(x, y, pixelData[x*h + y]);	
+    	System.arraycopy(pixelData, 0, ((DataBufferInt)image.getRaster().getDataBuffer()).getData(), 0, w*h);
     }
 
     /** Draws an image to a Graphics2D object with the origin at point x, y on the screen. 
@@ -338,9 +313,12 @@ public final class Image {
         Image that = (Image) obj;
         if (this.getWidth()  != that.getWidth())  return false;
         if (this.getHeight() != that.getHeight()) return false;
-        for (int x = 0; x < w; x++)
-            for (int y = 0; y < h; y++)
-                if (this.get(x, y) == that.get(x, y)) return false;
+        
+        int[] thatImagePixels = that.getPixelsNoCopy();
+    	int[] thisImagePixels = this.getPixelsNoCopy();
+    	int size = w*h;
+    	for (int i = 0; i < size; i++)
+    		if (thisImagePixels[i] != thatImagePixels[i]) return false;
         return true;
     }
 }
