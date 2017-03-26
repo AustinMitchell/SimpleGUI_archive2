@@ -124,6 +124,12 @@ public class ImageBox extends Widget {
 		}
 	}
 	
+	/** Sets the base image to the current image. Important for manipulating pixel arrays, as the backing image will not be changed, only the 
+	 * current one. **/
+	public void resetBaseImage() {
+		baseImage = new Image(image);
+	}
+	
 	/** Updates the state of the imageBox relative to the mouse. **/
 	public void update() {
 		if (!enabled || !visible) {

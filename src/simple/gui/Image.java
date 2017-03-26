@@ -30,6 +30,36 @@ public final class Image {
 					return "";
 			}
 		}
+		public static int toInt(Orientation o) {
+			switch(o) {
+				case UP:
+					return 0;
+				case RIGHT:
+					return 1;
+				case DOWN:
+					return 2;
+				case LEFT:
+					return 3;
+				default:
+					return 0;
+			}
+		}
+		public static Orientation fromInt(int i) {
+			// same as i%4 but faster
+			switch(i&3) {
+			case 0:
+				return UP;
+			case 1:
+				return RIGHT;
+			case 2:
+				return DOWN;
+			case 3:
+				return LEFT;
+			default:
+				return UP;
+			}
+		}
+			
 		public static int[][] getRotationMatrix(Orientation o1, Orientation o2) {
 			int[][] matrix = new int[2][2];
 			switch(Math.floorMod(o2.ordinal() - o1.ordinal(), 4)) {
@@ -106,20 +136,22 @@ public final class Image {
         h = imageToCopy.getHeight();
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         filename = w + "-by-" + h;
-        setPixels(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
+        setPixels(((DataBufferInt)imageToCopy.getRaster().getDataBuffer()).getData());
         orientation = Orientation.UP;
     }
     
     public Image(InputStream is) {
     	BufferedImage imageToCopy;
 		try {
-			imageToCopy = ImageIO.read(is);
-	    	
+			BufferedImage temp = ImageIO.read(is);
+	    	imageToCopy = new BufferedImage(temp.getWidth(), temp.getHeight(), BufferedImage.TYPE_INT_ARGB);
+	    	imageToCopy.createGraphics().drawImage(temp, 0, 0, null);
+			
 			w = imageToCopy.getWidth();
 			h = imageToCopy.getHeight();
 			image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 			filename = w + "-by-" + h;
-			setPixels(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
+			setPixels(((DataBufferInt)imageToCopy.getRaster().getDataBuffer()).getData());
 			orientation = Orientation.UP;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -136,7 +168,9 @@ public final class Image {
             // try to read from file in working directory
             File file = new File(filename);
             if (file.isFile()) {
-                image = ImageIO.read(file);
+            	BufferedImage temp = ImageIO.read(file);
+    	    	image = new BufferedImage(temp.getWidth(), temp.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    	    	image.createGraphics().drawImage(temp, 0, 0, null);
             }
 
             // now try to read from file in same directory as this .class file
@@ -157,7 +191,11 @@ public final class Image {
 
     /** Creates file from a File object. **/
     public Image(File file) {
-        try { image = ImageIO.read(file); }
+        try { 
+        	BufferedImage temp = ImageIO.read(file);
+	    	image = new BufferedImage(temp.getWidth(), temp.getHeight(), BufferedImage.TYPE_INT_ARGB);
+	    	image.createGraphics().drawImage(temp, 0, 0, null);
+        }
         catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not open file: " + file);
@@ -201,7 +239,7 @@ public final class Image {
     	int[] oldImagePixels = this.getPixelsNoCopy();
 		for (int x=0; x<newWidth; x++) {
 			for (int y=0; y<newHeight; y++) {
-				newImagePixels[x + y*newWidth] = oldImagePixels[Math.round(x*newToOldScaleX) + w*Math.round(y*newToOldScaleY)];
+				newImagePixels[x + y*newWidth] = oldImagePixels[(int)Math.floor(x*newToOldScaleX) + w*(int)Math.floor(y*newToOldScaleY)];
     		}
 		}
 		return newImage;
@@ -215,9 +253,11 @@ public final class Image {
     	return resize((int)(w*ratio), newHeight);
     }
     
+    /** Returns a new image set to the new orientation given. **/
     public static Image reorient(Image image, Orientation newOrientation) {
     	return image.reorient(newOrientation);
     }
+    /** Returns a new image set to the new orientation given. **/
     public Image reorient(Orientation newOrientation) {
     	int[][] matrix = Orientation.getRotationMatrix(this.orientation, newOrientation);
     	int newWidth = Math.abs(w*matrix[0][0] + h*matrix[0][1]);
@@ -245,6 +285,15 @@ public final class Image {
     	return newImage;
     }
     
+    /** Returns an image rotated 90 degrees clockwise by rotationsRight many times, and sets new orientation. A negative number means left turns. **/
+    public static Image rotate(Image image, int rotationsRight) {
+    	return image.rotate(rotationsRight);
+    }
+    /** Returns an image rotated 90 degrees clockwise by rotationsRight many times, and sets new orientation. A negative number means left turns. **/
+    public Image rotate(int rotationsRight) {
+    	return reorient(Orientation.fromInt(Orientation.toInt(orientation)+rotationsRight));
+    }
+    
     /** Returns the color data of the image at the pixel (w, h) as an integer. Note that the point (0, 0) is the origin of the image, not the screen. **/
     public int get(int x, int y) {
         if (x < 0 || x >= w)  throw new IndexOutOfBoundsException("x must be between 0 and " + (w-1) + ", recieved " + x);
@@ -257,14 +306,16 @@ public final class Image {
         if (y < 0 || y >= h) throw new IndexOutOfBoundsException("y must be between 0 and " + (h-1) + ", recieved " + y);
         return new Color(image.getRGB(x, y), true);
     }
-    /** Returns the color data of all the pixels as an array of integers. **/
+    /** Returns the color data of all the pixels as an array of integers.**/
     public int[] getPixels() {
     	int[] pixelData = new int[w*h];
     	System.arraycopy(((DataBufferInt)image.getRaster().getDataBuffer()).getData(), 0, pixelData, 0, w*h);
     	return pixelData;
     }
     
-    /** Returns the color data of all the pixels as an array of integers. Returns the base array. Changes to the returned array WILL modify the image data. **/
+    /** Returns the color data of all the pixels as an array of integers. Returns the base array. Changes to the returned array WILL modify the image data.
+     * Important note: If Image is used in context of an ImageBox and not just a standalone image, you need to take into account that the backing image 
+     * used to preserve image quality needs to be updated on changes made to the pixel array. **/
     public int[] getPixelsNoCopy() {
     	return ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
     }
