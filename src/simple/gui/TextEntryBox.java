@@ -9,6 +9,12 @@ public class TextEntryBox extends TextBox {
 	public String getEnteredText() { return enteredText; }
 	public boolean hasTextEntered() { return textIsEntered; }
 	
+	@Override
+	public void setEnabled(boolean enabled) { 
+	    super.setEnabled(enabled);
+	    textIsEntered = textIsEntered && enabled;
+	}
+	
 	public TextEntryBox() {
 		this(0, 0, 10, 10);
 	}

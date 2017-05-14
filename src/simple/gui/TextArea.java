@@ -33,6 +33,10 @@ public abstract class TextArea extends Widget{
 	public boolean isEmpty() { return text.equals(""); }
 	public Alignment getAlignment() { return alignment; }
 	
+	public void setEnabled(boolean newEnabled) {
+        super.setEnabled(newEnabled);
+        active = active && newEnabled;
+    }
 	public void setEditable(boolean newEditable) { editable = newEditable; }
 	public void setActive(boolean newActive) { active = newActive; }
 	public void setText(String newText) { 
