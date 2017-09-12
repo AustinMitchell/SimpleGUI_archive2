@@ -61,6 +61,11 @@ public class Input {
 	public static int mouseX() { return x; }
 	/** Returns the y coordinate of the mouse from the current frame **/
 	public static int mouseY() { return y; }
+	/** Returns the x coordinate of the mouse from the current frame **/
+    public static int mouseShiftX() { return x-oldx; }
+    /** Returns the y coordinate of the mouse from the current frame **/
+    public static int mouseShiftY() { return y-oldy; }
+	
 	
 	/** Returns whether the given key is pressed, using given keycode **/
 	public static boolean keyDown(int key) { return (key>=0 && key<65536) ? (keyCodes[key]) : false; }
