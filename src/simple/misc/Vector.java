@@ -1,4 +1,4 @@
-package simple.gui;
+package simple.misc;
 
 public class Vector {	
 	/** The components of the vector**/
