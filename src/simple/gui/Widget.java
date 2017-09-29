@@ -248,8 +248,9 @@ public abstract class Widget {
 			clicking = false;
 			clicked = false;
 		} else {
-			if (containsMouse() && input.mousePressed() && hovering) {
+			if (containsMouse() && input.mousePressed() && (hovering||clicking)) {
 				clicking = true && enabled && visible;
+				hovering = false;
 			} else if (containsMouse() && clicking && !input.mousePressed()) {
 				clicked = true && enabled && visible;
 				clicking = false;

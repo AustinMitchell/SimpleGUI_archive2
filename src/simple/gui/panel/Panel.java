@@ -6,7 +6,7 @@ import simple.gui.Widget;
 
 public abstract class Panel extends Widget {
 	public static class Dimensions {
-		public int x, y, w, h;
+		public float x, y, w, h;
 		public void set(Dimensions other) { x = other.x; y = other.y; w = other.w; h = other.h; }
 		public Dimensions(int x, int y, int w, int h) {
 			this.x = x;
@@ -16,7 +16,7 @@ public abstract class Panel extends Widget {
 		}
 	}
 	public static class Constraints {
-		public int x1, y1, x2, y2;
+		public float x1, y1, x2, y2;
 		public void set(Constraints other) { x1 = other.x1; y1 = other.y1; x2 = other.x2; y2 = other.y2; }
 		public Constraints(int x1, int y1, int x2, int y2) {
 			this.x1 = x1;

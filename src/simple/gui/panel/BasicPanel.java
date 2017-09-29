@@ -17,10 +17,10 @@ public class BasicPanel extends Panel {
 		
 		Constraints c = widgetConstraintsMap.get(widget);
 		
-		widget.setX(this.x + d.x - c.x1);
-		widget.setY(this.y + d.y - c.y1);
-		widget.setWidth(d.w + c.x2);
-		widget.setHeight(d.h + c.y2);
+		widget.setX((int)(this.x + d.x - c.x1));
+		widget.setY((int)(this.y + d.y - c.y1));
+		widget.setWidth((int)(d.w + c.x2));
+		widget.setHeight((int)(d.h + c.y2));
 	}
 	
 	public BasicPanel() {
@@ -37,10 +37,10 @@ public class BasicPanel extends Panel {
 	}
 	@Override
 	public void addWidget(Widget newWidget, Dimensions d, Constraints c, int priority) {
-		newWidget.setX(this.x + d.x - c.x1);
-		newWidget.setY(this.y + d.y - c.y1);
-		newWidget.setWidth(d.w + c.x2);
-		newWidget.setHeight(d.h + c.y2);
+		newWidget.setX((int)(this.x + d.x - c.x1));
+		newWidget.setY((int)(this.y + d.y - c.y1));
+		newWidget.setWidth((int)(d.w + c.x2));
+		newWidget.setHeight((int)(d.h + c.y2));
 				
 		addWidget(newWidget, priority);
 		widgetConstraintsMap.put(newWidget, c);

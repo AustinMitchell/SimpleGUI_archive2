@@ -41,10 +41,10 @@ public class ScaledPanel extends Panel {
 		
 		Constraints c = widgetModifiersMap.get(widget).constraints;
 		
-		widget.setX(this.x + (int)Math.ceil(boxWidth*(d.x)) - c.x1);
-		widget.setY(this.y + (int)Math.ceil(boxHeight*(d.y)) - c.y1);
-		widget.setWidth((int)Math.ceil(boxWidth*d.w) + c.x2);
-		widget.setHeight((int)Math.ceil(boxHeight*d.h) + c.y2);
+		widget.setX((int)(this.x + Math.ceil(boxWidth*(d.x)) - c.x1));
+		widget.setY((int)(this.y + Math.ceil(boxHeight*(d.y)) - c.y1));
+		widget.setWidth((int)(Math.ceil(boxWidth*d.w) + c.x2));
+		widget.setHeight((int)(Math.ceil(boxHeight*d.h) + c.y2));
 		
 		widgetModifiersMap.put(widget, new Modifiers(d, c));
 	}
@@ -59,10 +59,10 @@ public class ScaledPanel extends Panel {
 		for (Widget widget: widgetList) {
 			Modifiers m = widgetModifiersMap.get(widget);
 			
-			widget.setX(this.x + (int)Math.ceil(boxWidth*(m.dimensions.x)) - m.constraints.x1);
-			widget.setY(this.y + (int)Math.ceil(boxHeight*(m.dimensions.y)) - m.constraints.y1);
-			widget.setWidth((int)Math.ceil(boxWidth*m.dimensions.w) + m.constraints.x2);
-			widget.setHeight((int)Math.ceil(boxHeight*m.dimensions.h) + m.constraints.y2);
+			widget.setX((int)(this.x + Math.ceil(boxWidth*(m.dimensions.x)) - m.constraints.x1));
+			widget.setY((int)(this.y + Math.ceil(boxHeight*(m.dimensions.y)) - m.constraints.y1));
+			widget.setWidth((int)(Math.ceil(boxWidth*m.dimensions.w) + m.constraints.x2));
+			widget.setHeight((int)(Math.ceil(boxHeight*m.dimensions.h) + m.constraints.y2));
 		}
 	}
 	@Override
@@ -113,10 +113,10 @@ public class ScaledPanel extends Panel {
 
 	@Override
 	public void addWidget(Widget newWidget, Dimensions d, Constraints c, int priority) {
-		newWidget.setX(this.x + (int)Math.ceil(boxWidth*(d.x)) - c.x1);
-		newWidget.setY(this.y + (int)Math.ceil(boxHeight*(d.y)) - c.y1);
-		newWidget.setWidth((int)Math.ceil(boxWidth*d.w) + c.x2);
-		newWidget.setHeight((int)Math.ceil(boxHeight*d.h) + c.y2);
+		newWidget.setX((int)(this.x + Math.ceil(boxWidth*(d.x)) - c.x1));
+		newWidget.setY((int)(this.y + Math.ceil(boxHeight*(d.y)) - c.y1));
+		newWidget.setWidth((int)(Math.ceil(boxWidth*d.w) + c.x2));
+		newWidget.setHeight((int)(Math.ceil(boxHeight*d.h) + c.y2));
 						
 		widgetModifiersMap.put(newWidget, new Modifiers(d, c));
 		

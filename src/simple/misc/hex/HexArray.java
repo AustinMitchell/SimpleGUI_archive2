@@ -87,6 +87,15 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     public void setBase(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
     public void setCube(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
     
+    public void put(HexData<T> hexData) { 
+        _baseMap.put(hexData.getBaseIndex(), hexData);
+        _cubeMap.put(hexData.getCubeIndex(), hexData);
+    }
+    public void remove(HexData<T> hexData) {
+        _baseMap.remove(hexData.getBaseIndex());
+        _cubeMap.remove(hexData.getCubeIndex());
+    }
+    
     public HexArray(int width, int height, int even) {
         this(width, height, even, POINT_TOP_COORD); 
     }
