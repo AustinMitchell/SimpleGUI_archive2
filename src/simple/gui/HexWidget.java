@@ -96,8 +96,8 @@ public abstract class HexWidget extends Widget {
             float yRatio = 1 - absMouseY / (h/2f);
             return absMouseX < _hexPoints[0][1]-_centerx + (_hexPoints[0][0]-_hexPoints[0][1])*yRatio;
         case POINT_TOP:
-            float xRatio = absMouseX / (w/2f);
-            return absMouseY < _hexPoints[1][1]-_centery + (_hexPoints[0][1]-_hexPoints[1][1])*xRatio;    
+            float xRatio = 1 - absMouseX / (w/2f);
+            return absMouseY < _hexPoints[1][0]-_centery + (_hexPoints[1][1]-_hexPoints[1][0])*xRatio;    
         }
         
         return false;
