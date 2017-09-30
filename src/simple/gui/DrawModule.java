@@ -319,7 +319,7 @@ public class DrawModule {
 	 * @param scale			Constant scalar value **/
 	public static Color scaleColor(Color c, float scale) {
 		if (c==null) return null;
-		return new Color((int)(c.getRed()*scale), (int)(c.getGreen()*scale), (int)(c.getBlue()*scale));
+		return new Color((int)(c.getRed()*scale), (int)(c.getGreen()*scale), (int)(c.getBlue()*scale), (int)(c.getAlpha()*scale));
 	}
 	/** Multiplies each value in a Color object by a constant. Each color is multiplied by a different constant.
 	 * @param c				Base color
@@ -330,4 +330,14 @@ public class DrawModule {
 		if (c==null) return null;
 		return new Color(c.getRed()*rscale, c.getGreen()*gscale, c.getBlue()*bscale);
 	}
+	/** Multiplies each value in a Color object by a constant. Each color is multiplied by a different constant.
+     * @param c             Base color
+     * @param rscale        Constant scalar value for red
+     * @param gscale        Constant scalar value for green
+     * @param bscale        Constant scalar value for blue
+     * @param ascale        Constant scalar value for alpha**/
+    public static Color scaleColor(Color c, float rscale, float gscale, float bscale, float ascale) {
+        if (c==null) return null;
+        return new Color(c.getRed()*rscale, c.getGreen()*gscale, c.getBlue()*bscale, c.getAlpha()*ascale);
+    }
 }

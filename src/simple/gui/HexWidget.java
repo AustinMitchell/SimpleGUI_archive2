@@ -47,8 +47,8 @@ public abstract class HexWidget extends Widget {
     public void setRadius(float radiusx, float radiusy) {
         double offset = (_hexType == HexType.FLAT_TOP) ? 0 : Math.PI/6;
         for (int i=0; i<6; i++) {
-            _hexPoints[0][i] = (int)(radiusx*Math.cos(Math.PI*(i*2)/6 + offset)) + _centerx;
-            _hexPoints[1][i] = (int)(radiusy*Math.sin(Math.PI*(i*2)/6 + offset)) + _centery;
+            _hexPoints[0][i] = (int)(radiusx*Math.cos(Math.PI*(i*2)/6 + offset) + _centerx);
+            _hexPoints[1][i] = (int)(radiusy*Math.sin(Math.PI*(i*2)/6 + offset) + _centery);
         }
         
         switch(_hexType) {
