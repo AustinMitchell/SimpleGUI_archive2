@@ -13,8 +13,8 @@ public abstract class TextArea extends Widget{
 		public static boolean isLeftAligned(Alignment alignment)   { return alignment==WEST  || alignment==NORTHWEST || alignment==SOUTHWEST; }
 		public static boolean isRightAligned(Alignment alignment)  { return alignment==EAST  || alignment==NORTHEAST || alignment==SOUTHEAST; }
 		
-		public static boolean notLeftOrRight(Alignment alignment)  { return alignment==NORTH || alignment==CENTER    || alignment==SOUTH; }
-		public static boolean notTopOrBottom(Alignment alignment)  { return alignment==WEST  || alignment==CENTER    || alignment==EAST; }
+		public static boolean centeredVertical(Alignment alignment)  { return alignment==NORTH || alignment==CENTER    || alignment==SOUTH; }
+		public static boolean centeredHorizontal(Alignment alignment)  { return alignment==WEST  || alignment==CENTER    || alignment==EAST; }
 	}
 	
 	
@@ -158,13 +158,13 @@ public abstract class TextArea extends Widget{
 		int baseY = 0;
 		if (Alignment.isTopAligned(alignment)) {
 			baseY = y+2;
-		} else if(Alignment.notTopOrBottom(alignment)) {
+		} else if(Alignment.centeredHorizontal(alignment)) {
 			baseY = y+2+h/2 - (lineHeight/2)*currentNumDisplayLines;
 		} else {
 			baseY = y+h-2 - lineHeight*currentNumDisplayLines;
 		}
 		
-		if (Alignment.notLeftOrRight(alignment)) {
+		if (Alignment.centeredVertical(alignment)) {
 			baseY += fm.getMaxAscent()/2;
 		}
 		
@@ -175,7 +175,7 @@ public abstract class TextArea extends Widget{
 			int currentY = baseY + lineHeight*i;
 			if (Alignment.isLeftAligned(alignment)) {
 				draw.text(currentText, x+2, currentY);
-			} else if (Alignment.notLeftOrRight(alignment)) {
+			} else if (Alignment.centeredVertical(alignment)) {
 				draw.textCentered(currentText, x+w/2, currentY);
 			} else {
 				draw.textRight(currentText, x+w-2, currentY);
@@ -188,7 +188,7 @@ public abstract class TextArea extends Widget{
 				int currentY = baseY + currentLine*lineHeight;
 				if (Alignment.isLeftAligned(alignment)) {
 					draw.line(x+2 + fm.stringWidth(currentText)+1, currentY, x+2 + fm.stringWidth(currentText)+1, currentY+lineHeight);
-				} else if (Alignment.notLeftOrRight(alignment)) {
+				} else if (Alignment.centeredVertical(alignment)) {
 					draw.line(x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY - fm.getMaxAscent()/2, x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY+lineHeight - fm.getMaxAscent()/2);
 				} else {
 					draw.line(x+w-1, currentY, x+w-1, currentY+lineHeight);
