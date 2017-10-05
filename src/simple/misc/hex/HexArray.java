@@ -3,6 +3,17 @@ package simple.misc.hex;
 import java.util.*;
 
 public class HexArray<T> implements Iterable<HexData<T>> { 
+    //    /** Enum defines the accepted map types. Pretty much just affects iteration.
+    //     *      SET_MAP:
+    //     *          A collection of hex coordinates. Makes no assumptions about structure.
+    //     *      ARRAY_MAP:
+    //     *          A hex grid that's laid out like an offset 2D square grid
+    //     *      RADIAL_MAP:
+    //     *          A hex grid where 0,0 should be the center and coordinates don't go beyond a certain
+    //     *          radius (imagine a board from Settlers of Catan)
+    //     * */
+    //    public static enum MapType { SET_MAP, ARRAY_MAP, RADIAL_MAP }
+    
     public static abstract class CoordinateConverter {
         public abstract float[][] getAxisVectors();
         
@@ -71,7 +82,22 @@ public class HexArray<T> implements Iterable<HexData<T>> {
                 even &= 1;
                 return new Tuple(index[0] - (even-index[2])/2, -index[2]);
             }};
+            
+            
+     public static int[][] DIRECTIONS = {
+             // comments are in terms of pointy-top coordinates
+             { 1, -1,  0}, // right
+             { 1,  0, -1}, // right-up
+             { 0,  1, -1}, // left-up
+             {-1,  1,  0}, // left
+             {-1,  0,  1}, // left-down
+             { 0, -1,  1}  // right-down
+         };
     
+            
+    /**************************
+     * NON-STATIC DEFINITIONS *
+     **************************/
     protected Map<Tuple, HexData<T>> _baseMap, _cubeMap;
     protected int _even, _w, _h;
     protected CoordinateConverter _coordConv;
@@ -87,6 +113,7 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     public void setBase(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
     public void setCube(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
     
+    /* Adds a new item into the set*/
     public void put(HexData<T> hexData) { 
         _baseMap.put(hexData.getBaseIndex(), hexData);
         _cubeMap.put(hexData.getCubeIndex(), hexData);
@@ -110,9 +137,9 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         remove(new HexData<T>(null, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
     }
     
-    public HexArray(int width, int height, int even) {
-        this(width, height, even, POINT_TOP_COORD); 
-    }
+    /****************
+     * CONSTRUCTORS *
+     ****************/
     public HexArray(int width, int height, int even, CoordinateConverter coordConv) {
         _even = even&1;
         _coordConv = coordConv;
@@ -132,31 +159,58 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         }  
     }
     
-    protected HexArray(int even) {
-        this(0, 0, even);
+    public HexArray(int even, CoordinateConverter coordConv) {
+        this(0, 0, even, coordConv);
+    }
+    
+    public HexArray(int radius, int even, CoordinateConverter coordConv) {
+        this(0, 0, even, coordConv);
+        
+        int x=0, y=0, z=0;
+        
+        HexData<T> hexData = new HexData<T>(null, 0, 0, _even, _coordConv);
+        _baseMap.put(hexData.getBaseIndex(), hexData);
+        _cubeMap.put(hexData.getCubeIndex(), hexData);
+        for (int r=1; r<=radius; r++) {
+            x = -r;
+            y = 0;
+            z = r;
+            for (int dir=0; dir<6; dir++) {
+                for (int i=0; i<r; i++) {
+                    x += DIRECTIONS[dir][0];
+                    y += DIRECTIONS[dir][1];
+                    z += DIRECTIONS[dir][2];
+                    hexData = new HexData<T>(null, x, y, z, _even, _coordConv);
+                    _baseMap.put(hexData.getBaseIndex(), hexData);
+                    _cubeMap.put(hexData.getCubeIndex(), hexData);
+                }
+            }
+        }
     }
     
     @Override
     public Iterator<HexData<T>> iterator() {
-        return new Iterator<HexData<T>>(){
-            Tuple current = null;
-            int i=0;
-            int j=0;
+        return _baseMap.values().iterator();
         
-            @Override
-            public boolean hasNext() {
-                current = new Tuple(i, j);
-                return i<_w && j<_h;
-            }
-            @Override
-            public HexData<T> next() {
-                j += 1;
-                if (j==_h) {
-                    i += 1;
-                    j  = 0;
-                }
-                return _baseMap.get(current);
-            }
-        };
+        //        return new Iterator<HexData<T>>(){
+        //            Tuple current = null;
+        //            int i=0;
+        //            int j=0;
+        //        
+        //            @Override
+        //            public boolean hasNext() {
+        //                current = new Tuple(i, j);
+        //                return i<_w && j<_h;
+        //            }
+        //            @Override
+        //            public HexData<T> next() {
+        //                j += 1;
+        //                if (j==_h) {
+        //                    i += 1;
+        //                    j  = 0;
+        //                }
+        //                return _baseMap.get(current);
+        //            }
+        //        };
     }
 }
