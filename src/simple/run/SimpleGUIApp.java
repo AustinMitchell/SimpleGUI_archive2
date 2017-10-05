@@ -108,7 +108,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 		initGraphics();
 		setup();
 		while(running) {
-			input.update();
+		    Input.update();
 			loop();
 		}
 		System.exit(0);
@@ -127,13 +127,13 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	}
 	/** Covers the DrawModule image buffer with the background color, effectively clearing it **/
 	protected void cls() {
-		draw.setColors(backgroundColor, null);
-		draw.rect(0, 0, width, height);
+		DrawModule.setColors(backgroundColor, null);
+		DrawModule.rect(0, 0, width, height);
 	}
 	/** Calls DrawToScreen(), Timer.correctedDelay() with your target FPS in mind and cls(). This is the most convenient way to update the screen **/
 	protected void updateView() {
 		DrawToScreen();
-		time.correctedDelay(delayTime);
+		Timer.correctedDelay(delayTime);
 		cls();
 	}
 	
@@ -142,10 +142,10 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 		super.addNotify();
 		if(thread == null) {
 			thread = new Thread(this);
-			addMouseListener(input.getListener());
-			addMouseMotionListener(input.getListener());
-			addMouseWheelListener(input.getListener());
-			addKeyListener(input.getListener());
+			addMouseListener(Input.getListener());
+			addMouseMotionListener(Input.getListener());
+			addMouseWheelListener(Input.getListener());
+			addKeyListener(Input.getListener());
 			thread.start();
 		}
 	}

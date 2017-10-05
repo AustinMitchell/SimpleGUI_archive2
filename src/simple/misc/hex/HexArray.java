@@ -96,6 +96,20 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         _cubeMap.remove(hexData.getCubeIndex());
     }
     
+    public void putBaseCoord(Tuple baseCoord, T data) { 
+        put(new HexData<T>(data, baseCoord.get(0), baseCoord.get(1), _even, _coordConv));
+    }
+    public void removeBaseCoord(Tuple baseCoord) {
+        remove(new HexData<T>(null, baseCoord.get(0), baseCoord.get(1), _even, _coordConv));
+    }
+    
+    public void putCubeCoord(Tuple cubeCoord, T data) { 
+        put(new HexData<T>(data, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
+    }
+    public void removeCubeCoord(Tuple cubeCoord) {
+        remove(new HexData<T>(null, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
+    }
+    
     public HexArray(int width, int height, int even) {
         this(width, height, even, POINT_TOP_COORD); 
     }
