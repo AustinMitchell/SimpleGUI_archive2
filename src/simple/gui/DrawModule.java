@@ -319,7 +319,7 @@ public class DrawModule {
 	 * @param scale			Constant scalar value **/
 	public static Color scaleColor(Color c, float scale) {
 		if (c==null) return null;
-		return new Color((int)(c.getRed()*scale), (int)(c.getGreen()*scale), (int)(c.getBlue()*scale), (int)(c.getAlpha()*scale));
+		return new Color((int)(c.getRed()*scale), (int)(c.getGreen()*scale), (int)(c.getBlue()*scale));
 	}
 	/** Multiplies each value in a Color object by a constant. Each color is multiplied by a different constant.
 	 * @param c				Base color
