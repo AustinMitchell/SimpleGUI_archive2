@@ -65,7 +65,7 @@ public abstract class TextArea extends Widget{
 	@Override
 	public void setFont(Font f_) {
 		super.setFont(f_);
-		fm = draw.getFontMetrics(font);
+		fm = Draw.getFontMetrics(font);
 		numLinesToDisplay = Math.max(1, (h-4)/(fm.getMaxAscent()+2));
 		setText(text);
 	}
@@ -86,7 +86,7 @@ public abstract class TextArea extends Widget{
 		editable = true;
 		active = false;
 		textDisplay = new LinkedList<String>();
-		fm = draw.getFontMetrics(font);
+		fm = Draw.getFontMetrics(font);
 		setText(text_);
 		// We want space of at least 2 pixels above the text and below the text to the border, and 2 pixels between lines
 		numLinesToDisplay = Math.max(1, (h-4)/(fm.getMaxAscent()+2));
@@ -143,16 +143,16 @@ public abstract class TextArea extends Widget{
 	}
 	
 	protected void drawBox() {
-		draw.setColors(textAreaColor, borderColor);
-		draw.rect(x, y, w, h);
+	    Draw.setColors(textAreaColor, borderColor);
+	    Draw.rect(x, y, w, h);
 	}
 	protected void drawText() {
 		int lineHeight = fm.getMaxAscent()+2;
 		int currentNumDisplayLines = Math.min(numLinesToDisplay, textDisplay.size());
 		
 		
-		draw.setFont(font);
-		draw.setStroke(textColor);
+		Draw.setFont(font);
+		Draw.setStroke(textColor);
 		
 		
 		int baseY = 0;
@@ -174,11 +174,11 @@ public abstract class TextArea extends Widget{
 			
 			int currentY = baseY + lineHeight*i;
 			if (Alignment.isLeftAligned(alignment)) {
-				draw.text(currentText, x+2, currentY);
+			    Draw.text(currentText, x+2, currentY);
 			} else if (Alignment.centeredVertical(alignment)) {
-				draw.textCentered(currentText, x+w/2, currentY);
+			    Draw.textCentered(currentText, x+w/2, currentY);
 			} else {
-				draw.textRight(currentText, x+w-2, currentY);
+			    Draw.textRight(currentText, x+w-2, currentY);
 			}
 		}
 		if (textDisplay.size() <= numLinesToDisplay && editable && active) {
@@ -187,11 +187,11 @@ public abstract class TextArea extends Widget{
 				int currentLine = textDisplay.size()-1;
 				int currentY = baseY + currentLine*lineHeight;
 				if (Alignment.isLeftAligned(alignment)) {
-					draw.line(x+2 + fm.stringWidth(currentText)+1, currentY, x+2 + fm.stringWidth(currentText)+1, currentY+lineHeight);
+				    Draw.line(x+2 + fm.stringWidth(currentText)+1, currentY, x+2 + fm.stringWidth(currentText)+1, currentY+lineHeight);
 				} else if (Alignment.centeredVertical(alignment)) {
-					draw.line(x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY - fm.getMaxAscent()/2, x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY+lineHeight - fm.getMaxAscent()/2);
+				    Draw.line(x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY - fm.getMaxAscent()/2, x+w/2 + fm.stringWidth(currentText)/2 + 1, currentY+lineHeight - fm.getMaxAscent()/2);
 				} else {
-					draw.line(x+w-1, currentY, x+w-1, currentY+lineHeight);
+				    Draw.line(x+w-1, currentY, x+w-1, currentY+lineHeight);
 				}
 			}
 		}

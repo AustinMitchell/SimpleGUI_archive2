@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import simple.gui.Button;
 import simple.gui.CustomDraw;
+import simple.gui.Draw;
 import simple.gui.Slider;
 import simple.gui.Widget;
 
@@ -124,9 +125,9 @@ public abstract class ScrollBox extends Widget {
 				y[1] = w.getY()+4;
 				y[2] = w.getY()+w.getHeight()-4;
 				
-				draw.setFill(null);
-				draw.setStroke(w.getBorderColor());
-				draw.polygon(x, y, 3);
+				Draw.setFill(null);
+				Draw.setStroke(w.getBorderColor());
+				Draw.polygon(x, y, 3);
 			}});
 		scrollDown.setCustomDraw(new CustomDraw() {
 			public void draw(Widget w) {
@@ -140,9 +141,9 @@ public abstract class ScrollBox extends Widget {
 				y[1] = w.getY()+w.getHeight()-4;
 				y[2] = w.getY()+4;
 				
-				draw.setFill(null);
-				draw.setStroke(w.getBorderColor());
-				draw.polygon(x, y, 3);
+				Draw.setFill(null);
+				Draw.setStroke(w.getBorderColor());
+				Draw.polygon(x, y, 3);
 			}});
 	}
 	

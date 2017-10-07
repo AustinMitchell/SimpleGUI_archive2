@@ -2,6 +2,7 @@ package simple.gui.panel;
 
 import java.util.*;
 
+import simple.gui.Draw;
 import simple.gui.Widget;
 
 public abstract class Panel extends Widget {
@@ -190,9 +191,9 @@ public abstract class Panel extends Widget {
 			return;
 		
 		if (drawContainingPanel) {
-			draw.setFill(fillColor);
-			draw.setStroke(borderColor);
-			draw.rect(x, y, w, h);
+		    Draw.setFill(fillColor);
+		    Draw.setStroke(borderColor);
+		    Draw.rect(x, y, w, h);
 		}
 		
 		if (customDrawObject != null) {

@@ -1,5 +1,7 @@
 package simple.gui;
 
+import simple.run.Input;
+
 public abstract class HexWidget extends Widget {
     public enum HexType { POINT_TOP, FLAT_TOP }
     
@@ -84,8 +86,8 @@ public abstract class HexWidget extends Widget {
     
     @Override
     public boolean containsMouse() {
-        int absMouseX = Math.abs(input.mouseX() - _centerx);
-        int absMouseY = Math.abs(input.mouseY() - _centery);
+        int absMouseX = Math.abs(Input.mouseX() - _centerx);
+        int absMouseY = Math.abs(Input.mouseY() - _centery);
         
         if (absMouseX > w/2 || absMouseY > h/2) {
             return false;

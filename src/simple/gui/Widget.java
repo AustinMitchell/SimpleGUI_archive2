@@ -13,12 +13,7 @@ import simple.run.Input;
  * @author Austin Mitchell
  *
  */
-public abstract class Widget {
-	/** Instance of DrawObject used by the entire program. Uses the same Graphics2D object as the ScreenPanel. 
-	 * <P>Only usable by classes which implement Widget. For the main program, use the drawObject for ScreenPanel. **/
-	protected static DrawModule draw = new DrawModule();
-	protected static Input input = new Input();
-	
+public abstract class Widget {	
 	private static Color DEFAULT_FILLCOLOR = Color.WHITE;
 	private static Color DEFAULT_BORDERCOLOR = Color.BLACK;
 	private static Color DEFAULT_TEXTAREACOLOR = Color.WHITE;
@@ -215,7 +210,7 @@ public abstract class Widget {
 	
 	/** Returns whether the mouse's x and y coordinates are contained within the widgets bounds. Overwriting encourages if alternate behaviour is needed. **/
 	public boolean containsMouse() {
-		if (input.mouseX() < x+w && input.mouseX() > x && input.mouseY() < y+h && input.mouseY() > y) {
+		if (Input.mouseX() < x+w && Input.mouseX() > x && Input.mouseY() < y+h && Input.mouseY() > y) {
 			return true && visible;
 		} else {
 			return false;
@@ -248,16 +243,16 @@ public abstract class Widget {
 			clicking = false;
 			clicked = false;
 		} else {
-			if (containsMouse() && input.mousePressed() && (hovering||clicking)) {
+			if (containsMouse() && Input.mousePressed() && (hovering||clicking)) {
 				clicking = true && enabled && visible;
 				hovering = false;
-			} else if (containsMouse() && clicking && !input.mousePressed()) {
+			} else if (containsMouse() && clicking && !Input.mousePressed()) {
 				clicked = true && enabled && visible;
 				clicking = false;
 			} else {
 				clicking = false;
 				clicked = false;
-				if (containsMouse() && !input.mousePressed()) {
+				if (containsMouse() && !Input.mousePressed()) {
 					hovering = true && visible;
 				} else {
 					hovering = false;

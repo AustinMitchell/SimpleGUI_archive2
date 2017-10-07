@@ -17,9 +17,9 @@ public class HexButton extends HexWidget {
     @Override
     public void setFillColor(Color fillColor) { 
         super.setFillColor(fillColor);
-        _hoverColor = DrawModule.scaleColor(fillColor, 0.92f);
-        _clickColor = DrawModule.scaleColor(fillColor, 0.86f);
-        _disabledColor = DrawModule.scaleColor(fillColor, 0.8f);
+        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
     }
     public void setOnlyFillColor(Color fillColor) { super.setFillColor(fillColor); }
     public void setHoverColor(Color hoverColor) { _hoverColor = hoverColor; }
@@ -61,9 +61,9 @@ public class HexButton extends HexWidget {
     
     public HexButton(int centerx, int centery, float radiusx, float radiusy, HexType hexType) {
         super(centerx, centery, radiusx, radiusy, hexType);
-        _hoverColor = DrawModule.scaleColor(fillColor, 0.92f);
-        _clickColor = DrawModule.scaleColor(fillColor, 0.86f);
-        _disabledColor = DrawModule.scaleColor(fillColor, 0.8f);
+        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
         textLabel = new Label(x, y, w, h);
     }
     
@@ -73,9 +73,9 @@ public class HexButton extends HexWidget {
     
     public HexButton(int x, int y, int w, int h, HexType hexType) {
         super(x, y, w, h, hexType);
-        _hoverColor = DrawModule.scaleColor(fillColor, 0.92f);
-        _clickColor = DrawModule.scaleColor(fillColor, 0.86f);
-        _disabledColor = DrawModule.scaleColor(fillColor, 0.8f);
+        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
         textLabel = new Label(x, y, w, h);
     }
 
@@ -102,9 +102,9 @@ public class HexButton extends HexWidget {
     public void draw() {
         if (!visible) return;
         
-        draw.setStroke(borderColor);
-        draw.setFill(_currentColor);
-        draw.polygon(_hexPoints[0],_hexPoints[1], 6);
+        Draw.setStroke(borderColor);
+        Draw.setFill(_currentColor);
+        Draw.polygon(_hexPoints[0],_hexPoints[1], 6);
         
         textLabel.draw();
     }

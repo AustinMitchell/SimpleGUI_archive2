@@ -118,9 +118,9 @@ public class Button extends Widget {
 			clrRatio = 1f;
 		}
 
-		draw.setFill(DrawModule.scaleColor(fillColor, clrRatio));
-		draw.setStroke(DrawModule.scaleColor(borderColor, clrRatio));
-		draw.rect(x, y, w, h);
+		Draw.setFill(Draw.scaleColor(fillColor, clrRatio));
+		Draw.setStroke(Draw.scaleColor(borderColor, clrRatio));
+		Draw.rect(x, y, w, h);
 		
 		imageBox.draw();
 

@@ -2,6 +2,8 @@ package simple.gui;
 
 import java.awt.event.KeyEvent;
 
+import simple.run.Input;
+
 // creates a floating text box. Only works if clicked(active)
 public class TextBox extends TextArea {
 	public TextBox() {
@@ -25,7 +27,7 @@ public class TextBox extends TextArea {
 		updateClickingState();
 		if (isClicked()) {
 			active = true;
-		} else if (!containsMouse() && input.mousePressed()) {
+		} else if (!containsMouse() && Input.mousePressed()) {
 			active = false;
 		}
 		
@@ -33,14 +35,14 @@ public class TextBox extends TextArea {
 	}
 	
 	protected void handleInput() {
-		if (input.getChar() != 0 && editable) {
+		if (Input.getChar() != 0 && editable) {
 			if (active) {
-				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {
+				if (Input.getChar() == KeyEvent.VK_BACK_SPACE) {
 					removeChar();
-				} else if (input.getChar() == KeyEvent.VK_ENTER) {
+				} else if (Input.getChar() == KeyEvent.VK_ENTER) {
 					textDisplay.add("");
-				} else if (input.getChar() >= 32 && input.getChar() <= 127) {
-					addChar(input.getChar());
+				} else if (Input.getChar() >= 32 && Input.getChar() <= 127) {
+					addChar(Input.getChar());
 				}
 			}
 		}

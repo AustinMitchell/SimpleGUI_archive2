@@ -2,6 +2,8 @@ package simple.gui;
 
 import java.awt.event.KeyEvent;
 
+import simple.run.Input;
+
 public class TextEntryBox extends TextBox {
 	private String enteredText;
 	private boolean textIsEntered;
@@ -38,15 +40,15 @@ public class TextEntryBox extends TextBox {
 			enteredText = "";
 			clear();
 		}
-		if (input.getChar() != 0) {
+		if (Input.getChar() != 0) {
 			if (active) {
-				if (input.getChar() == KeyEvent.VK_BACK_SPACE) {
+				if (Input.getChar() == KeyEvent.VK_BACK_SPACE) {
 					removeChar();
-				} else if (input.getChar() == KeyEvent.VK_ENTER) {
+				} else if (Input.getChar() == KeyEvent.VK_ENTER) {
 					textIsEntered = true;
 					enteredText = text;
-				} else if (input.getChar() >= 32 && input.getChar() <= 127) {
-					addChar(input.getChar());
+				} else if (Input.getChar() >= 32 && Input.getChar() <= 127) {
+					addChar(Input.getChar());
 				}
 			}
 		}

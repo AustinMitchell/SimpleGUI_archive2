@@ -2,7 +2,7 @@ package simple.run;
 
 import javax.swing.*;
 
-import simple.gui.DrawModule;
+import simple.gui.Draw;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -49,13 +49,6 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	private JFrame frame;
 	private Thread thread;
 		
-	/** DrawModule object, for shorthand calls to DrawModule **/
-	protected DrawModule draw;
-	/** Input object, for shorthand calls to Input **/
-	protected Input input;
-	/** Timer object, for shorthand calls to Timer **/
-	protected Timer time;
-		
 	/** Returns the width of the window frame **/
 	public int getWidth() { return width; }
 	/** Returns the height of the window frame **/
@@ -98,8 +91,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	}
 	
 	private void initGraphics() {
-		DrawModule.initialize(this);
-		draw = new DrawModule();
+		Draw.initialize(this);
 		running = true;
 	}
 	
@@ -122,13 +114,13 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	/** Draws whatever is on the DrawModule image buffer to the program window **/
 	protected void DrawToScreen() {
 		Graphics g2 = getGraphics();
-		g2.drawImage(DrawModule.getImage(), 0, 0, null);
+		g2.drawImage(Draw.getImage(), 0, 0, null);
 		g2.dispose();
 	}
 	/** Covers the DrawModule image buffer with the background color, effectively clearing it **/
 	protected void cls() {
-		DrawModule.setColors(backgroundColor, null);
-		DrawModule.rect(0, 0, width, height);
+		Draw.setColors(backgroundColor, null);
+		Draw.rect(0, 0, width, height);
 	}
 	/** Calls DrawToScreen(), Timer.correctedDelay() with your target FPS in mind and cls(). This is the most convenient way to update the screen **/
 	protected void updateView() {

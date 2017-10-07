@@ -147,11 +147,11 @@ public class ImageBox extends Widget {
 		}
 		if (image != null) {
 			if (angle != 0) {
-				draw.imageRotated(this.image, x, y, angle);
+				Draw.imageRotated(this.image, x, y, angle);
 			} else if (drawCentered) {
-				draw.imageCentered(this.image, x, y);
+			    Draw.imageCentered(this.image, x, y);
 			} else {
-				draw.image(this.image, x, y);
+			    Draw.image(this.image, x, y);
 			}
 		}
 	}

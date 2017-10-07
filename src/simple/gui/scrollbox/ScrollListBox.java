@@ -2,6 +2,7 @@ package simple.gui.scrollbox;
 
 import java.util.ArrayList;
 
+import simple.gui.Draw;
 import simple.gui.Widget;
 
 // Creates a list of a given widget
@@ -125,8 +126,8 @@ public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
 	public void draw() {
 		drawScrollWidgets();
 		
-		draw.setColors(fillColor, borderColor);
-		draw.rect(x, y, w-BAR_WIDTH, h);
+		Draw.setColors(fillColor, borderColor);
+		Draw.rect(x, y, w-BAR_WIDTH, h);
 		
 		if (firstIndex != -1) {
 			for (int i=firstIndex; i<firstIndex+numWidgetsToDisplay && i<widgetList.size(); i++) {

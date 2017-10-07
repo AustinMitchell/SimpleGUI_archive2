@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 /** Class with methods for drawing to a Graphics2D object and manipulating colors. 
  * <P>Note that if any of this classes color fields are null, when that color is used it will simply skip the operation rather than casting
  * an error. **/
-public class DrawModule {	
+public class Draw {	
 	private static SimpleGUIApp app;
 	
 	private static Color fill = Color.BLACK;
@@ -19,7 +19,7 @@ public class DrawModule {
 		
 	/** Called within SimpleGUIApp to initialize the DrawModule. Don't call this yourself unless you know what you're doing. **/
 	public static void initialize(SimpleGUIApp app) {
-		DrawModule.app = app;
+		Draw.app = app;
 		image = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
 		g = (Graphics2D) image.getGraphics();
 	}
@@ -46,11 +46,11 @@ public class DrawModule {
 	public static FontMetrics getFontMetrics(Font font) { return g.getFontMetrics(font); }
 			
 	/** Sets the class's local fill field. **/
-	public static void setFill(Color fill) { DrawModule.fill = fill; }
+	public static void setFill(Color fill) { Draw.fill = fill; }
 	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
 	public static void setStroke(Color stroke) { setStroke(stroke, 1); }
 	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
-	public static void setStroke(Color stroke, int thickness) { DrawModule.stroke = stroke; g.setStroke(new BasicStroke(thickness)); }
+	public static void setStroke(Color stroke, int thickness) { Draw.stroke = stroke; g.setStroke(new BasicStroke(thickness)); }
 	/** Sets the class's local color fields. **/
 	public static void setColors(Color fill, Color stroke) {
 		setFill(fill);

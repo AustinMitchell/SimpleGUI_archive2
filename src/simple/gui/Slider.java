@@ -1,5 +1,7 @@
 package simple.gui;
 
+import simple.run.Input;
+
 /** Silder widget class. Creates a slider object with minimum and maximum integer values. Value of the slider depends on where the mouse
  * was last clicking on the slider. Value starts at the minimum, and can be adjusted manually. **/
 public class Slider extends Widget {
@@ -65,11 +67,11 @@ public class Slider extends Widget {
 			return;
 			
 		updateClickingState();
-		if (containsMouse() && input.mousePressed()) {
+		if (containsMouse() && Input.mousePressed()) {
 			if (isHorizontal) {
-				value = scaleValue(Math.max(Math.min(input.mouseX(), x+w-10), x+10), x+10, x+w-10, low, high);
+				value = scaleValue(Math.max(Math.min(Input.mouseX(), x+w-10), x+10), x+10, x+w-10, low, high);
 			} else {
-				value = scaleValue(Math.max(Math.min(input.mouseY(), y+h-10), y+10), y+10, y+h-10, low, high);
+				value = scaleValue(Math.max(Math.min(Input.mouseY(), y+h-10), y+10), y+10, y+h-10, low, high);
 			}
 			
 			if (isReversed) {
@@ -83,23 +85,23 @@ public class Slider extends Widget {
 		if (!visible)
 			return;
 		
-		draw.setColors(fillColor, borderColor);
-		draw.rect(x, y, w, h);
+		Draw.setColors(fillColor, borderColor);
+		Draw.rect(x, y, w, h);
 
-		draw.setFill(borderColor);
+		Draw.setFill(borderColor);
 		if (!isHorizontal) {
-			draw.line(x + w/2, y+10, x + w/2, y+h-10);
+		    Draw.line(x + w/2, y+10, x + w/2, y+h-10);
 			if (isReversed) {
-				draw.rect(x + w/2 - 5, scaleValue(low + high - value, low, high, y, y+h - 20) + 7, 10, 6);
+			    Draw.rect(x + w/2 - 5, scaleValue(low + high - value, low, high, y, y+h - 20) + 7, 10, 6);
 			} else {
-				draw.rect(x + w/2 - 5, scaleValue(value, low, high, y, y+h - 20) + 7, 10, 6);
+			    Draw.rect(x + w/2 - 5, scaleValue(value, low, high, y, y+h - 20) + 7, 10, 6);
 			}
 		} else { 
-			draw.line(x+10, y + h/2, x+w-10, y + h/2);
+		    Draw.line(x+10, y + h/2, x+w-10, y + h/2);
 			if (isReversed) {
-				draw.rect(scaleValue(low + high - value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
+			    Draw.rect(scaleValue(low + high - value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
 			} else {
-				draw.rect(scaleValue(value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
+			    Draw.rect(scaleValue(value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
 			}
 		}
 	}

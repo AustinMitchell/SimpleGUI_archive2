@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 
+import simple.gui.Draw;
+
 public class ScrollDialogBox extends ScrollBox {
 	
 	/** Raw line data. Each index in lines is made from a call to addLine. **/
@@ -47,13 +49,13 @@ public class ScrollDialogBox extends ScrollBox {
 		lines = new ArrayList<String>();
 		lineDisplay = new ArrayList<String>();
 		firstIndex = -1;
-		FontMetrics fm = draw.getFontMetrics(font);
+		FontMetrics fm = Draw.getFontMetrics(font);
 		numLinesToDisplay = (h-4)/(fm.getMaxAscent()+2);
 	}
 	
 	/** Clears the display and adds every line from the raw line data. **/
 	private void reformatDisplay() {
-		FontMetrics fm = draw.getFontMetrics(font);
+		FontMetrics fm = Draw.getFontMetrics(font);
 		numLinesToDisplay = (h-4)/(fm.getMaxAscent()+2);
 		
 		ArrayList<String> tempLines = new ArrayList<String>();
@@ -69,7 +71,7 @@ public class ScrollDialogBox extends ScrollBox {
 	public void addLine(String newLine) {
 		lines.add(newLine);
 		
-		FontMetrics fm = draw.getFontMetrics(font);		
+		FontMetrics fm = Draw.getFontMetrics(font);		
 		String currentText = newLine;
 		int lineWidth = w-4-BAR_WIDTH;
 		
@@ -116,7 +118,7 @@ public class ScrollDialogBox extends ScrollBox {
 		String result = "";
 		String temp;
 		
-		FontMetrics fm = draw.getFontMetrics(font);		
+		FontMetrics fm = Draw.getFontMetrics(font);		
 		int lineWidth = w-4-BAR_WIDTH;
 		
 		while(true) {
@@ -162,18 +164,18 @@ public class ScrollDialogBox extends ScrollBox {
 		
 		drawScrollWidgets();
 		
-		draw.setColors(fillColor, borderColor);
-		draw.rect(x, y, w-BAR_WIDTH, h);
+		Draw.setColors(fillColor, borderColor);
+		Draw.rect(x, y, w-BAR_WIDTH, h);
 		
-		FontMetrics fm = draw.getFontMetrics(font);
+		FontMetrics fm = Draw.getFontMetrics(font);
 		int lineHeight = fm.getMaxAscent()+2;
 		
-		draw.setFont(font);
-		draw.setStroke(textColor);
+		Draw.setFont(font);
+		Draw.setStroke(textColor);
 		
 		if (firstIndex != -1) {
 			for (int i=firstIndex; i<firstIndex+numLinesToDisplay && i<lineDisplay.size(); i++) {
-				draw.text(lineDisplay.get(i), x+2, y+2+lineHeight*(i-firstIndex));
+			    Draw.text(lineDisplay.get(i), x+2, y+2+lineHeight*(i-firstIndex));
 			}
 		}
 	}
