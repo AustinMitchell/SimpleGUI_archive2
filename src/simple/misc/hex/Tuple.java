@@ -24,15 +24,14 @@ public class Tuple {
      * */
     public static Generator createArrayGenerator(final int width, final int height) {
         return new Generator() {
+            final List<Tuple> tupleList = new ArrayList<Tuple>(){{
+                    for (int i=0; i<width; i++) {
+                        for (int j=0; j<height; j++) {
+                            add(new Tuple(i, j));
+                        }
+                    }}};
             @Override
             public Iterator<Tuple> create() {
-                final List<Tuple> tupleList = new ArrayList<Tuple>();
-                for (int i=0; i<width; i++) {
-                    for (int j=0; j<height; j++) {
-                        tupleList.add(new Tuple(i, j));
-                    }
-                }
-                
                 return tupleList.iterator();
             }
 
@@ -57,24 +56,24 @@ public class Tuple {
      * */
     public static Generator createRadialHexGenerator(final int radius, final int centerx, final int centery, final int centerz) {
         return new Generator() {
+            final List<Tuple> tupleList = new ArrayList<Tuple>() {{
+                    add(new Tuple(centerx, centery, centerz));
+                    for (int rad=1; rad<=radius; rad++) {
+                        int x = centerx - rad;
+                        int y = centery;
+                        int z = centerz + rad;
+                        for (int dir=0; dir<6; dir++) {
+                            for (int rep=0; rep<rad; rep++) {
+                                x += HexArray.DIRECTIONS[dir][0];
+                                y += HexArray.DIRECTIONS[dir][1];
+                                z += HexArray.DIRECTIONS[dir][2];
+                                add(new Tuple(x, y, z));
+                            }
+                        }
+                    }}};
+            
             @Override
             public Iterator<Tuple> create() {
-                final List<Tuple> tupleList = new ArrayList<Tuple>();
-                tupleList.add(new Tuple(centerx, centery, centerz));
-                for (int rad=1; rad<=radius; rad++) {
-                    int x = centerx - rad;
-                    int y = centery;
-                    int z = centerz + rad;
-                    for (int dir=0; dir<6; dir++) {
-                        for (int rep=0; rep<rad; rep++) {
-                            x += HexArray.DIRECTIONS[dir][0];
-                            y += HexArray.DIRECTIONS[dir][1];
-                            z += HexArray.DIRECTIONS[dir][2];
-                            tupleList.add(new Tuple(x, y, z));
-                        }
-                    }
-                }
-                
                 return tupleList.iterator();
             }
 
