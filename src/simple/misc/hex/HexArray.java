@@ -2,89 +2,9 @@ package simple.misc.hex;
 
 import java.util.*;
 
-public class HexArray<T> implements Iterable<HexData<T>> { 
-    //    /** Enum defines the accepted map types. Pretty much just affects iteration.
-    //     *      SET_MAP:
-    //     *          A collection of hex coordinates. Makes no assumptions about structure.
-    //     *      ARRAY_MAP:
-    //     *          A hex grid that's laid out like an offset 2D square grid
-    //     *      RADIAL_MAP:
-    //     *          A hex grid where 0,0 should be the center and coordinates don't go beyond a certain
-    //     *          radius (imagine a board from Settlers of Catan)
-    //     * */
-    //    public static enum MapType { SET_MAP, ARRAY_MAP, RADIAL_MAP }
-    
-    public static abstract class CoordinateConverter {
-        public abstract float[][] getAxisVectors();
-        
-        public abstract Tuple baseToCubeIndex(int even, int... index);
-        public abstract Tuple cubeToBaseIndex(int even, int... index);
-        
-        public final Tuple baseToCubeIndex(int even, Tuple pair)   { return baseToCubeIndex(even, pair.get()); }
-        public final Tuple cubeToBaseIndex(int even, Tuple triple) { return cubeToBaseIndex(even, triple.get()); }
-    }
-    
-    
-    public static final CoordinateConverter FLAT_TOP_COORD = new CoordinateConverter() {
-            public final float[][] AXIS_VECTOR = {
-                {(float)Math.cos( Math.PI*2.0/6), (float)Math.sin( Math.PI*2.0/6)},
-                {(float)Math.cos(-Math.PI*2.0/6), (float)Math.sin(-Math.PI*2.0/6)},
-                {-1, 0}
-            };
-        
-            public float[][] getAxisVectors() { return AXIS_VECTOR; }
-            
-            /** Based on a formula for turning offset-square grid coordinates into cube flat-top-hexagon coordinates
-             *  e = evenness of grid, 0 or 1
-             *  x = square x index
-             *  y = square y index
-             *  
-             *  hx =  x + (y+e)/2
-             *  hy =  x - (y+(e xor 1))/2
-             *  hz = -x
-             * */
-            public Tuple baseToCubeIndex(int even, int... index) {
-                even &= 1;
-                return new Tuple(index[1] + (index[0]+even)/2,
-                                -index[1] + (index[0]+(even^1))/2,
-                                -index[0]);
-            }
-            /** Inverse of function above */
-            public Tuple cubeToBaseIndex(int even, int... index) {
-                return new Tuple(-index[2], index[0] - (even-index[2])/2);
-            }};
-    public static final CoordinateConverter POINT_TOP_COORD = new CoordinateConverter() {
-            public final float[][] AXIS_VECTOR = {
-                    {(float)Math.cos(Math.PI*1.0/6), (float)Math.sin(Math.PI*1.0/6)},
-                    {(float)Math.cos(Math.PI*5.0/6), (float)Math.sin(Math.PI*5.0/6)},
-                    {0, -1}
-                };
-            
-            public float[][] getAxisVectors() { return AXIS_VECTOR; }
-        
-            /** Based on a formula for turning offset-square grid coordinates into cube pointy-top-hexagon coordinates
-             *  e = evenness of grid, 0 or 1
-             *  x = square x index
-             *  y = square y index
-             *  
-             *  hx =  x + (y+e)/2
-             *  hy = -x + (y+(e xor 1))/2
-             *  hz = -y
-             * */
-            public Tuple baseToCubeIndex(int even, int... index) {
-                even &= 1;
-                return new Tuple(index[0] + (index[1]+even)/2,
-                                -index[0] + (index[1]+(even^1))/2, 
-                                -index[1]);
-            }
-            /** Inverse of function above */
-            public Tuple cubeToBaseIndex(int even, int... index) {
-                even &= 1;
-                return new Tuple(index[0] - (even-index[2])/2, -index[2]);
-            }};
-            
-            
-     public static int[][] DIRECTIONS = {
+public class HexArray<T> implements Iterable<HexData<T>> {     
+                
+     public static final int[][] DIRECTIONS = {
              // comments are in terms of pointy-top coordinates
              { 1, -1,  0}, // right
              { 1,  0, -1}, // right-up
@@ -100,18 +20,21 @@ public class HexArray<T> implements Iterable<HexData<T>> {
      **************************/
     protected Map<Tuple, HexData<T>> _baseMap, _cubeMap;
     protected int _even, _w, _h;
-    protected CoordinateConverter _coordConv;
+    protected HexData.CoordinateConverter _coordConv;
+    protected Tuple.Generator _tupleGenerator;
     
     public HexData<T> getBase(int x, int y)           { return getBase(new Tuple(x, y));       }
     public HexData<T> getCube(int hx, int hy, int hz) { return getBase(new Tuple(hx, hy, hz)); }
     public HexData<T> getBase(Tuple pair)   { return _baseMap.get(pair);   }
     public HexData<T> getCube(Tuple triple) { return _cubeMap.get(triple); }
-    public CoordinateConverter getCoordConv() { return _coordConv; }
+    public HexData.CoordinateConverter getCoordConv() { return _coordConv; }
+    public Tuple.Generator getTupleGenerator() { return _tupleGenerator; }
     
     public void setBase(T data, int x, int y)           { getBase(new Tuple(x, y)).setData(data);  }
     public void setCube(T data, int hx, int hy, int hz) { getBase(new Tuple(hx, hy, hz)).setData(data); }
     public void setBase(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
     public void setCube(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
+    public void setTupleGenerator(Tuple.Generator newGenerator) { _tupleGenerator = newGenerator; }
     
     /* Adds a new item into the set*/
     public void put(HexData<T> hexData) { 
@@ -140,77 +63,54 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     /****************
      * CONSTRUCTORS *
      ****************/
-    public HexArray(int width, int height, int even, CoordinateConverter coordConv) {
+    public HexArray(int even, HexData.CoordinateConverter coordConv, Tuple.Generator tupleGenerator) {
         _even = even&1;
         _coordConv = coordConv;
         
         _baseMap = new HashMap<Tuple, HexData<T>>();
         _cubeMap = new HashMap<Tuple, HexData<T>>();
         
-        _w = width;
-        _h = height;
-        
-        for (int i=0; i<_w; i++) {
-            for (int j=0; j<_h; j++) {
-                HexData<T> hexData = new HexData<T>(null, i, j, _even, _coordConv);
+        _tupleGenerator = tupleGenerator;
+        if (_tupleGenerator != null) {
+            for (Tuple t: _tupleGenerator) {
+                HexData<T> hexData = new HexData<T>(null, t, _even, _coordConv);
                 _baseMap.put(hexData.getBaseIndex(), hexData);
                 _cubeMap.put(hexData.getCubeIndex(), hexData);
             }
-        }  
-    }
-    
-    public HexArray(int even, CoordinateConverter coordConv) {
-        this(0, 0, even, coordConv);
-    }
-    
-    public HexArray(int radius, int even, CoordinateConverter coordConv) {
-        this(0, 0, even, coordConv);
-        
-        int x=0, y=0, z=0;
-        
-        HexData<T> hexData = new HexData<T>(null, 0, 0, _even, _coordConv);
-        _baseMap.put(hexData.getBaseIndex(), hexData);
-        _cubeMap.put(hexData.getCubeIndex(), hexData);
-        for (int r=1; r<=radius; r++) {
-            x = -r;
-            y = 0;
-            z = r;
-            for (int dir=0; dir<6; dir++) {
-                for (int i=0; i<r; i++) {
-                    x += DIRECTIONS[dir][0];
-                    y += DIRECTIONS[dir][1];
-                    z += DIRECTIONS[dir][2];
-                    hexData = new HexData<T>(null, x, y, z, _even, _coordConv);
-                    _baseMap.put(hexData.getBaseIndex(), hexData);
-                    _cubeMap.put(hexData.getCubeIndex(), hexData);
-                }
-            }
         }
     }
+    public HexArray(int width, int height, int even, HexData.CoordinateConverter coordConv) {
+        this(even, coordConv, Tuple.createArrayGenerator(width, height));
+    }
     
+    public HexArray(int radius, int even, HexData.CoordinateConverter coordConv) {
+        this(radius, 0, 0, 0, even, coordConv);
+    }
+    public HexArray(int radius, int centerx, int centery, int centerz, int even, HexData.CoordinateConverter coordConv) {
+        this(even, coordConv, Tuple.createRadialHexGenerator(radius, centerx, centery, centerz));
+    }
+    
+    /** Use the stored generator to generate tuples used to iterate through the map */
     @Override
     public Iterator<HexData<T>> iterator() {
-        return _baseMap.values().iterator();
+        if (_tupleGenerator == null) {
+            return _baseMap.values().iterator();
+        }
         
-        //        return new Iterator<HexData<T>>(){
-        //            Tuple current = null;
-        //            int i=0;
-        //            int j=0;
-        //        
-        //            @Override
-        //            public boolean hasNext() {
-        //                current = new Tuple(i, j);
-        //                return i<_w && j<_h;
-        //            }
-        //            @Override
-        //            public HexData<T> next() {
-        //                j += 1;
-        //                if (j==_h) {
-        //                    i += 1;
-        //                    j  = 0;
-        //                }
-        //                return _baseMap.get(current);
-        //            }
-        //        };
+        // If the generator returns 2-tuples, use the basemap. Else use the cubemap
+        final Map<Tuple, HexData<T>> workingMap = (_tupleGenerator.tupleDimension() == 2) ? _baseMap : _cubeMap;
+        final Iterator<Tuple> tupleIterator = _tupleGenerator.create();
+        
+        return new Iterator<HexData<T>>() {
+            
+            @Override
+            public boolean hasNext() {
+                return tupleIterator.hasNext();
+            }
+
+            @Override
+            public HexData<T> next() {
+                return workingMap.get(tupleIterator.next());
+            }};
     }
 }
