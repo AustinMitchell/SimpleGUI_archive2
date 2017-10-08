@@ -2,12 +2,14 @@ Simple to use, loop-based graphics library for java. Based on swing, it combines
 
 This readme provides a number of example programs to display certain features. The example programs may be found under src/testers.
 
-## Contents
-*[Empty Example](srctestersemptyappjava)
-*[Basic Drawing](basic-drawing)
-*[User Input / Vector Class](user-input--vector-class)
-*[Widgets](widgets)
-*[Hex Arrays & Hex Widgets](hex-arrays-&-hex-widgets)
+Contents
+========
+
+  * [Empty Example](#srctestersemptyappjava)
+  * [Basic Drawing](#basic-drawing)
+  * [User Input / Vector Class](#user-input--vector-class)
+  * [Widgets](#widgets)
+  * [Hex Arrays & Hex Widgets](#hex-arrays--hex-widgets)
 
 #### src/testers/EmptyApp.java
 ```java
