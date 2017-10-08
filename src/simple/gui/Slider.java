@@ -5,10 +5,12 @@ import simple.run.Input;
 /** Silder widget class. Creates a slider object with minimum and maximum integer values. Value of the slider depends on where the mouse
  * was last clicking on the slider. Value starts at the minimum, and can be adjusted manually. **/
 public class Slider extends Widget {
-	private int value, low, high;
-	private boolean isHorizontal, isReversed;
-	private int oldValue;
-	private boolean valueChanged;
+	protected int value, low, high;
+	protected boolean isHorizontal, isReversed;
+	protected int oldValue;
+	protected boolean valueChanged;
+	protected boolean mouseCanScroll;
+	protected int mouseScrollIncrement;
 	
 	/** Returns the current value of the slider **/
 	public int getValue() { return value; }
@@ -16,6 +18,9 @@ public class Slider extends Widget {
 	public int getLow() { return low; }
 	/** Returns the maximum value of the slider **/
 	public int getHigh() { return high; }
+	
+	public boolean canMouseScroll() { return mouseCanScroll; }
+	public int getMouseScrollIncrement() { return mouseScrollIncrement; }
 	
 	/** Returns whether or not the value of the slider has changed since last frame **/
 	public boolean valueHasChanged() { return valueChanged; }
@@ -28,6 +33,9 @@ public class Slider extends Widget {
 		high = Math.max(newLow, newHigh);
 		setValue(value);
 	}
+	
+	public void setMouseCanScroll(boolean mouseCanScroll) { this.mouseCanScroll = mouseCanScroll; }
+	public void setMouseScrollIncrement(int mouseScrollIncrement) { this.mouseScrollIncrement = mouseScrollIncrement; }
 	
 	/** Creates a new slider object with no given dimensions 
 	 * @param isRev_		Sets what end of the slider is high and what is low. 
@@ -51,6 +59,9 @@ public class Slider extends Widget {
 
 		isReversed = isRev_;
 		isHorizontal = isHoriz_;
+		
+		mouseCanScroll = true;
+		mouseScrollIncrement = 1;
 	}
 
 	// Cool function that takes two ranges and a value, and converts the value from one range to an equivalent value in another range
@@ -67,7 +78,15 @@ public class Slider extends Widget {
 			return;
 			
 		updateClickingState();
-		if (containsMouse() && Input.mousePressed()) {
+	    if (mouseCanScroll && isHovering()) {
+		    if (Input.mouseWheelUp()) {
+		        value = Math.max(low, Math.min(high, value+mouseScrollIncrement));
+		    } else if (Input.mouseWheelDown()) {
+		        value = Math.max(low, Math.min(high, value-mouseScrollIncrement));
+            }
+	    }
+		    
+	    if (isClicking()) {
 			if (isHorizontal) {
 				value = scaleValue(Math.max(Math.min(Input.mouseX(), x+w-10), x+10), x+10, x+w-10, low, high);
 			} else {
@@ -77,7 +96,7 @@ public class Slider extends Widget {
 			if (isReversed) {
 				value = low + high - value;
 			}
-		}
+	    }
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.awt.FontMetrics;
 import java.util.ArrayList;
 
 import simple.gui.Draw;
+import simple.run.Input;
 
 public class ScrollDialogBox extends ScrollBox {
 	
@@ -141,13 +142,14 @@ public class ScrollDialogBox extends ScrollBox {
 	public void update() {
 		if (!enabled || !visible) 
 			return;
+		updateClickingState();
 		
 		updateScrollWidgets(); 
 		
-		if (scrollUp.isClicked() && firstIndex > 0) {
+		if ((scrollUp.isClicked() || (Input.mouseWheelUp()&&isHovering())) && firstIndex > 0) {
 			firstIndex -= 1;
 			scrollBar.setValue(firstIndex);
-		} else if (scrollDown.isClicked() && firstIndex < lineDisplay.size()-1) {
+		} else if ((scrollDown.isClicked() || (Input.mouseWheelDown()&&isHovering())) && firstIndex < lineDisplay.size()-1) {
 			firstIndex += 1;
 			scrollBar.setValue(firstIndex);
 		}

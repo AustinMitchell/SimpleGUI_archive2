@@ -29,15 +29,16 @@ public class Input {
 		public void mouseDragged(MouseEvent e) { newx = e.getX(); newy = e.getY(); }
 		public void mouseMoved(MouseEvent e) { newx = e.getX(); newy = e.getY(); }
 
-		public void mouseWheelMoved(MouseWheelEvent e) {}
+		public void mouseWheelMoved(MouseWheelEvent e) { bufferedNotches = e.getWheelRotation(); }
 		
 		public void mouseClicked(MouseEvent e) {}
 		public void mouseEntered(MouseEvent e) {}
 		public void mouseExited(MouseEvent e) {}
 	}
 	
-	private static int x, y, newx, newy, oldx, oldy = 0;
+	private static int x=0, y=0, newx=0, newy=0, oldx=0, oldy=0;
 	private static boolean mouseDown = false;
+	private static int bufferedNotches=0, mouseNotches=0;
 	
 	private static boolean[] keyCodes = new boolean[65536];
 	private static boolean[] keyChars = new boolean[65536];
@@ -65,6 +66,10 @@ public class Input {
     public static int mouseShiftX() { return x-oldx; }
     /** Returns the y coordinate of the mouse from the current frame **/
     public static int mouseShiftY() { return y-oldy; }
+    
+    public static int mouseWheelNotches()  { return mouseNotches; }
+    public static boolean mouseWheelUp()   { return mouseNotches < 0; }
+    public static boolean mouseWheelDown() { return mouseNotches > 0; }
 	
 	
 	/** Returns whether the given key is pressed, using given keycode **/
@@ -86,6 +91,9 @@ public class Input {
 		oldy = y;
 		x = newx;
 		y = newy;
+		
+		mouseNotches = bufferedNotches;
+		bufferedNotches = 0;
 		
 		if (codeBuffer.peek() != null) {
 			currentCode = codeBuffer.poll();

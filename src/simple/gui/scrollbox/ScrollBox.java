@@ -110,6 +110,9 @@ public abstract class ScrollBox extends Widget {
 		scrollUp = new Button(x+w-BAR_WIDTH, y, BAR_WIDTH, BAR_WIDTH, "", null);
 		scrollDown = new Button(x+w-BAR_WIDTH, y+h-BAR_WIDTH, BAR_WIDTH, BAR_WIDTH, "", null);
 		scrollBar = new Slider(x+w-BAR_WIDTH, y+BAR_WIDTH, BAR_WIDTH, h-BAR_WIDTH*2, 0, 0, false, false);
+		scrollBar.setMouseScrollIncrement(-1);
+		// We check for scrolling in this widget so checking again in the slider may cause problems
+		scrollBar.setMouseCanScroll(false);
 		
 		widgetColorsDefaultToScrollBox = true;
 		

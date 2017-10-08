@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import simple.gui.Draw;
 import simple.gui.Widget;
+import simple.run.Input;
 
 // Creates a list of a given widget
 public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
@@ -97,14 +98,15 @@ public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
 	public void update() {
 		if (!enabled || !visible)
 			return;
+		updateClickingState();
 		
 		updateScrollWidgets();
 		
-		if (scrollUp.isClicked() && firstIndex > 0) {
+		if ((scrollUp.isClicked() || (Input.mouseWheelUp()&&isHovering())) && firstIndex > 0) {
 			firstIndex -= 1;
 			scrollBar.setValue(firstIndex);
 			setWidgetPosition();
-		} else if (scrollDown.isClicked() && firstIndex < widgetList.size()-1) {
+		} else if ((scrollDown.isClicked() || (Input.mouseWheelDown()&&isHovering())) && firstIndex < widgetList.size()-1) {
 			firstIndex += 1;
 			scrollBar.setValue(firstIndex);
 			setWidgetPosition();
