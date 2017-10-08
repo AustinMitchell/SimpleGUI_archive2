@@ -1,6 +1,13 @@
 Simple to use, loop-based graphics library for java. Based on swing, it combines the idea of GUI application software like Swing with easy to use graphics like Processing 2 into one java library.
 
-The example programs may be found under src/testers.
+This readme provides a number of example programs to display certain features. The example programs may be found under src/testers.
+
+## Contents
+*[Empty Example](srctestersemptyappjava)
+*[Basic Drawing](basic-drawing)
+*[User Input / Vector Class](user-input--vector-class)
+*[Widgets](widgets)
+*[Hex Arrays & Hex Widgets](hex-arrays-&-hex-widgets)
 
 #### src/testers/EmptyApp.java
 ```java
@@ -371,7 +378,7 @@ Here's an overview of widgets used in this program:
 
 **Label:** The label simply displays text. It is bounded to a specified box, and can be set to display whatever string you want. You can also set the text alignment at the center of the box or one of 8 directions, depending on the desired appearance.
 
-### Hex Arrays and Hex Widgets
+### Hex Arrays & Hex Widgets
 
 As of October 2017, support has been added for working with hex coordinates and hexagon widgets. The inspiration for the core of the design can be found here: [Hexagonal Grids](http://www.redblobgames.com/grids/hexagons/)
 
