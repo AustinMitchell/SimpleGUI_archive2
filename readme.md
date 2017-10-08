@@ -373,7 +373,7 @@ Here's an overview of widgets used in this program:
 
 ### Hex Arrays and Hex Widgets
 
-As of October 2017, support has been added for working with hex coordinates and hexagon widgets. The inspiration for the core of the design can be found here: (Hexagonal Grids)[http://www.redblobgames.com/grids/hexagons/]
+As of October 2017, support has been added for working with hex coordinates and hexagon widgets. The inspiration for the core of the design can be found here: [Hexagonal Grids](http://www.redblobgames.com/grids/hexagons/)
 
 There are two classes that are intended to be used with hex arrays: *HexWidget* and *HexButton*. *HexWidget* provides a scaffold for making your own hex widgets, and does all the calculating legwork for you already. This class is abstract, and is meant to be used to produce custom hexwidgets and create an umbrella for making hex widgets generic (a useful tool depending on the case). It also custom defines mouse interaction with the widget so you don't need to figure that out yourself. Only pointy-top and flat-top orientations are currently supported. There is a concrete widget *HexButton*, which works much like a square button, but without the ability to use images on the button currently.
 
