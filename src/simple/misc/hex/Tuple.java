@@ -41,7 +41,7 @@ public class Tuple {
             }};
     }
     /** Creates a generator that starts at 0,0,0 in a hex grid and generates coordinates
-     * in a radius around the origin, i.e. (x,y,z)/2 < radius for all points generated.<P>
+     * in a radius around the origin, i.e. max(|x|,|y|,|z|) <= radius for all points generated.<P>
      * 
      *      x -> first cube coordinate dimension
      *      y -> second cube coordinate dimension
@@ -53,6 +53,9 @@ public class Tuple {
      *      Each iteration results in a 3-tuple
      *      
      *      @param radius       maximum value for rad
+     *      @param centerx      coordinate offset for x value
+     *      @param centery      coordinate offset for y value
+     *      @param centerz      coordinate offset for z value
      * */
     public static Generator createRadialHexGenerator(final int radius, final int centerx, final int centery, final int centerz) {
         return new Generator() {
@@ -67,6 +70,55 @@ public class Tuple {
                                 x += HexArray.DIRECTIONS[dir][0];
                                 y += HexArray.DIRECTIONS[dir][1];
                                 z += HexArray.DIRECTIONS[dir][2];
+                                add(new Tuple(x, y, z));
+                            }
+                        }
+                    }}};
+            
+            @Override
+            public Iterator<Tuple> create() {
+                return tupleList.iterator();
+            }
+
+            @Override
+            public int tupleDimension() {
+                return 3;
+            }};
+    }
+    
+    /** Creates a generator that starts at 0,0,0 in a hex grid and generates coordinates
+     * in layers of triangles around the origin, i.e. (|x|+|y|+|z|)/2 <= 2*layers for all points 
+     * generated.<P>
+     * 
+     *      x -> first cube coordinate dimension
+     *      y -> second cube coordinate dimension
+     *      z -> third cube coordinate dimension
+     *      layer -> current layer being worked on
+     *      dir   -> specifies which direction to go on each repetition.
+     *      rep   -> repetition counter where the (x,y,z) are modified<P>
+     *      
+     *      Each iteration results in a 3-tuple
+     *      
+     *      @param layers       layers in the triangle
+     *      @param invert       Evenness designates triangles orientation
+     *      @param centerx      coordinate offset for x value
+     *      @param centery      coordinate offset for y value
+     *      @param centerz      coordinate offset for z value
+     * */
+    public static Generator createTriangleHexGenerator(final int layers, final int invert, final int centerx, final int centery, final int centerz) {
+        final int mult = (invert&1)*2 - 1;
+        return new Generator() {
+            final List<Tuple> tupleList = new ArrayList<Tuple>() {{
+                    add(new Tuple(centerx, centery, centerz));
+                    for (int layer=1; layer<=layers; layer++) {
+                        int x = centerx - 2*layer*mult;
+                        int y = centery + layer*mult;
+                        int z = centerz + layer*mult;
+                        for (int dir=0; dir<6; dir+=2) {
+                            for (int rep=0; rep<layer*3; rep++) {
+                                x += HexArray.DIRECTIONS[dir][0]*mult;
+                                y += HexArray.DIRECTIONS[dir][1]*mult;
+                                z += HexArray.DIRECTIONS[dir][2]*mult;
                                 add(new Tuple(x, y, z));
                             }
                         }
