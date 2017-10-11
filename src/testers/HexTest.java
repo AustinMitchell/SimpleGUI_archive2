@@ -49,8 +49,36 @@ public class HexTest extends SimpleGUIApp {
        
     @Override
     public void setup() {
-        // Using the radial hex constructor. When you iterate through this array, it will also iterate in radial form
-        hexArray = new HexArray<HexButton>(hex_grid_radius, even, coord);
+        HexData.Generator<HexButton> dgen = new HexData.Generator<HexButton>() {
+
+            @Override
+            public HexButton generate(int x, int y, int hx, int hy, int hz) {
+                return generate(null, new Tuple(hx, hy, hz));
+            }
+
+            @Override
+            public HexButton generate(Tuple base, Tuple cube) {
+                // This vector will determine the visual offset for each hex when drawn
+                Vector shift = new Vector(0, 0);
+                for (int axis=0; axis<3; axis++) {
+                    // Takes each component of the cube coordinates and multiplies it by the same base vector component
+                    // Adds it to the shift
+                    shift = shift.add(scaledAxes[axis].mult(cube.get(axis)));
+                }
+                
+                // Create a new hexbutton with this data
+                HexButton newHex;
+                newHex = new HexButton(offsetx + (int)shift.x(), offsety + (int)shift.y(), hex_draw_radius, hexType);
+                
+                // Colors each hex. High component 0 is red, 1 is green and 2 is blue. Makes a kind of color wheel.
+                float dist_ratio = (255f/(hex_grid_radius+grid_color_offset));
+                int r = (int)(Math.max(cube.get(0)+grid_color_offset, 0) * dist_ratio);
+                int g = (int)(Math.max(cube.get(1)+grid_color_offset, 0) * dist_ratio);
+                int b = (int)(Math.max(cube.get(2)+grid_color_offset, 0) * dist_ratio);
+                newHex.setFillColor(new Color(r, g, b));
+                return newHex;
+            }
+        };
         
         hexLabel = new Label(100, 10, 200, 50);
         // The containing box for the label is normally not drawn unless specifically requested
@@ -58,35 +86,12 @@ public class HexTest extends SimpleGUIApp {
         
         // Sets the 3 coordinate directions depending whether its a pointy-top or flat-top hexagon.
         // Scales each vector by the size of the hexagon radius
-        scaledAxes[0] = new Vector(hexArray.getCoordConv().getAxisVectors()[0]).mult(hex_draw_radius);
-        scaledAxes[1] = new Vector(hexArray.getCoordConv().getAxisVectors()[1]).mult(hex_draw_radius);
-        scaledAxes[2] = new Vector(hexArray.getCoordConv().getAxisVectors()[2]).mult(hex_draw_radius);
-        
-        // Iterate through all the hexes. 
-        for (HexData<HexButton> hex: hexArray) {
-            // Get the 3D coordinate for the current hex
-            Tuple cube = hex.getCubeIndex();
-            // This vector will determine the visual offset for each hex when drawn
-            Vector shift = new Vector(0, 0);
-            for (int axis=0; axis<3; axis++) {
-                // Takes each component of the cube coordinates and multiplies it by the same base vector component
-                // Adds it to the shift
-                shift = shift.add(scaledAxes[axis].mult(cube.get(axis)));
-            }
-            
-            // Create a new hexbutton with this data
-            HexButton newHex;
-            newHex = new HexButton(offsetx + (int)shift.x(), offsety + (int)shift.y(), hex_draw_radius, hexType);
-            
-            // Colors each hex. High component 0 is red, 1 is green and 2 is blue. Makes a kind of color wheel.
-            float dist_ratio = (255f/(hex_grid_radius+grid_color_offset));
-            int r = (int)(Math.max(cube.get(0)+grid_color_offset, 0) * dist_ratio);
-            int g = (int)(Math.max(cube.get(1)+grid_color_offset, 0) * dist_ratio);
-            int b = (int)(Math.max(cube.get(2)+grid_color_offset, 0) * dist_ratio);
-            newHex.setFillColor(new Color(r, g, b));
-            // By default every entry in the array is null. This sets the value to the new hexbutton.
-            hex.setData(newHex);
-        }
+        scaledAxes[0] = new Vector(coord.getAxisVectors()[0]).mult(hex_draw_radius);
+        scaledAxes[1] = new Vector(coord.getAxisVectors()[1]).mult(hex_draw_radius);
+        scaledAxes[2] = new Vector(coord.getAxisVectors()[2]).mult(hex_draw_radius);
+        // Using the radial hex constructor. When you iterate through this array, it will also iterate in radial form
+        hexArray = new HexArray<HexButton>(even, coord, Tuple.createRadialHexGenerator(hex_grid_radius), dgen);
+    
     }
 
     @Override

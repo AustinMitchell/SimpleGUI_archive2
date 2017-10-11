@@ -22,6 +22,7 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     protected int _even, _w, _h;
     protected HexData.CoordinateConverter _coordConv;
     protected Tuple.Generator _tupleGenerator;
+    protected HexData.Generator<T> _dataGenerator;
     
     public HexData<T> getBase(int x, int y)           { return getBase(new Tuple(x, y));       }
     public HexData<T> getCube(int hx, int hy, int hz) { return getBase(new Tuple(hx, hy, hz)); }
@@ -29,12 +30,14 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     public HexData<T> getCube(Tuple triple) { return _cubeMap.get(triple); }
     public HexData.CoordinateConverter getCoordConv() { return _coordConv; }
     public Tuple.Generator getTupleGenerator() { return _tupleGenerator; }
+    public HexData.Generator<T> getDataGenerator() { return _dataGenerator; }
     
     public void setBase(T data, int x, int y)           { getBase(new Tuple(x, y)).setData(data);  }
     public void setCube(T data, int hx, int hy, int hz) { getBase(new Tuple(hx, hy, hz)).setData(data); }
     public void setBase(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
     public void setCube(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
     public void setTupleGenerator(Tuple.Generator newGenerator) { _tupleGenerator = newGenerator; }
+    public void setDataGenerator(HexData.Generator<T> newGenerator) { _dataGenerator = newGenerator; }
     
     /* Adds a new item into the set*/
     public void put(HexData<T> hexData) { 
@@ -60,10 +63,17 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         remove(new HexData<T>(null, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
     }
     
+    public void putBaseCoordGenerated(Tuple baseCoord) { 
+        put(new HexData<T>(baseCoord.get(0), baseCoord.get(1), _even, _coordConv, _dataGenerator));
+    }
+    public void putCubeCoordGenerated(Tuple cubeCoord) { 
+        put(new HexData<T>(cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv, _dataGenerator));
+    }
+    
     /****************
      * CONSTRUCTORS *
      ****************/
-    public HexArray(int even, HexData.CoordinateConverter coordConv, Tuple.Generator tupleGenerator) {
+    public HexArray(int even, HexData.CoordinateConverter coordConv, Tuple.Generator tupleGenerator, HexData.Generator<T> dataGenerator) {
         _even = even&1;
         _coordConv = coordConv;
         
@@ -71,23 +81,24 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         _cubeMap = new HashMap<Tuple, HexData<T>>();
         
         _tupleGenerator = tupleGenerator;
+        _dataGenerator = dataGenerator;
+        
         if (_tupleGenerator != null) {
             for (Tuple t: _tupleGenerator) {
-                HexData<T> hexData = new HexData<T>(null, t, _even, _coordConv);
+                HexData<T> hexData = new HexData<T>(t, _even, _coordConv, _dataGenerator);
                 _baseMap.put(hexData.getBaseIndex(), hexData);
                 _cubeMap.put(hexData.getCubeIndex(), hexData);
             }
         }
     }
-    public HexArray(int width, int height, int even, HexData.CoordinateConverter coordConv) {
-        this(even, coordConv, Tuple.createArrayGenerator(width, height));
+    public HexArray(int even, HexData.CoordinateConverter coordConv) {
+        this(even, coordConv, null, null);
     }
-    
-    public HexArray(int radius, int even, HexData.CoordinateConverter coordConv) {
-        this(radius, 0, 0, 0, even, coordConv);
+    public HexArray(int even, HexData.CoordinateConverter coordConv, Tuple.Generator tupleGenerator) {
+        this(even, coordConv, tupleGenerator, null);
     }
-    public HexArray(int radius, int centerx, int centery, int centerz, int even, HexData.CoordinateConverter coordConv) {
-        this(even, coordConv, Tuple.createRadialHexGenerator(radius, centerx, centery, centerz));
+    public HexArray(int even, HexData.CoordinateConverter coordConv, HexData.Generator<T> dataGenerator) {
+        this(even, coordConv, null, dataGenerator);
     }
     
     /** Use the stored generator to generate tuples used to iterate through the map */

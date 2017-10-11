@@ -85,6 +85,9 @@ public class Tuple {
                 return 3;
             }};
     }
+    public static Generator createRadialHexGenerator(final int radius) {
+        return createRadialHexGenerator(radius, 0, 0, 0);
+    }
     
     /** Creates a generator that starts at 0,0,0 in a hex grid and generates coordinates
      * in layers of triangles around the origin, i.e. (|x|+|y|+|z|)/2 <= 2*layers for all points 
