@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import simple.run.*;
 import simple.gui.*;
+import simple.gui.textarea.Label;
 import simple.misc.*;
 import simple.misc.hex.*;
 
@@ -82,7 +83,7 @@ public class HexTest extends SimpleGUIApp {
         
         hexLabel = new Label(100, 10, 200, 50);
         // The containing box for the label is normally not drawn unless specifically requested
-        hexLabel.setBoxIsVisible(true);
+        hexLabel.setBoxVisible(true);
         
         // Sets the 3 coordinate directions depending whether its a pointy-top or flat-top hexagon.
         // Scales each vector by the size of the hexagon radius
@@ -109,7 +110,7 @@ public class HexTest extends SimpleGUIApp {
             hb.getData().draw();
             
             // If a hex is clicked, update the label with the coordinates of that hexagon
-            if (hb.getData().isClicked()) {
+            if (hb.getData().clicked()) {
                 hexLabel.setText(hb.getBaseIndex() + " | " + hb.getCubeIndex());
             }
         }

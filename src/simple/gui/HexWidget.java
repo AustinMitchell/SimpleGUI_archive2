@@ -12,8 +12,8 @@ public abstract class HexWidget extends Widget {
     /** Moves the hex relative to the top left corner*/
     @Override
     public void setLocation(int x, int y) {
-        int shiftx = x - this.x;
-        int shifty = y - this.y;
+        int shiftx = x - this._x;
+        int shifty = y - this._y;
         super.setLocation(x, y);
         for (int i=0; i<6; i++) {
             _hexPoints[0][i] += shiftx;
@@ -26,12 +26,12 @@ public abstract class HexWidget extends Widget {
     public void setCenter(int cx, int cy) {
         int shiftx = cx - _centerx;
         int shifty = cy - _centery;
-        setLocation(x+shiftx, y+shifty);
+        setLocation(_x+shiftx, _y+shifty);
     }
     @Override
     public void setSize(int w, int h) {
-        _centerx = this.x + w/2;
-        _centery = this.y + h/2;
+        _centerx = this._x + w/2;
+        _centery = this._y + h/2;
         
         float multiplier = (float)(1/Math.sin(Math.PI/3));
         switch(_hexType) {
@@ -79,8 +79,8 @@ public abstract class HexWidget extends Widget {
     public HexWidget(int x, int y, int w, int h, HexType hexType) {
         _hexPoints = new int[2][6];
         _hexType = hexType;
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         setSize(w, h);
     }
     
@@ -89,16 +89,16 @@ public abstract class HexWidget extends Widget {
         int absMouseX = Math.abs(Input.mouseX() - _centerx);
         int absMouseY = Math.abs(Input.mouseY() - _centery);
         
-        if (absMouseX > w/2 || absMouseY > h/2) {
+        if (absMouseX > _w/2 || absMouseY > _h/2) {
             return false;
         }
         
         switch(_hexType) {
         case FLAT_TOP:
-            float yRatio = 1 - absMouseY / (h/2f);
+            float yRatio = 1 - absMouseY / (_h/2f);
             return absMouseX < _hexPoints[0][1]-_centerx + (_hexPoints[0][0]-_hexPoints[0][1])*yRatio;
         case POINT_TOP:
-            float xRatio = 1 - absMouseX / (w/2f);
+            float xRatio = 1 - absMouseX / (_w/2f);
             return absMouseY < _hexPoints[1][0]-_centery + (_hexPoints[1][1]-_hexPoints[1][0])*xRatio;    
         }
         

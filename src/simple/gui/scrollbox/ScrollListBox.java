@@ -7,133 +7,119 @@ import simple.gui.Widget;
 import simple.run.Input;
 
 // Creates a list of a given widget
-public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {
-	private static final int BAR_WIDTH = 20;
+public class ScrollListBox<WidgetType extends Widget> extends ScrollBox {	
+	protected ArrayList<WidgetType> _widgetList; 
+	protected int _numWidgetsToDisplay, _firstIndex;
+	protected float _widgetWidth, _widgetHeight;
 	
-	protected ArrayList<WidgetType> widgetList; 
-	protected int numWidgetsToDisplay, firstIndex;
-	protected float widgetWidth, widgetHeight;
-	
-	public WidgetType getWidget(int widgetID) { return widgetList.get(widgetID); }
-	public int getNumWidgets() { return widgetList.size(); }
+	public WidgetType widget(int widgetID) { return _widgetList.get(widgetID); }
+	public int numWidgets() { return _widgetList.size(); }
 	
 	public void setNumWidgetsToDisplay(int num) { 
-		numWidgetsToDisplay = num;
-		widgetHeight = (float)h/numWidgetsToDisplay;
+		_numWidgetsToDisplay = num;
+		_widgetHeight = (float)_h/_numWidgetsToDisplay;
 		setWidgetPosition();
 	}
 	
 	@Override
 	public void setSize(int w_, int h_) {
 		super.setSize(w_, h_);
-		widgetWidth = w-BAR_WIDTH;
-		widgetHeight = (float)h/numWidgetsToDisplay;
+		_widgetWidth = _w-_BAR_WIDTH;
+		_widgetHeight = (float)_h/_numWidgetsToDisplay;
 		setWidgetPosition();
 	}
-	@Override
-	public void setWidth(int w_) {setSize(w_, h); }
-	@Override
-	public void setHeight(int h_) { setSize(w, h_); }
 	
 	@Override
 	public void setLocation(int x_, int y_) {
 		super.setLocation(x_, y_);
 		setWidgetPosition();
 	}
-	@Override
-	public void setX(int x_) { setLocation(x_, y); }
-	@Override
-	public void setY(int y_) { setLocation(x, y_); }
 	
 	
 	public ScrollListBox(int numWidgetsToDisplay) {
 		this(0, 0, 10, 10, numWidgetsToDisplay);
 	}
-	public ScrollListBox(int x_, int y_, int w_, int h_, int numWidgetsToDisplay_) {
-		super(x_, y_, w_, h_);
-		numWidgetsToDisplay = numWidgetsToDisplay_;
+	public ScrollListBox(int x, int y, int w, int h, int numWidgetsToDisplay_) {
+		super(x, y, w, h);
+		_numWidgetsToDisplay = numWidgetsToDisplay_;
 		
-		widgetList = new ArrayList<WidgetType>();
-		widgetWidth = w-BAR_WIDTH;
-		widgetHeight = (float)h/numWidgetsToDisplay;
-		firstIndex = 0;
+		_widgetList = new ArrayList<WidgetType>();
+		_widgetWidth = _w-_BAR_WIDTH;
+		_widgetHeight = (float)_h/_numWidgetsToDisplay;
+		_firstIndex = 0;
 	}
 	
 	public void setWidgetPosition() {
-		for (int i=firstIndex; i<firstIndex+numWidgetsToDisplay && i<widgetList.size(); i++) {
-			widgetList.get(i).setLocation(x, (int)Math.floor(y+widgetHeight*(i-firstIndex)));
-			widgetList.get(i).setSize((int)Math.ceil(widgetWidth), (int)Math.ceil(widgetHeight));
+		for (int i=_firstIndex; i<_firstIndex+_numWidgetsToDisplay && i<_widgetList.size(); i++) {
+			_widgetList.get(i).setLocation(_x, (int)Math.floor(_y+_widgetHeight*(i-_firstIndex)));
+			_widgetList.get(i).setSize((int)Math.ceil(_widgetWidth), (int)Math.ceil(_widgetHeight));
 		}
 	}
 	
 	public void addWidget(WidgetType newWidget) {
-		widgetList.add(newWidget);
-		if (firstIndex == -1) {
-			firstIndex = 0;
+		_widgetList.add(newWidget);
+		if (_firstIndex == -1) {
+			_firstIndex = 0;
 		} else {
-			scrollBar.setRange(0, widgetList.size()-1);
+			_scrollBar.setRange(0, _widgetList.size()-1);
 		}
 		setWidgetPosition();
 	}
 	
 	public void removeWidget(int widgetID) {
-		widgetList.remove(widgetID);
-		if (widgetList.isEmpty()) {
-			firstIndex = -1;
-		} else if (firstIndex >= widgetList.size()-1) {
-			firstIndex -= 1;
+		_widgetList.remove(widgetID);
+		if (_widgetList.isEmpty()) {
+			_firstIndex = -1;
+		} else if (_firstIndex >= _widgetList.size()-1) {
+			_firstIndex -= 1;
 		}
-		if (firstIndex != -1) {
+		if (_firstIndex != -1) {
 			setWidgetPosition();
-			scrollBar.setRange(0, widgetList.size()-1);
+			_scrollBar.setRange(0, _widgetList.size()-1);
 		}
 	}
 	
 	public void clear() {
-		widgetList = new ArrayList<WidgetType>();
-		firstIndex = 0;
+		_widgetList = new ArrayList<WidgetType>();
+		_firstIndex = 0;
 	}
 	
 	@Override
-	public void update() {
-		if (!enabled || !visible)
-			return;
-		updateClickingState();
-		
+	protected void updateWidget() {		
 		updateScrollWidgets();
 		
-		if ((scrollUp.isClicked() || (Input.mouseWheelUp()&&isHovering())) && firstIndex > 0) {
-			firstIndex -= 1;
-			scrollBar.setValue(firstIndex);
+		if ((_scrollUp.clicked() || (Input.mouseWheelUp()&&hovering())) && _firstIndex > 0) {
+			_firstIndex -= 1;
+			_scrollBar.setValue(_firstIndex);
 			setWidgetPosition();
-		} else if ((scrollDown.isClicked() || (Input.mouseWheelDown()&&isHovering())) && firstIndex < widgetList.size()-1) {
-			firstIndex += 1;
-			scrollBar.setValue(firstIndex);
-			setWidgetPosition();
-		}
-		
-		if (scrollBar.getValue() != firstIndex) {
-			firstIndex = scrollBar.getValue();
+		} else if ((_scrollDown.clicked() || (Input.mouseWheelDown()&&hovering())) && _firstIndex < _widgetList.size()-1) {
+			_firstIndex += 1;
+			_scrollBar.setValue(_firstIndex);
 			setWidgetPosition();
 		}
 		
-		if (firstIndex != -1) {
-			for (int i=firstIndex; i<firstIndex+numWidgetsToDisplay && i<widgetList.size(); i++) {
-				widgetList.get(i).update();
+		if (_scrollBar.value() != _firstIndex) {
+			_firstIndex = _scrollBar.value();
+			setWidgetPosition();
+		}
+		
+		if (_firstIndex != -1) {
+			for (int i=_firstIndex; i<_firstIndex+_numWidgetsToDisplay && i<_widgetList.size(); i++) {
+				_widgetList.get(i).update();
 			}
 		}
 	}
 	
 	@Override
-	public void draw() {
+	protected void drawWidget() {
 		drawScrollWidgets();
 		
-		Draw.setColors(fillColor, borderColor);
-		Draw.rect(x, y, w-BAR_WIDTH, h);
+		Draw.setColors(_fillColor, _borderColor);
+		Draw.rect(_x, _y, _w-_BAR_WIDTH, _h);
 		
-		if (firstIndex != -1) {
-			for (int i=firstIndex; i<firstIndex+numWidgetsToDisplay && i<widgetList.size(); i++) {
-				widgetList.get(i).draw();
+		if (_firstIndex != -1) {
+			for (int i=_firstIndex; i<_firstIndex+_numWidgetsToDisplay && i<_widgetList.size(); i++) {
+				_widgetList.get(i).draw();
 			}
 		}
 	}

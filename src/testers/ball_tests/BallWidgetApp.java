@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import simple.gui.scrollbox.*;
+import simple.gui.textarea.Label;
 import simple.gui.*;
 import simple.run.*;
 import simple.misc.*;
@@ -136,21 +137,21 @@ public class BallWidgetApp extends SimpleGUIApp {
         sliderLabel.update();
         
         // Exit if the exit button state is clicked
-        if (exitButton.isClicked()) {
+        if (exitButton.clicked()) {
             quit();
         }
         
         // If the slider has changed, update the speed with the current slider value
-        if (speedSlider.valueHasChanged()) {
-            speed = speedSlider.getValue();
+        if (speedSlider.valueChanged()) {
+            speed = speedSlider.value();
             // update label text with proper speed value
             sliderLabel.setText("Current Speed: " + speed);
         }
         // Check the widgets of the scrolllist if they've been clicked. If one has, then update the ball color
-        for (int i=0; i<colorSelect.getNumWidgets(); i++) {
-            Button b = colorSelect.getWidget(i);
-            if (b.isClicked()) {
-                ballColor = b.getFillColor();
+        for (int i=0; i<colorSelect.numWidgets(); i++) {
+            Button b = colorSelect.widget(i);
+            if (b.clicked()) {
+                ballColor = b.fillColor();
             }
         }
     }

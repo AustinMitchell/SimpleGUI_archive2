@@ -5,122 +5,135 @@ import simple.run.Input;
 /** Silder widget class. Creates a slider object with minimum and maximum integer values. Value of the slider depends on where the mouse
  * was last clicking on the slider. Value starts at the minimum, and can be adjusted manually. **/
 public class Slider extends Widget {
-	protected int value, low, high;
-	protected boolean isHorizontal, isReversed;
-	protected int oldValue;
-	protected boolean valueChanged;
-	protected boolean mouseCanScroll;
-	protected int mouseScrollIncrement;
+    /** Takes two ranges and a value, and converts the value from one range to an equivalent value in another range */
+    protected static int scaleValue (float value, float lowa, float higha, float lowb, float highb) {
+        return (int) (lowb + Math.round (((value-lowa) / (higha-lowa)) * (highb-lowb)));
+    }
+    
+	protected int _value, _low, _high;
+	protected boolean _isHorizontal, _isReversed;
+	protected int _oldValue;
+	protected boolean _valueChanged;
+	protected boolean _mouseCanScroll;
+	protected int _mouseScrollIncrement;
+	protected boolean _holdingMouse;
 	
 	/** Returns the current value of the slider **/
-	public int getValue() { return value; }
+	public int value() { return _value; }
 	/** Returns the minimum value of the slider **/
-	public int getLow() { return low; }
+	public int low() { return _low; }
 	/** Returns the maximum value of the slider **/
-	public int getHigh() { return high; }
+	public int high() { return _high; }
 	
-	public boolean canMouseScroll() { return mouseCanScroll; }
-	public int getMouseScrollIncrement() { return mouseScrollIncrement; }
+	public boolean mouseCanScroll() { return _mouseCanScroll; }
+	public int mouseScrollIncrement() { return _mouseScrollIncrement; }
 	
 	/** Returns whether or not the value of the slider has changed since last frame **/
-	public boolean valueHasChanged() { return valueChanged; }
+	public boolean valueChanged() { return _valueChanged; }
 	
 	/** Sets the current value of the slider. Value is bounded within [low, high] **/
-	public void setValue(int newValue) { value = Math.max(Math.min(newValue, high), low); }
+	public void setValue(int value) { _value = Math.max(Math.min(value, _high), _low); }
 	/** Sets the new range for the slider. If newHigh is greater than newLow, they will switch. Value is bounded by [newLow, newHigh] **/
-	public void setRange(int newLow, int newHigh) { 
-		low = Math.min(newLow, newHigh);
-		high = Math.max(newLow, newHigh);
-		setValue(value);
+	public void setRange(int low, int high) { 
+		_low = Math.min(low, high);
+		_high = Math.max(low, high);
+		setValue(_value);
 	}
 	
-	public void setMouseCanScroll(boolean mouseCanScroll) { this.mouseCanScroll = mouseCanScroll; }
-	public void setMouseScrollIncrement(int mouseScrollIncrement) { this.mouseScrollIncrement = mouseScrollIncrement; }
+	/** Enables or disables ability to scroll with mouse wheel */
+	public void setMouseCanScroll(boolean mouseCanScroll) { _mouseCanScroll = mouseCanScroll; }
+	/** Sets mouse wheel scroll value increment */
+	public void setMouseScrollIncrement(int mouseScrollIncrement) { _mouseScrollIncrement = mouseScrollIncrement; }
 	
 	/** Creates a new slider object with no given dimensions 
-	 * @param isRev_		Sets what end of the slider is high and what is low. 
-	 * @param isHoriz_		Sets what the orientation of the slider is. **/
-	public Slider (int low_, int high_, boolean isRev_, boolean isHoriz_) {
-		this(0, 0, 10, 10, low_, high_, isRev_, isHoriz_);
+	 * @param low         Sets lower boundary for slider value
+	 * @param high        Sets upper boundary for slider value 
+	 * @param isRev		  Sets what end of the slider is high and what is low. 
+	 * @param isHoriz	  Sets what the orientation of the slider is. **/
+	public Slider (int low, int high, boolean isRev, boolean isHoriz) {
+		this(0, 0, 10, 10, low, high, isRev, isHoriz);
 	}
-	/** Creates a new slider object with the given dimensions 
-	 * @param isRev_		Sets what end of the slider is high and what is low. 
-	 * @param isHoriz_		Sets what the orientation of the slider is. **/
-	public Slider (int x_, int y_, int w_, int h_, int low_, int high_, boolean isRev_, boolean isHoriz_) {
-		super(x_, y_, w_, h_);
+	/** Creates a new slider object with the given dimensions           
+	 * @param low         Sets lower boundary for slider value
+     * @param high        Sets upper boundary for slider value 
+	 * @param isRev		  Sets what end of the slider is high and what is low. 
+	 * @param isHoriz     Sets what the orientation of the slider is. **/
+	public Slider (int x, int y, int w, int h, int low, int high, boolean isRev, boolean isHoriz) {
+		super(x, y, w, h);
 
-		oldValue = low_;
-		value = low_;
-		low = low_;
-		high = high_;
+		_oldValue = low;
+		_value = low;
+		_low = low;
+		_high = high;
 		
-		enabled = true;
-		visible = true;
+		_enabled = true;
+		_visible = true;
 
-		isReversed = isRev_;
-		isHorizontal = isHoriz_;
+		_isReversed = isRev;
+		_isHorizontal = isHoriz;
 		
-		mouseCanScroll = true;
-		mouseScrollIncrement = 1;
-	}
-
-	// Cool function that takes two ranges and a value, and converts the value from one range to an equivalent value in another range
-	private int scaleValue (float value, float lowa, float higha, float lowb, float highb) {
-		return (int) (lowb + Math.round (((value-lowa) / (higha-lowa)) * (highb-lowb)));
+		_mouseCanScroll = true;
+		_mouseScrollIncrement = 1;
+		
+		_holdingMouse = false;
 	}
 
 	@Override
-	public void update() {
-		valueChanged = (oldValue != value);
-		oldValue = value;
+	protected void updateWidget() {
+		_valueChanged = (_oldValue != _value);
+		_oldValue = _value;
 		
-		if (!enabled || !visible)
-			return;
-			
-		updateClickingState();
-	    if (mouseCanScroll && isHovering()) {
+		if (clicking()) {
+		    _holdingMouse = true;
+		} else if (_holdingMouse && !Input.mousePressed()) {
+		    _holdingMouse = false;
+		}
+		    
+		
+	    if (_mouseCanScroll && hovering()) {
 		    if (Input.mouseWheelUp()) {
-		        value = Math.max(low, Math.min(high, value+mouseScrollIncrement));
+		        _value = Math.max(_low, Math.min(_high, _value+_mouseScrollIncrement));
 		    } else if (Input.mouseWheelDown()) {
-		        value = Math.max(low, Math.min(high, value-mouseScrollIncrement));
+		        _value = Math.max(_low, Math.min(_high, _value-_mouseScrollIncrement));
             }
 	    }
 		    
-	    if (isClicking()) {
-			if (isHorizontal) {
-				value = scaleValue(Math.max(Math.min(Input.mouseX(), x+w-10), x+10), x+10, x+w-10, low, high);
+	    /* Normally if mouse goes out of range while the mouse button is pressed down, the clicking state is disabled.
+	    We get around this by creating a custom mouse control */
+	    if (_holdingMouse) {
+			if (_isHorizontal) {
+				_value = scaleValue(Math.max(Math.min(Input.mouseX(), _x+_w-10), _x+10), _x+10, _x+_w-10, _low, _high);
 			} else {
-				value = scaleValue(Math.max(Math.min(Input.mouseY(), y+h-10), y+10), y+10, y+h-10, low, high);
+				_value = scaleValue(Math.max(Math.min(Input.mouseY(), _y+_h-10), _y+10), _y+10, _y+_h-10, _low, _high);
 			}
 			
-			if (isReversed) {
-				value = low + high - value;
+			if (_isReversed) {
+			    /* Inverts the value between low and high. The initial value is purely based on mouse position going from
+			    low x to high x, or low y to high y */
+				_value = _low + _high - _value;
 			}
 	    }
 	}
 
 	@Override
-	public void draw() {
-		if (!visible)
-			return;
-		
-		Draw.setColors(fillColor, borderColor);
-		Draw.rect(x, y, w, h);
+	protected void drawWidget() {
+		Draw.setColors(_fillColor, _borderColor);
+		Draw.rect(_x, _y, _w, _h);
 
-		Draw.setFill(borderColor);
-		if (!isHorizontal) {
-		    Draw.line(x + w/2, y+10, x + w/2, y+h-10);
-			if (isReversed) {
-			    Draw.rect(x + w/2 - 5, scaleValue(low + high - value, low, high, y, y+h - 20) + 7, 10, 6);
+		Draw.setFill(_borderColor);
+		if (!_isHorizontal) {
+		    Draw.line(_x + _w/2, _y+10, _x + _w/2, _y+_h-10);
+			if (_isReversed) {
+			    Draw.rect(_x + _w/2 - 5, scaleValue(_low + _high - _value, _low, _high, _y, _y+_h - 20) + 7, 10, 6);
 			} else {
-			    Draw.rect(x + w/2 - 5, scaleValue(value, low, high, y, y+h - 20) + 7, 10, 6);
+			    Draw.rect(_x + _w/2 - 5, scaleValue(_value, _low, _high, _y, _y+_h - 20) + 7, 10, 6);
 			}
 		} else { 
-		    Draw.line(x+10, y + h/2, x+w-10, y + h/2);
-			if (isReversed) {
-			    Draw.rect(scaleValue(low + high - value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
+		    Draw.line(_x+10, _y + _h/2, _x+_w-10, _y + _h/2);
+			if (_isReversed) {
+			    Draw.rect(scaleValue(_low + _high - _value, _low, _high, _x, _x+_w - 20) + 7, _y + _h/2 - 5, 6, 10);
 			} else {
-			    Draw.rect(scaleValue(value, low, high, x, x+w - 20) + 7, y + h/2 - 5, 6, 10);
+			    Draw.rect(scaleValue(_value, _low, _high, _x, _x+_w - 20) + 7, _y + _h/2 - 5, 6, 10);
 			}
 		}
 	}

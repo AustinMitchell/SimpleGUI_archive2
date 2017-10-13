@@ -1,6 +1,8 @@
 package testers.random_map;
 import simple.gui.*;
 import simple.gui.panel.*;
+import simple.gui.textarea.Label;
+import simple.gui.textarea.TextArea;
 import simple.run.*;
 import java.awt.Color;
 import java.awt.image.DataBufferInt;
@@ -88,16 +90,16 @@ public class Main extends SimpleGUIApp {
 		roughnessSlider.setMouseScrollIncrement(5);
 		roughnessLabel  = new Label(" H value: " + h);
 		roughnessLabel.setAlignment(TextArea.Alignment.WEST);
-		roughnessLabel.setBoxIsVisible(true);
+		roughnessLabel.setBoxVisible(true);
 		
 		depthSlider = new Slider(0, 15, false, true);
 		depthSlider.setValue((int)(depth));
 		depthLabel  = new Label(" Depth: " + depth);
 		depthLabel.setAlignment(TextArea.Alignment.WEST);
-		depthLabel.setBoxIsVisible(true);
+		depthLabel.setBoxVisible(true);
 		sizeLabel   = new Label(" Size: " + size + " x " + size);
 		sizeLabel.setAlignment(TextArea.Alignment.WEST);
-		sizeLabel.setBoxIsVisible(true);
+		sizeLabel.setBoxVisible(true);
 				
 		screen = new ScaledPanel(0, 0, getWidth(), getHeight(), 1000, 1000);
 		screen.addWidget(reset,           880,  20, 100, 50, 1);
@@ -131,7 +133,7 @@ public class Main extends SimpleGUIApp {
 		converterThread = new WorkerThread<ImageBox>(new Worker<ImageBox>() {
 				public ImageBox doWork(List inputs) {
 					ImageBox image = new ImageBox(new Image((Integer)inputs.get(0), (Integer)inputs.get(0)));
-					convertToImage(image.getImage(), (Map)inputs.get(1));
+					convertToImage(image.image(), (Map)inputs.get(1));
 					return image;
 				}
 			}, null);
@@ -148,13 +150,13 @@ public class Main extends SimpleGUIApp {
 		screen.update();
 		image.update();
 		
-		if (roughnessSlider.valueHasChanged()) {
-			h = roughnessSlider.getValue()/100f;
+		if (roughnessSlider.valueChanged()) {
+			h = roughnessSlider.value()/100f;
 			roughnessLabel.setText("  H value: " + h);
 		}
 		
-		if (depthSlider.valueHasChanged()) {
-			depth = depthSlider.getValue();
+		if (depthSlider.valueChanged()) {
+			depth = depthSlider.value();
 			size = (1<<depth)+1;
 			
 			depthLabel.setText(" Depth: " + depth);
@@ -162,7 +164,7 @@ public class Main extends SimpleGUIApp {
 		}
 		
 		// if clicked and work is not currently being done, kick off generator thread
-		if (reset.isClicked() && !loading) {
+		if (reset.clicked() && !loading) {
 			loading = true;
 			reset.setText("Generating...");
 			reset.setFillColor(new Color(255, 200, 200));
@@ -174,7 +176,7 @@ public class Main extends SimpleGUIApp {
 		
 		// once generation is done, kick off conversion thread
 		if (generatorThread.isFinished()) {
-			reset.setText("Converting...");
+			reset.setText("Converting color...");
 			map = generatorThread.getResult();
 			reset.setFillColor(new Color(255, 255, 200));
 			

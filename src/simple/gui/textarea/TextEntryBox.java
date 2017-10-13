@@ -1,20 +1,20 @@
-package simple.gui;
+package simple.gui.textarea;
 
 import java.awt.event.KeyEvent;
 
 import simple.run.Input;
 
 public class TextEntryBox extends TextBox {
-	private String enteredText;
-	private boolean textIsEntered;
+	private String _enteredText;
+	private boolean _textIsEntered;
 	
-	public String getEnteredText() { return enteredText; }
-	public boolean hasTextEntered() { return textIsEntered; }
+	public String enteredText() { return _enteredText; }
+	public boolean hasTextEntered() { return _textIsEntered; }
 	
 	@Override
 	public void setEnabled(boolean enabled) { 
 	    super.setEnabled(enabled);
-	    textIsEntered = textIsEntered && enabled;
+	    _textIsEntered = _textIsEntered && enabled;
 	}
 	
 	public TextEntryBox() {
@@ -23,30 +23,30 @@ public class TextEntryBox extends TextBox {
 	public TextEntryBox(String text) {
 		this(0, 0, 10, 10, text);
 	}
-	public TextEntryBox(int x_, int y_, int w_, int h_) {
-		this(x_, y_, w_, h_, "");
+	public TextEntryBox(int x, int y, int w, int h) {
+		this(x, y, w, h, "");
 	}
-	public TextEntryBox(int x_, int y_, int w_, int h_, String text) {
-		super(x_, y_, w_, h_, text);		
+	public TextEntryBox(int x, int y, int w, int h, String text) {
+		super(x, y, w, h, text);		
 		
-		enteredText = "";
-		textIsEntered = false;
+		_enteredText = "";
+		_textIsEntered = false;
 	}
 	
 	@Override
 	protected void handleInput() {
-		if (textIsEntered) {
-			textIsEntered = false;
-			enteredText = "";
+		if (_textIsEntered) {
+			_textIsEntered = false;
+			_enteredText = "";
 			clear();
 		}
 		if (Input.getChar() != 0) {
-			if (active) {
+			if (_active) {
 				if (Input.getChar() == KeyEvent.VK_BACK_SPACE) {
 					removeChar();
 				} else if (Input.getChar() == KeyEvent.VK_ENTER) {
-					textIsEntered = true;
-					enteredText = text;
+					_textIsEntered = true;
+					_enteredText = _text;
 				} else if (Input.getChar() >= 32 && Input.getChar() <= 127) {
 					addChar(Input.getChar());
 				}

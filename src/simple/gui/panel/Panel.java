@@ -27,71 +27,71 @@ public abstract class Panel extends Widget {
 		}
 	}
 	
-	protected static int DEFAULT_PRIORITY = 1;
+	protected static int _DEFAULT_PRIORITY = 1;
 	
-	protected int     defaultPriority;
-	protected boolean drawContainingPanel;
+	protected int     _defaultPriority;
+	protected boolean _drawContainingPanel;
 	
-	protected TreeMap<Integer, List<Widget>> priorityMap;
-	protected Map<Widget, Integer>          widgetMap;
-	protected List<Widget>                  widgetList;
+	protected TreeMap<Integer, List<Widget>> _priorityMap;
+	protected Map<Widget, Integer> _widgetMap;
+	protected List<Widget> _widgetList;
 	
-	protected Constraints constraints;
+	protected Constraints _constraints;
 	
-	public int defaultPriority() { return defaultPriority; }
-	public boolean doesDrawContainingPanel() { return drawContainingPanel; }
+	public int defaultPriority() { return _defaultPriority; }
+	public boolean doesDrawContainingPanel() { return _drawContainingPanel; }
 	
-	public boolean hasWidget(Widget widget) { return widgetMap.containsKey(widget); }
-	public int size() { return widgetList.size(); }
+	public boolean hasWidget(Widget widget) { return _widgetMap.containsKey(widget); }
+	public int size() { return _widgetList.size(); }
 	public int getWidgetPriority(Widget widget) { 
 		if (!hasWidget(widget)) {
 			throw new RuntimeException("Panel does not contain the given widget");
 		}
-		return widgetMap.get(widget);
+		return _widgetMap.get(widget);
 	}
 	public Widget getIndex(int widgetID) { 
-		if (widgetID >= widgetList.size() || widgetID < 0) {
+		if (widgetID >= _widgetList.size() || widgetID < 0) {
 			throw new RuntimeException("Index out of bounds for stored Widget list. widgetID=" + widgetID);
 		}
-		return widgetList.get(widgetID); 
+		return _widgetList.get(widgetID); 
 	}
-	public List<Widget> getWidgetList() { return widgetList; }
+	public List<Widget> widgetList() { return _widgetList; }
 	
 	public void setWidgetPriority(Widget widget, int priority) {
-		priorityMap.get(widgetMap.get(widget)).remove(widget);
-		widgetMap.put(widget, priority);
-		priorityMap.get(priority).add(widget);
+		_priorityMap.get(_widgetMap.get(widget)).remove(widget);
+		_widgetMap.put(widget, priority);
+		_priorityMap.get(priority).add(widget);
 	}
-	public void setDefaultPriority(int defaultPriority) { this.defaultPriority = defaultPriority; }
-	public void setDrawContainingPanel(boolean drawContainingPanel) { this.drawContainingPanel = drawContainingPanel; }
+	public void setDefaultPriority(int defaultPriority) { this._defaultPriority = defaultPriority; }
+	public void setDrawContainingPanel(boolean drawContainingPanel) { this._drawContainingPanel = drawContainingPanel; }
 	
 	public void setConstraints(int c) { setConstraints(c, c, c, c); }
 	public void setConstraints(int x, int y) { setConstraints(x, y, x, y); }
-	public void setConstraints(int x1, int y1, int x2, int y2) { constraints = new Constraints(x1, y1, x2, y2); }
-	public void setConstraints(Constraints newConstraints) { constraints.set(newConstraints); }
+	public void setConstraints(int x1, int y1, int x2, int y2) { _constraints = new Constraints(x1, y1, x2, y2); }
+	public void setConstraints(Constraints newConstraints) { _constraints.set(newConstraints); }
 	
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		for (Widget w: widgetList) {
+		for (Widget w: _widgetList) {
 			w.setEnabled(enabled);
 		}
 	}
 		
 	@Override
 	public void setLocation(int x, int y) {
-		int dx = x - this.x;
-		int dy = y - this.y;
+		int dx = x - this._x;
+		int dy = y - this._y;
 		
 		super.setLocation(x, y);
 		
-		for (Widget w: widgetList) {
-			w.setLocation(w.getX()+dx, w.getY()+dy);
+		for (Widget w: _widgetList) {
+			w.setLocation(w.x()+dx, w.y()+dy);
 		}
 	}
 	@Override
-	public void setX(int x) { setLocation(x, this.y); }
+	public void setX(int x) { setLocation(x, this._y); }
 	@Override
-	public void setY(int y) { setLocation(this.x, y); }
+	public void setY(int y) { setLocation(this._x, y); }
 	
 	public void setWidgetDimensions(Widget widget, int x, int y, int w, int h) { setWidgetDimensions(widget, new Dimensions(x, y, w, h)); }
 	public abstract void setWidgetDimensions(Widget widget, Dimensions d);
@@ -101,75 +101,70 @@ public abstract class Panel extends Widget {
 	}
 	public Panel(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		priorityMap = new TreeMap<>();
-		widgetMap = new HashMap<>();
-		widgetList = new ArrayList<>();
+		_priorityMap = new TreeMap<>();
+		_widgetMap = new HashMap<>();
+		_widgetList = new ArrayList<>();
 		
-		defaultPriority = DEFAULT_PRIORITY;
-		drawContainingPanel = false;
-		constraints = new Constraints(0, 0, 0, 0);
+		_defaultPriority = _DEFAULT_PRIORITY;
+		_drawContainingPanel = false;
+		_constraints = new Constraints(0, 0, 0, 0);
 	}
 	
-	public void addWidget(Widget newWidget, int x, int y, int w, int h) { addWidget(newWidget, new Dimensions(x, y, w, h), constraints); }
-	public void addWidget(Widget newWidget, int x, int y, int w, int h, int priority) { addWidget(newWidget, new Dimensions(x, y, w, h), constraints, priority); }
-	public void addWidget(Widget newWidget) { addWidget(newWidget, defaultPriority); }
-	public void addWidget(Widget newWidget, Dimensions d) { addWidget(newWidget, d, defaultPriority); }
-	public void addWidget(Widget newWidget, Dimensions d, int priority) { addWidget(newWidget, d, constraints, priority); }
-	public void addWidget(Widget newWidget, Dimensions d, Constraints c) { addWidget(newWidget, d, c, defaultPriority); }
+	public void addWidget(Widget newWidget, int x, int y, int w, int h) { addWidget(newWidget, new Dimensions(x, y, w, h), _constraints); }
+	public void addWidget(Widget newWidget, int x, int y, int w, int h, int priority) { addWidget(newWidget, new Dimensions(x, y, w, h), _constraints, priority); }
+	public void addWidget(Widget newWidget) { addWidget(newWidget, _defaultPriority); }
+	public void addWidget(Widget newWidget, Dimensions d) { addWidget(newWidget, d, _defaultPriority); }
+	public void addWidget(Widget newWidget, Dimensions d, int priority) { addWidget(newWidget, d, _constraints, priority); }
+	public void addWidget(Widget newWidget, Dimensions d, Constraints c) { addWidget(newWidget, d, c, _defaultPriority); }
 	
 	public abstract void addWidget(Widget newWidget, int priority);
 	public abstract void addWidget(Widget newWidget, Dimensions d, Constraints c, int priority);
 	
 	protected void addWidgetToCollection(Widget newWidget, int priority) {
-		if (widgetMap.containsKey(newWidget)) {
+		if (_widgetMap.containsKey(newWidget)) {
 			throw new RuntimeException("Each instance of Widget may only be referenced in (i.e. added to) each Panel one time.");
 		}
-		if (!priorityMap.containsKey(priority)) {
-			priorityMap.put(priority, new ArrayList<Widget>());
+		if (!_priorityMap.containsKey(priority)) {
+			_priorityMap.put(priority, new ArrayList<Widget>());
 		}
-		priorityMap.get(priority).add(newWidget);
-		widgetMap.put(newWidget, priority);
-		widgetList.add(newWidget);
+		_priorityMap.get(priority).add(newWidget);
+		_widgetMap.put(newWidget, priority);
+		_widgetList.add(newWidget);
 	}
 	
 	public boolean removeWidget(Widget widgetToRemove) {
-		if (!widgetMap.containsKey(widgetToRemove)) {
+		if (!_widgetMap.containsKey(widgetToRemove)) {
 			return false;
 		}
 		
-		priorityMap.get(widgetMap.get(widgetToRemove)).remove(widgetToRemove);
-		widgetMap.remove(widgetToRemove);
-		widgetList.remove(widgetToRemove);
+		_priorityMap.get(_widgetMap.get(widgetToRemove)).remove(widgetToRemove);
+		_widgetMap.remove(widgetToRemove);
+		_widgetList.remove(widgetToRemove);
 		
 		return true;
 	}
 	public Widget removeIndex(int widgetID) {
-		if (widgetID >= widgetList.size() || widgetID < 0) {
+		if (widgetID >= _widgetList.size() || widgetID < 0) {
 			throw new RuntimeException("Index out of bounds for stored Widget list. widgetID=" + widgetID);
 		}
 		
-		Widget widgetToRemove = widgetList.remove(widgetID);
-		priorityMap.get(widgetMap.get(widgetToRemove)).remove(widgetToRemove);
-		widgetMap.remove(widgetToRemove);
+		Widget widgetToRemove = _widgetList.remove(widgetID);
+		_priorityMap.get(_widgetMap.get(widgetToRemove)).remove(widgetToRemove);
+		_widgetMap.remove(widgetToRemove);
 		return widgetToRemove;
 	}
 	public void clear() {
-		priorityMap = new TreeMap<>();
-		widgetMap = new HashMap<>();
-		widgetList = new ArrayList<>();
+		_priorityMap = new TreeMap<>();
+		_widgetMap = new HashMap<>();
+		_widgetList = new ArrayList<>();
 	}
 	
 	@Override
-	public void update(){
-		if (!enabled || !visible) 
-			return;
-		
-		updateClickingState();
-		
+	protected void updateWidget(){	
 		boolean setFlag = false;
 		boolean mouseInPriorityWidget = false; 
-		for (int priority: priorityMap.keySet()) {
-			for (Widget w: priorityMap.get(priority)) {
+		for (int priority: _priorityMap.keySet()) {
+			for (Widget w: _priorityMap.get(priority)) {
 				if (mouseInPriorityWidget) {
 					// Blocking a widget makes the widget think the mouse isn't in it.
 					// This means if the mouse is hovering over two widgets, only the highest priority one will get mouse interaction.
@@ -186,22 +181,18 @@ public abstract class Panel extends Widget {
 		}
 	}
 	@Override
-	public void draw() {
-		if (!visible) 
-			return;
+	protected void drawWidget() {
 		
-		if (drawContainingPanel) {
-		    Draw.setFill(fillColor);
-		    Draw.setStroke(borderColor);
-		    Draw.rect(x, y, w, h);
+		if (_drawContainingPanel) {
+		    Draw.setFill(_fillColor);
+		    Draw.setStroke(_borderColor);
+		    Draw.rect(_x, _y, _w, _h);
 		}
 		
-		if (customDrawObject != null) {
-			customDrawObject.draw(this);
-		}
+		drawCustom(_widgetControlledDraw);
 		
-		for (int priority: priorityMap.descendingKeySet()) {
-			for (Widget w: priorityMap.get(priority)) {
+		for (int priority: _priorityMap.descendingKeySet()) {
+			for (Widget w: _priorityMap.get(priority)) {
 				w.draw();
 			}
 		}

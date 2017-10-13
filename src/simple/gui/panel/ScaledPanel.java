@@ -14,24 +14,24 @@ public class ScaledPanel extends Panel {
 		}
 	}
 	
-	protected static int DEFAULT_ROWS_COLS = 100;
+	protected static int _DEFAULT_ROWS_COLS = 100;
 	
-	protected Map<Widget, Modifiers> widgetModifiersMap;
-	int rows, cols;
-	double boxWidth, boxHeight;
+	protected Map<Widget, Modifiers> _widgetModifiersMap;
+	int _rows, _cols;
+	double _boxWidth, _boxHeight;
 
 	public Dimensions getWidgetDimensions(Widget widget) { 
 		if (!hasWidget(widget)) {
 			throw new RuntimeException("Panel does not contain the given widget");
 		}
-		return widgetModifiersMap.get(widget).dimensions;
+		return _widgetModifiersMap.get(widget).dimensions;
 	}
 	
-	public int getRows() { return rows; }
-	public int getCols() { return cols; }
+	public int rows() { return _rows; }
+	public int cols() { return _cols; }
 	
-	public double getBoxWidth() { return boxWidth; }
-	public double getBoxHeight() { return boxHeight; }
+	public double boxWidth() { return _boxWidth; }
+	public double boxHeight() { return _boxHeight; }
 	
 	@Override
 	public void setWidgetDimensions(Widget widget, Dimensions d) {
@@ -39,39 +39,35 @@ public class ScaledPanel extends Panel {
 			return;
 		}
 		
-		Constraints c = widgetModifiersMap.get(widget).constraints;
+		Constraints c = _widgetModifiersMap.get(widget).constraints;
 		
-		widget.setX((int)(this.x + Math.ceil(boxWidth*(d.x)) - c.x1));
-		widget.setY((int)(this.y + Math.ceil(boxHeight*(d.y)) - c.y1));
-		widget.setWidth((int)(Math.ceil(boxWidth*d.w) + c.x2));
-		widget.setHeight((int)(Math.ceil(boxHeight*d.h) + c.y2));
+		widget.setX((int)(this._x + Math.ceil(_boxWidth*(d.x)) - c.x1));
+		widget.setY((int)(this._y + Math.ceil(_boxHeight*(d.y)) - c.y1));
+		widget.setWidth((int)(Math.ceil(_boxWidth*d.w) + c.x2));
+		widget.setHeight((int)(Math.ceil(_boxHeight*d.h) + c.y2));
 		
-		widgetModifiersMap.put(widget, new Modifiers(d, c));
+		_widgetModifiersMap.put(widget, new Modifiers(d, c));
 	}
 	
 	@Override
 	public void setSize(int w, int h) { 
 		super.setSize(w, h); 
 		
-		boxWidth  = w / (double)cols;
-		boxHeight = h / (double)rows;
+		_boxWidth  = w / (double)_cols;
+		_boxHeight = h / (double)_rows;
 		
-		for (Widget widget: widgetList) {
-			Modifiers m = widgetModifiersMap.get(widget);
+		for (Widget widget: _widgetList) {
+			Modifiers m = _widgetModifiersMap.get(widget);
 			
-			widget.setX((int)(this.x + Math.ceil(boxWidth*(m.dimensions.x)) - m.constraints.x1));
-			widget.setY((int)(this.y + Math.ceil(boxHeight*(m.dimensions.y)) - m.constraints.y1));
-			widget.setWidth((int)(Math.ceil(boxWidth*m.dimensions.w) + m.constraints.x2));
-			widget.setHeight((int)(Math.ceil(boxHeight*m.dimensions.h) + m.constraints.y2));
+			widget.setX((int)(this._x + Math.ceil(_boxWidth*(m.dimensions.x)) - m.constraints.x1));
+			widget.setY((int)(this._y + Math.ceil(_boxHeight*(m.dimensions.y)) - m.constraints.y1));
+			widget.setWidth((int)(Math.ceil(_boxWidth*m.dimensions.w) + m.constraints.x2));
+			widget.setHeight((int)(Math.ceil(_boxHeight*m.dimensions.h) + m.constraints.y2));
 		}
 	}
-	@Override
-	public void setWidth(int w) { setSize(w, this.h); }
-	@Override
-	public void setHeight(int h) { setSize(this.w, h); }
 	
 	public ScaledPanel() {
-		this(0, 0, 10, 10, DEFAULT_ROWS_COLS, DEFAULT_ROWS_COLS);
+		this(0, 0, 10, 10, _DEFAULT_ROWS_COLS, _DEFAULT_ROWS_COLS);
 	}
 	public ScaledPanel(int cols, int rows) {
 		this(0, 0, 10, 10, cols, rows);
@@ -80,29 +76,29 @@ public class ScaledPanel extends Panel {
 		this(0, 0, boxWidth, boxHeight, cols, rows);
 	}
 	public ScaledPanel(int x, int y, int w, int h) {
-		this(x, y, w, h, DEFAULT_ROWS_COLS, DEFAULT_ROWS_COLS);
+		this(x, y, w, h, _DEFAULT_ROWS_COLS, _DEFAULT_ROWS_COLS);
 	}
 	public ScaledPanel(int x, int y, double boxWidth, double boxHeight, int cols, int rows) {
 		super(x, y, (int)Math.ceil(boxWidth*cols), (int)Math.ceil(boxHeight*rows));
 		
-		this.rows = rows;
-		this.cols = cols;
+		_rows = rows;
+		_cols = cols;
 		
-		this.boxWidth  = boxWidth;
-		this.boxHeight = boxHeight;
+		_boxWidth  = boxWidth;
+		_boxHeight = boxHeight;
 		
-		widgetModifiersMap = new HashMap<Widget, Modifiers>();
+		_widgetModifiersMap = new HashMap<Widget, Modifiers>();
 	}
 	public ScaledPanel(int x, int y, int w, int h, int cols, int rows) {
 		super(x, y, w, h);
 		
-		this.rows = rows;
-		this.cols = cols;
+		_rows = rows;
+		_cols = cols;
 		
-		boxWidth  = w / (double)cols;
-		boxHeight = h / (double)rows;
+		_boxWidth  = w / (double)cols;
+		_boxHeight = h / (double)rows;
 		
-		widgetModifiersMap = new HashMap<Widget, Modifiers>();
+		_widgetModifiersMap = new HashMap<Widget, Modifiers>();
 	}
 
 	@Override
@@ -113,12 +109,12 @@ public class ScaledPanel extends Panel {
 
 	@Override
 	public void addWidget(Widget newWidget, Dimensions d, Constraints c, int priority) {
-		newWidget.setX((int)(this.x + Math.ceil(boxWidth*(d.x)) - c.x1));
-		newWidget.setY((int)(this.y + Math.ceil(boxHeight*(d.y)) - c.y1));
-		newWidget.setWidth((int)(Math.ceil(boxWidth*d.w) + c.x2));
-		newWidget.setHeight((int)(Math.ceil(boxHeight*d.h) + c.y2));
+		newWidget.setX((int)(this._x + Math.ceil(_boxWidth*(d.x)) - c.x1));
+		newWidget.setY((int)(this._y + Math.ceil(_boxHeight*(d.y)) - c.y1));
+		newWidget.setWidth((int)(Math.ceil(_boxWidth*d.w) + c.x2));
+		newWidget.setHeight((int)(Math.ceil(_boxHeight*d.h) + c.y2));
 						
-		widgetModifiersMap.put(newWidget, new Modifiers(d, c));
+		_widgetModifiersMap.put(newWidget, new Modifiers(d, c));
 		
 		addWidgetToCollection(newWidget, priority);
 	}
@@ -128,7 +124,7 @@ public class ScaledPanel extends Panel {
 		boolean success = super.removeWidget(widgetToRemove);
 		
 		if (success)
-			widgetModifiersMap.remove(widgetToRemove);
+			_widgetModifiersMap.remove(widgetToRemove);
 		
 		return success;
 	}
@@ -136,7 +132,7 @@ public class ScaledPanel extends Panel {
 	public Widget removeIndex(int widgetID) {
 		Widget widgetToRemove = super.removeIndex(widgetID);
 		
-		widgetModifiersMap.remove(widgetToRemove);
+		_widgetModifiersMap.remove(widgetToRemove);
 		
 		return widgetToRemove;
 	}

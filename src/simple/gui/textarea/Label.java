@@ -1,4 +1,6 @@
-package simple.gui;
+package simple.gui.textarea;
+
+import simple.gui.textarea.TextArea.Alignment;
 
 /** A floating text box that is uneditable. **/
 public class Label extends TextArea {
@@ -18,25 +20,17 @@ public class Label extends TextArea {
 	}
 	public Label(int x_, int y_, int w_, int h_, String text_) {
 		super(x_, y_, w_, h_, text_);
-		alignment = Alignment.CENTER;
-		boxIsVisible = false;
-		editable = false;
+		_alignment = Alignment.CENTER;
+		_boxVisible = false;
+		_editable = false;
 	}
 	
 	@Override
-	public void update() {
-		if (!enabled || !visible) 
-			return;
-		
-		updateClickingState();
-	}
+	protected void updateWidget() {}
 	
 	@Override
-	public void draw() {
-		if (!visible)
-			return;
-		
-		if (boxIsVisible) {
+	protected void drawWidget() {
+		if (_boxVisible) {
 			drawBox();
 		}
 		drawText();

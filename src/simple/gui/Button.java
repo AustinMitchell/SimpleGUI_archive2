@@ -2,62 +2,87 @@ package simple.gui;
 
 import java.awt.*;
 
+import simple.gui.textarea.Label;
+import simple.gui.textarea.TextArea;
+
 /** Widget object. Creates a clickable button, intended to be tied to an event. Changes colour according to current widget status.
  * 
  * <P> TODO: create functionality for method attachment. **/
 public class Button extends Widget {
-	/** Colour fullness displayed. A value of 1 means the rgb values will be displayed at 100%. A value of 0.5 means rgb values 
-	 * of 50%. **/
-	protected float clrRatio;
+    
 	/** Image displayed on the button's background. **/
-	protected ImageBox imageBox;
+	protected ImageBox _imageBox;
 	
-	protected Label textLabel;
+	protected Label _textLabel;
+	
+	protected Color _hoverColor, _clickColor, _disabledColor, _currentColor;
+	
+	public Color hoverColor() { return _hoverColor; }
+    public Color clickColor() { return _clickColor; }
+    public Color disabledColor() { return _disabledColor; }
 
 	/** Returns the button's text variable. **/
-	public String getText() { return textLabel.getText(); }
+	public String text() { return _textLabel.text(); }
 	/** Returns the button's Image object of the imageBox variable. **/
-	public Image getImage() { return imageBox.getImage(); }
+	public Image image() { return _imageBox.image(); }
+	
+	/** By default will reset the other colors as well*/
+    @Override
+    public void setFillColor(Color fillColor) { 
+        super.setFillColor(fillColor);
+        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
+    }
+    /** Sets only the fill color, doesn't adjust the other colors */
+    public void setOnlyFillColor(Color fillColor) { super.setFillColor(fillColor); }
+    public void setHoverColor(Color hoverColor) { _hoverColor = hoverColor; }
+    public void setClickColor(Color clickColor) { _clickColor = clickColor; }
+    public void setDisabledColor(Color disabledColor) { _disabledColor = disabledColor; }
 	
 	/** Sets the button's text variable. **/
-	public void setText(String text) { textLabel.setText(text); }
+	public void setText(String text) { _textLabel.setText(text); }
 	/** Sets the button's Image object of the imageBox variable**/
-	public void setImage(Image image) { imageBox.setImage(image); }
+	public void setImage(Image image) { _imageBox.setImage(image); }
 	
 	/** Sets the button's x and y coordinates, as well as shifts the imageBox. **/
 	public void setLocation(int x, int y) {
 		super.setLocation(x, y);
-		imageBox.setLocation(x, y);
-		textLabel.setLocation(x, y);
+		_imageBox.setLocation(x, y);
+		_textLabel.setLocation(x, y);
 	}
-	/** Sets the button's x coordinate, as well as shifts the imageBox. **/
-	public void setX(int x) { setLocation(x, this.y); }
-	/** Sets the button's y coordinate, as well as shifts the imageBox. **/
-	public void setY(int y) { setLocation(this.x, y); }
 	
 	/** Sets the button's width and height, as well as resizes the imageBox. **/
 	public void setSize(int w, int h) {
 		super.setSize(w, h);
-		imageBox.setSize(w, h);
-		textLabel.setSize(w, h);
+		_imageBox.setSize(w, h);
+		_textLabel.setSize(w, h);
 	}
-	/** Sets the button's width, as well as resizes the imageBox. **/
-	public void setWidth(int w) { setSize(w, this.h); }
-	/** Sets the button's height, as well as resizes the imageBox. **/
-	public void setHeight(int h) { setSize(this.w, h); }
+	
+	@Override
+    public void setEnabled(boolean enabled) { 
+	    super.setEnabled(enabled); 
+	    _imageBox.setEnabled(enabled);
+	    _textLabel.setEnabled(enabled);
+	    if (!enabled) { 
+	        _currentColor = _disabledColor;
+	    }
+	}
+    @Override
+    public void blockWidget() { super.blockWidget(); _currentColor = _fillColor; }
 	
 	@Override
 	public void setFont(Font font) {
 		super.setFont(font);
-		textLabel.setFont(font);
+		_textLabel.setFont(font);
 	}
 	public void setAlignment(TextArea.Alignment alignment) {
-		textLabel.setAlignment(alignment);
+		_textLabel.setAlignment(alignment);
 	}
 	@Override
 	public void setTextColor(Color textColor) {
 		super.setTextColor(textColor);
-		textLabel.setTextColor(textColor);
+		_textLabel.setTextColor(textColor);
 	}
 	
 	public Button() {
@@ -81,53 +106,40 @@ public class Button extends Widget {
 	public Button(int x, int y, int w, int h, String text, Image image) {
 		super(x, y, w, h);
 		
-		textLabel = new Label(x, y, w, h, (text==null)?"":text);
-		textLabel.setAlignment(TextArea.Alignment.CENTER);
+		_textLabel = new Label(x, y, w, h, (text==null)?"":text);
+		_textLabel.setAlignment(TextArea.Alignment.CENTER);
 		
-		this.imageBox = new ImageBox(x, y, w, h, image);
-		
-		this.clicking = false;
-		this.enabled = true;
-
-		this.clrRatio = 0.84f;
+		_imageBox = new ImageBox(x, y, w, h, image);
 	}
 	
 	/** Updates the widget's status. **/
-	public void update() {
-		if (!enabled || !visible) 
-			return;
-		updateClickingState();
-		imageBox.update();
-		textLabel.update();
+	protected void updateWidget() {
+	    if (!_enabled) {
+            _currentColor = _disabledColor;
+        } else if (_blocked) {
+            _currentColor = _fillColor;
+        } else if (clicking()) {
+            _currentColor = _clickColor;
+        } else if (hovering()) {
+            _currentColor = _hoverColor;
+        } else { 
+            _currentColor = _fillColor;
+        }
+	    
+		_imageBox.update();
+		_textLabel.update();
 	}
 	
 	/** Draws the button to the SimpleGUIApp's graphics buffer. **/
-	public void draw () {
-		if (!visible) 
-			return;
+	protected void drawWidget () {
+		Draw.setFill(_currentColor);
+		Draw.setStroke(_borderColor);
+		Draw.rect(_x, _y, _w, _h);
 		
-		if (!enabled) {
-			clrRatio = 0.8f;
-		} else if (blocked) {
-			clrRatio = 1f;
-		} else if (isClicking()) {
-			clrRatio = 0.9f;
-		} else if (isHovering()) {
-			clrRatio = 0.94f;
-		} else { 
-			clrRatio = 1f;
-		}
-
-		Draw.setFill(Draw.scaleColor(fillColor, clrRatio));
-		Draw.setStroke(Draw.scaleColor(borderColor, clrRatio));
-		Draw.rect(x, y, w, h);
+		_imageBox.draw();
 		
-		imageBox.draw();
-
-		if (customDrawObject != null) {
-			customDrawObject.draw(this);
-		}
+		drawCustom(_widgetControlledDraw);
 		
-		textLabel.draw();
+		_textLabel.draw();
 	}
 }

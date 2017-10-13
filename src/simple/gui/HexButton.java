@@ -3,15 +3,17 @@ package simple.gui;
 import java.awt.Color;
 import java.awt.Font;
 
+import simple.gui.textarea.Label;
+
 public class HexButton extends HexWidget {
     protected Color _hoverColor, _clickColor, _disabledColor, _currentColor;
-    protected Label textLabel;
+    protected Label _textLabel;
 
-    public Color getHoverColor() { return _hoverColor; }
-    public Color getClickColor() { return _clickColor; }
-    public Color getDisabledColor() { return _disabledColor; }
+    public Color hoverColor() { return _hoverColor; }
+    public Color clickColor() { return _clickColor; }
+    public Color disabledColor() { return _disabledColor; }
 
-    public String getText() { return textLabel.getText(); }
+    public String text() { return _textLabel.text(); }
     
     /** By default will reset the other colors as well*/
     @Override
@@ -21,50 +23,62 @@ public class HexButton extends HexWidget {
         _clickColor = Draw.scaleColor(fillColor, 0.86f);
         _disabledColor = Draw.scaleColor(fillColor, 0.8f);
     }
+    /** Sets only the fill color, doesn't adjust the other colors */
     public void setOnlyFillColor(Color fillColor) { super.setFillColor(fillColor); }
     public void setHoverColor(Color hoverColor) { _hoverColor = hoverColor; }
     public void setClickColor(Color clickColor) { _clickColor = clickColor; }
     public void setDisabledColor(Color disabledColor) { _disabledColor = disabledColor; }
     
-    public void setText(String text) { textLabel.setText(text); }
+    @Override
+    public void setEnabled(boolean enabled) { 
+        super.setEnabled(enabled); 
+        _textLabel.setEnabled(enabled);
+        if (!enabled) { 
+            _currentColor = _disabledColor;
+        }
+    }
+    @Override
+    public void blockWidget() { super.blockWidget(); _currentColor = _fillColor; }
+    
+    public void setText(String text) { _textLabel.setText(text); }
     @Override
     public void setFont(Font font) {
         super.setFont(font);
-        textLabel.setFont(font);
+        _textLabel.setFont(font);
     }
     @Override
-    public void setTextColor(Color color) {
-        super.setTextColor(color);
-        textLabel.setTextColor(color);
+    public void setTextColor(Color textColor) {
+        super.setTextColor(textColor);
+        _textLabel.setTextColor(textColor);
     }
     
     @Override
     public void setLocation(int x, int y) {
         super.setLocation(x, y);
-        textLabel.setLocation(x, y);
+        _textLabel.setLocation(x, y);
     }
     @Override
     public void setSize(int w, int h) {
         super.setSize(w, h);
-        if (textLabel != null) {
-            textLabel.setSize(w, h);
+        if (_textLabel != null) {
+            _textLabel.setSize(w, h);
         }
     }
     @Override
     public void setRadius(float radiusx, float radiusy) {
         super.setRadius(radiusx, radiusy);
-        if (textLabel != null) {
-            textLabel.setLocation(x, y);
-            textLabel.setSize(w, h);
+        if (_textLabel != null) {
+            _textLabel.setLocation(_x, _y);
+            _textLabel.setSize(_w, _h);
         }
     }
     
     public HexButton(int centerx, int centery, float radiusx, float radiusy, HexType hexType) {
         super(centerx, centery, radiusx, radiusy, hexType);
-        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
-        _clickColor = Draw.scaleColor(fillColor, 0.86f);
-        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
-        textLabel = new Label(x, y, w, h);
+        _hoverColor = Draw.scaleColor(_fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(_fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(_fillColor, 0.8f);
+        _textLabel = new Label(_x, _y, _w, _h);
     }
     
     public HexButton(int centerx, int centery, float radius, HexType hexType) {
@@ -73,40 +87,35 @@ public class HexButton extends HexWidget {
     
     public HexButton(int x, int y, int w, int h, HexType hexType) {
         super(x, y, w, h, hexType);
-        _hoverColor = Draw.scaleColor(fillColor, 0.92f);
-        _clickColor = Draw.scaleColor(fillColor, 0.86f);
-        _disabledColor = Draw.scaleColor(fillColor, 0.8f);
-        textLabel = new Label(x, y, w, h);
+        _hoverColor = Draw.scaleColor(_fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(_fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(_fillColor, 0.8f);
+        _textLabel = new Label(x, y, w, h);
     }
 
     @Override
-    public void update() {
-        updateClickingState();
-        
-        if (!enabled) {
+    protected void updateWidget() {        
+        if (!_enabled) {
             _currentColor = _disabledColor;
-        } else if (blocked) {
-            _currentColor = fillColor;
-        } else if (isClicking()) {
+        } else if (_blocked) {
+            _currentColor = _fillColor;
+        } else if (clicking()) {
             _currentColor = _clickColor;
-        } else if (isHovering()) {
+        } else if (hovering()) {
             _currentColor = _hoverColor;
         } else { 
-            _currentColor = fillColor;
+            _currentColor = _fillColor;
         }
         
-        textLabel.update();
+        _textLabel.draw();
     }
 
     @Override
-    public void draw() {
-        if (!visible) return;
-        
-        Draw.setStroke(borderColor);
+    protected void drawWidget() {
+        Draw.setStroke(_borderColor);
         Draw.setFill(_currentColor);
         Draw.polygon(_hexPoints[0],_hexPoints[1], 6);
-        
-        textLabel.draw();
+        _textLabel.draw();
     }
     
 }

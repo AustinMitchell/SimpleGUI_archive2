@@ -7,7 +7,7 @@ import simple.gui.Widget;
 
 public class BasicPanel extends Panel {
 
-	protected Map<Widget, Constraints> widgetConstraintsMap;
+	protected Map<Widget, Constraints> _widgetConstraintsMap;
 	
 	@Override
 	public void setWidgetDimensions(Widget widget, Dimensions d) {
@@ -15,10 +15,10 @@ public class BasicPanel extends Panel {
 			return;
 		}
 		
-		Constraints c = widgetConstraintsMap.get(widget);
+		Constraints c = _widgetConstraintsMap.get(widget);
 		
-		widget.setX((int)(this.x + d.x - c.x1));
-		widget.setY((int)(this.y + d.y - c.y1));
+		widget.setX((int)(this._x + d.x - c.x1));
+		widget.setY((int)(this._y + d.y - c.y1));
 		widget.setWidth((int)(d.w + c.x2));
 		widget.setHeight((int)(d.h + c.y2));
 	}
@@ -28,7 +28,7 @@ public class BasicPanel extends Panel {
 	}
 	public BasicPanel(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		widgetConstraintsMap = new HashMap<Widget, Constraints>();
+		_widgetConstraintsMap = new HashMap<Widget, Constraints>();
 	}
 	
 	@Override
@@ -37,12 +37,12 @@ public class BasicPanel extends Panel {
 	}
 	@Override
 	public void addWidget(Widget newWidget, Dimensions d, Constraints c, int priority) {
-		newWidget.setX((int)(this.x + d.x - c.x1));
-		newWidget.setY((int)(this.y + d.y - c.y1));
+		newWidget.setX((int)(this._x + d.x - c.x1));
+		newWidget.setY((int)(this._y + d.y - c.y1));
 		newWidget.setWidth((int)(d.w + c.x2));
 		newWidget.setHeight((int)(d.h + c.y2));
 				
 		addWidget(newWidget, priority);
-		widgetConstraintsMap.put(newWidget, c);
+		_widgetConstraintsMap.put(newWidget, c);
 	}
 }
