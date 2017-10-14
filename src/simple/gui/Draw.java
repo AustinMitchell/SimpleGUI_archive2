@@ -17,7 +17,8 @@ public class Draw {
 	private static Graphics2D _g;
 	private static BufferedImage _image;
 		
-	/** Called within SimpleGUIApp to initialize the DrawModule. Don't call this yourself unless you know what you're doing. **/
+	/** Called within SimpleGUIApp to initialize the DrawModule. Don't call this yourself unless you know what you're doing. 
+	 * @param app      Application to associate with*/
 	public static void initialize(SimpleGUIApp app) {
 		Draw._app = app;
 		_image = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -90,6 +91,12 @@ public class Draw {
 	public static void rect(int x, int y, int w, int h) {
 		rect(_g, x, y, w, h);
 	}
+	/** Draws a rectangle onto an image. The outline is specified by stroke, the fill by fill. 
+	 * @param image     Destination image to draw onto
+     * @param x         x coordinate of the bottom left (visually top left) corner. 
+     * @param y         y coordinate of the bottom left (visually top left) corner. 
+     * @param w         width of the retangle. 
+     * @param h         height of the rectangle. **/
 	public static Image rect(Image image, int x, int y, int w, int h) {
 		rect(image.graphics2D(), x, y, w, h);
 		return image;
@@ -112,6 +119,12 @@ public class Draw {
 	public static void oval(int x, int y, int w, int h) {
 		oval(_g, x, y, w, h);
 	}
+	/** Draws an oval onto an image. The outline is specified by stroke, the fill by fill. 
+	 * @param image     Destination image to draw to
+     * @param x         x coordinate of the top left of the bounding box. 
+     * @param y         y coordinate of the top left of the bounding box. 
+     * @param w         x diameter of the oval. 
+     * @param h         y diameter of the oval. **/
 	public static Image oval(Image image, int x, int y, int w, int h) {
 		oval(image.graphics2D(), x, y, w, h);
 		return image;
@@ -126,7 +139,7 @@ public class Draw {
 			g2D.drawOval(x, y, w, h);
 		}
 	}
-	/** Draws an oval. The outline is specified by stroke, the fill by fill. 
+	/** Draws an oval centered at (x,y). The outline is specified by stroke, the fill by fill. 
 	 * @param x			x coordinate of the center. 
 	 * @param y			y coordinate of the center. 
 	 * @param w			x radius of the oval. 
@@ -134,6 +147,12 @@ public class Draw {
 	public static void ovalCentered(int x, int y, int w, int h) {
 		ovalCentered(_g, x, y, w, h);
 	}
+	/** Draws an oval to an image centered at (x,y). The outline is specified by stroke, the fill by fill. 
+	 * @param image     Destination image to draw onto
+     * @param x         x coordinate of the center. 
+     * @param y         y coordinate of the center. 
+     * @param w         x radius of the oval. 
+     * @param h         y radius of the oval. **/
 	public static Image ovalCentered(Image image, int x, int y, int w, int h) {
 		ovalCentered(image.graphics2D(), x, y, w, h);
 		return image;
@@ -159,6 +178,15 @@ public class Draw {
 	public static void tri(int x1, int y1, int x2, int y2, int x3, int y3) {
 		tri(_g, x1, y1, x2, y2, x3, y3);
 	}
+	/** Draws a triangle onto an image. The outline is specified by stroke, the fill by fill. 
+	 * @param image         Destination image to draw onto
+     * @param x1            x coordinate of the first point. 
+     * @param y1            y coordinate of the first point.
+     * @param x2            x coordinate of the second point. 
+     * @param y2            y coordinate of the second point. 
+     * @param x3            x coordinate of the third point. 
+     * @param y3            y coordinate of the third point.
+     * */
 	public static Image tri(Image image, int x1, int y1, int x2, int y2, int x3, int y3) {
 		tri(image.graphics2D(), x1, y1, x2, y2, x3, y3);
 		return image;
@@ -168,7 +196,7 @@ public class Draw {
 		int[] y = {y1, y2, y3};
 		polygon(g2D, x, y, 3);
 	}
-	/** Draws a line between two points. The color is specified by stroke. 
+	/** Draws a line between two points onto the stored graphics context. The color is specified by stroke. 
 	 * @param x1		x coordinate of one end. 
 	 * @param y1		y coordinate of one end. 
 	 * @param x2		x coordinate of another end. 
@@ -176,6 +204,12 @@ public class Draw {
 	public static void line(int x1, int y1, int x2, int y2) {
 		line(_g, x1, y1, x2, y2);
 	}
+	/** Draws a line between two points onto an image. The color is specified by stroke. 
+	 * @param image     Destination image to draw onto
+     * @param x1        x coordinate of one end. 
+     * @param y1        y coordinate of one end. 
+     * @param x2        x coordinate of another end. 
+     * @param y2        y coordinate of another end. **/
 	public static Image line(Image image, int x1, int y1, int x2, int y2) {
 		line(image.graphics2D(), x1, y1, x2, y2);
 		return image;
@@ -187,10 +221,13 @@ public class Draw {
 		}
 	}
 	
-	/** Sets the stored Graphics2D object's stored font. **/
+	/** Sets the stored Graphics2D object's stored font. 
+	 * @param font     New font to store **/
 	public static void setFont(Font font) { setFont(_g, font); }
-	public static Image setFont(Image image, Font font) { setFont(image.graphics2D(), font); return image; }
-	public static void setFont(Graphics2D g2D, Font font) { g2D.setFont(font); }
+	/** Sets the font for the images graphics context. 
+     * @param font     New font to store **/
+	public static void setFont(Image image, Font font) { setFont(image.graphics2D(), font); }
+	private static void setFont(Graphics2D g2D, Font font) { g2D.setFont(font); }
 	/** Draws text on the screen with a given font, with the text starting at the point x, y. This changes the currently set font
 	 * for the given graphics object. 
 	 * @param textToDraw	Text to draw to the screen. 
@@ -200,9 +237,15 @@ public class Draw {
 	public static void text(String textToDraw, Font font, int x, int y) {
 		text(_g, textToDraw, font, x, y);
 	}
-	public static Image text(Image image, String textToDraw, Font font, int x, int y) {
+	/** Draws text onto an image with a given font, with the text starting at the point x, y. This changes the currently set font
+     * for the given graphics object. 
+     * @param image         Destination image to draw to
+     * @param textToDraw    Text to draw to the screen. 
+     * @param font          Set's the currently used font for the graphics object. 
+     * @param x             x coordinate to start the drawing of the text.
+     * @param y             y coordinate to start the drawing of the text.**/
+	public static void text(Image image, String textToDraw, Font font, int x, int y) {
 		text(image.graphics2D(), textToDraw, font, x, y);
-		return image;
 	}
 	private static void text(Graphics2D g2D, String textToDraw, Font font, int x, int y) {
 		setFont(g2D, font);
@@ -228,14 +271,19 @@ public class Draw {
 		}
 	}
 	
-	/** Draws text on the screen aligned to the right with whatever font the graphics object is using, with the text starting at the point x, y.
-	 * for the given graphics object. 
+	/** Draws text on the screen aligned to the right with whatever font the graphics object is using, with the text starting at the point x, y
+	 * onto the stored graphics context
 	 * @param textToDraw	Text to draw to the screen. 
 	 * @param x				x coordinate to start the drawing of the text.
 	 * @param y				y coordinate to start the drawing of the text.**/
 	public static void textRight(String textToDraw, int x, int y) {
 		textRight(_g, textToDraw, x, y);
 	}
+	/** Draws text on the screen aligned to the right onto an image, with the text starting at the point x, y.
+     * @param image         Destination image to draw onto
+     * @param textToDraw    Text to draw to the screen. 
+     * @param x             x coordinate to start the drawing of the text.
+     * @param y             y coordinate to start the drawing of the text.**/
 	public static Image textRight(Image image, String textToDraw, int x, int y) {
 		textRight(image.graphics2D(), textToDraw, x, y);
 		return image;
@@ -248,14 +296,20 @@ public class Draw {
 		}
 	}
 	
-	/** Draws text on the screen with whatever font the graphics object is using, with the text center at the point x, y.
-	 * for the given graphics object. 
+	/** Draws text on the screen with whatever font the graphics object is using, with the text center at the point x, y
+	 * onto the stored graphics object. 
 	 * @param textToDraw	Text to draw to the screen. 
 	 * @param x				x coordinate of the text center.
 	 * @param y				y coordinate of the text center.**/
 	public static void textCentered(String textToDraw, Font font, int x, int y) {
 		textCentered(_g, textToDraw, font, x, y);
 	}
+	/** Draws text on the screen with whatever font the graphics object is using, with the text center at the point x, y
+     * onto an image. 
+     * @param image         image to draw to
+     * @param textToDraw    Text to draw to the screen. 
+     * @param x             x coordinate of the text center.
+     * @param y             y coordinate of the text center.**/
 	public static Image textCentered(Image image, String textToDraw, Font font, int x, int y) {
 		textCentered(image.graphics2D(), textToDraw, font, x, y);
 		return image;
@@ -272,6 +326,12 @@ public class Draw {
 	public static void textCentered(String textToDraw, int x, int y) {
 		textCentered(_g, textToDraw, x, y);
 	}
+	/** Draws text on the screen with whatever font the graphics object is using, with the text center at the point x, y
+     * onto the given image
+     * @param image         image to draw onto
+     * @param textToDraw    Text to draw to the screen. 
+     * @param x             x coordinate of the text center.
+     * @param y             y coordinate of the text center.**/
 	public static Image textCentered(Image image, String textToDraw, int x, int y) {
 		textCentered(image.graphics2D(), textToDraw, x, y);
 		return image;
@@ -284,34 +344,58 @@ public class Draw {
 		}
 	}
 	
-	/** Calls an Image object's Draw function using the stored Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's Draw function using the stored Graphics2D object. Refer to Image. 
+	 * @param imageToDraw      source image to draw with
+	 * @param x                x position for where to start drawing
+	 * @param y                y position for where to start drawing **/
 	public static void image(Image imageToDraw, int x, int y) { image(_g, imageToDraw, x, y); }
-	/** Calls an Image object's DrawCentered function using the stored Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's DrawCentered function using the stored Graphics2D object. Refer to Image.
+	 * 
+	 * @param imageToDraw      source image to draw with
+	 * @param x                center x position for where to draw the image
+	 * @param y                center y position for where to draw the image
+	 */
 	public static void imageCentered(Image imageToDraw, int x, int y) { imageCentered(_g, imageToDraw, x, y); }
-	/** Calls an Image object's DrawRotated function using the stored Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's DrawRotated function using the stored Graphics2D object. Refer to Image.
+	 * 
+	 * @param imageToDraw      source image to draw with
+	 * @param x                center x position for where to draw the image
+	 * @param y                center y position for where to draw the image
+	 * @param angle            angle to rotate the image by when drawing
+	 */
 	public static void imageRotated(Image imageToDraw, int x, int y, double angle) { imageRotated(_g, imageToDraw, x, y, angle); }
 	
-	/** Calls an Image object's Draw function using the imageBuffer's Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's Draw function using the imageBuffer's Graphics2D object. Refer to Image.
+	 * @param imageBuffer      destination image to draw to
+	 * @param imageToDraw      source image to draw with
+     * @param x                x position for where to start drawing
+     * @param y                y position for where to start drawing */
 	public static Image image(Image imageBuffer, Image imageToDraw, int x, int y) { 
 		image(imageBuffer.graphics2D(), imageToDraw, x, y);
 		return imageBuffer;
 	}
-	/** Calls an Image object's DrawCentered function using the imageBuffer's Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's DrawCentered function using the imageBuffer's Graphics2D object. Refer to Image. 
+	 * @param imageBuffer      destination image to draw to
+	 * @param imageToDraw      source image to draw with
+     * @param x                center x position for where to draw the image
+     * @param y                center y position for where to draw the image */
 	public static Image imageCentered(Image imageBuffer, Image imageToDraw, int x, int y) { 
 		imageCentered(imageBuffer.graphics2D(), imageToDraw, x, y); 
 		return imageBuffer;
 	}
-	/** Calls an Image object's DrawRotated function using the imageBuffer's Graphics2D object. Refer to Image. **/
+	/** Calls an Image object's DrawRotated function using the imageBuffer's Graphics2D object. Refer to Image. 
+	 * @param imageBuffer      destination image to draw to
+     * @param imageToDraw      source image to draw with
+     * @param x                center x position for where to draw the image
+     * @param y                center y position for where to draw the image 
+     * @param angle            angle to rotate the image by when drawing*/
 	public static Image imageRotated(Image imageBuffer, Image imageToDraw, int x, int y, double angle) { 
 		imageRotated(imageBuffer.graphics2D(), imageToDraw, x, y, angle); 
 		return imageBuffer;
 	}
 	
-	/** Calls an Image object's Draw function using the given Graphics2D object. Refer to Image. **/
 	private static void image(Graphics2D g2D, Image imageToDraw, int x, int y) { imageToDraw.draw(g2D, x, y); }
-	/** Calls an Image object's DrawCentered function using the given Graphics2D object. Refer to Image. **/
 	private static void imageCentered(Graphics2D g2D, Image imageToDraw, int x, int y) { imageToDraw.drawCentered(g2D, x, y); }
-	/** Calls an Image object's DrawRotated function using the given Graphics2D object. Refer to Image. **/
 	private static void imageRotated(Graphics2D g2D, Image imageToDraw, int x, int y, double angle) { imageToDraw.drawRotated(g2D, x, y, angle); }
 	
 	/** Multiplies each value in a Color object by a constant.

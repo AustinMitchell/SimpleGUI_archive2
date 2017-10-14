@@ -14,8 +14,8 @@ public class Tuple {
     }
     /** Creates a generator that generates coordinates like a 2D array.<P>
      * 
-     *      i -> first dimension
-     *      j -> second dimension<P>
+     *      i: first dimension
+     *      j: second dimension<P>
      *      
      *      Each iteration results in a 2-tuple
      *      
@@ -41,14 +41,14 @@ public class Tuple {
             }};
     }
     /** Creates a generator that starts at 0,0,0 in a hex grid and generates coordinates
-     * in a radius around the origin, i.e. max(|x|,|y|,|z|) <= radius for all points generated.<P>
+     * in a radius around the origin, i.e. max(|x|,|y|,|z|) &lt;= radius for all points generated.<P>
      * 
-     *      x -> first cube coordinate dimension
-     *      y -> second cube coordinate dimension
-     *      z -> third cube coordinate dimension
-     *      rad -> current radius being worked on
-     *      dir -> specifies which direction to go on each repetition.
-     *      rep -> repetition counter where the (x,y,z) are modified<P>
+     *      x: first cube coordinate dimension
+     *      y: second cube coordinate dimension
+     *      z: third cube coordinate dimension
+     *      rad: current radius being worked on
+     *      dir: specifies which direction to go on each repetition.
+     *      rep: repetition counter where the (x,y,z) are modified<P>
      *      
      *      Each iteration results in a 3-tuple
      *      
@@ -90,15 +90,15 @@ public class Tuple {
     }
     
     /** Creates a generator that starts at 0,0,0 in a hex grid and generates coordinates
-     * in layers of triangles around the origin, i.e. (|x|+|y|+|z|)/2 <= 2*layers for all points 
+     * in layers of triangles around the origin, i.e. (|x|+|y|+|z|)/2 &lt;= 2*layers for all points 
      * generated.<P>
      * 
-     *      x -> first cube coordinate dimension
-     *      y -> second cube coordinate dimension
-     *      z -> third cube coordinate dimension
-     *      layer -> current layer being worked on
-     *      dir   -> specifies which direction to go on each repetition.
-     *      rep   -> repetition counter where the (x,y,z) are modified<P>
+     *      x: first cube coordinate dimension
+     *      y: second cube coordinate dimension
+     *      z: third cube coordinate dimension
+     *      layer: current layer being worked on
+     *      dir:   specifies which direction to go on each repetition.
+     *      rep:   repetition counter where the (x,y,z) are modified<P>
      *      
      *      Each iteration results in a 3-tuple
      *      

@@ -1,4 +1,10 @@
 simple.gui
 simple.gui.panel
 simple.gui.scrollbox
+simple.gui.textarea
+simple.misc
+simple.misc.hex
 simple.run
+testers
+testers.ball_tests
+testers.random_map
