@@ -3,6 +3,8 @@ package simple.run;
 /** Static class that allows you to delay the program **/
 public class Timer {
 	private static long timeAtLastCall = 0;
+	
+	public static long latestTimePollMillis() { return timeAtLastCall/1000000L; }
 		
 	/** Delays the program for the exact amount of milliseconds given **/
 	public static void delay(int delayMillis) {

@@ -114,7 +114,7 @@ public abstract class SimpleGUIApp extends JPanel implements Runnable {
 	/** Draws whatever is on the DrawModule image buffer to the program window **/
 	protected void DrawToScreen() {
 		Graphics g2 = getGraphics();
-		g2.drawImage(Draw.getImage(), 0, 0, null);
+		g2.drawImage(Draw.getBufferedImage(), 0, 0, null);
 		g2.dispose();
 	}
 	/** Covers the DrawModule image buffer with the background color, effectively clearing it **/

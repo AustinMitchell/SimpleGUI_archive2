@@ -15,27 +15,30 @@ public class Draw {
 	private static Color _stroke = Color.BLACK;
 	
 	private static Graphics2D _g;
-	private static BufferedImage _image;
+	private static BufferedImage _bimage;
+	private static Image _image;
 		
 	/** Called within SimpleGUIApp to initialize the DrawModule. Don't call this yourself unless you know what you're doing. 
 	 * @param app      Application to associate with*/
 	public static void initialize(SimpleGUIApp app) {
 		Draw._app = app;
-		_image = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
-		_g = (Graphics2D) _image.getGraphics();
+		_bimage = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
+		_g = (Graphics2D) _bimage.getGraphics();
+		_image = new Image(_bimage);
 	}
 	/** Called within SimpleGUIApp. Don't call this yourself unless you know what you're doing. **/
 	public static void setGraphics() {
 		BufferedImage newImage = new BufferedImage(_app.getWidth(), _app.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		_g = (Graphics2D) newImage.getGraphics();
-		_g.drawImage(_image, 0, 0, null);
-		_image = newImage;
+		_g.drawImage(_bimage, 0, 0, null);
+		_bimage = newImage;
 	}
 	
 	public static int windowWidth() { return _app.windowWidth(); }
 	public static int windowHeight() { return _app.windowHeight(); }
 	
-	public static BufferedImage getImage() { return _image; }
+	public static BufferedImage getBufferedImage() { return _bimage; }
+	public static Image getImage() { return _image; }
 	
 	/** Returns the DrawObject's stored Graphics2D object. **/
 	public static Graphics2D getGraphics() { return _g; }

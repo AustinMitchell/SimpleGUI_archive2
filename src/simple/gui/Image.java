@@ -14,6 +14,16 @@ import javax.imageio.ImageIO;
  * with the BufferedImage, you can get this from the Image object. Ths object's funcionality is currently limited as it's meant to have
  * only simple and easy to understand usage. **/
 public final class Image {
+    public static class ResLoader {
+        public static InputStream load(String path) {
+            InputStream input = ResLoader.class.getResourceAsStream(path);
+            if (input == null) {
+                input = ResLoader.class.getResourceAsStream("/"+path);
+            }
+            return input;
+        }
+    }
+    
 	public static enum Orientation {
 		UP, RIGHT, DOWN, LEFT;
 		public static String toString(Orientation o) {
