@@ -10,6 +10,7 @@ Contents
   * [User Input / Vector Class](#user-input--vector-class)
   * [Widgets](#widgets)
   * [Hex Arrays & Hex Widgets](#hex-arrays--hex-widgets)
+  * [Animations](#animations)
 
 #### src/testers/EmptyApp.java
 ```java
@@ -521,3 +522,79 @@ The hex array stores references to parameterized *HexData* objects, which store 
 This program creates a radial hex array, which is an array where the (0, 0, 0) coordinate is at the center and the rule is that given radius *r* and coordinate (*x, y, z*): `max(x, y, z) <= r`
 
 The higher the hex is in a particular coordinate, the higher its corresponding color value is. In this case *x* maps to red, *y* maps to green, and *z* maps to blue. First we figure out what the hexes centerpoint is going to be in the screen given its cube coordinate, we color it, then place it in the array. Since the array by default stores a bunch of *HexData* objects with data set to null, this step is important. Finally, we draw a linegrid in the background, then draw the hexes, and check if a hex has been clicked. If it has, update the label with the coordinate data of that particular *HexButton*.
+
+### Animations
+
+Also added in October 2017 are Animations. This is a convenient wrapper for having animations run alongside other drawing functions, and can be applied anywhere. You can inherit from widgets and add animations as part of the widget drawing. Three basic utilities are provided: Animatable interface, and Animation/AnimationGroup classes. The animatable interface describes a generic format for creating and interacting with animations. 
+
+An animation stores an image list and iterates over these images to display. Every time update() is called, it will figure out the current animation frame based off of how much time has passed since starting. For instance, if you have a 20 frame animation that you said will take 1 second to complete a cycle, then every 50ms the next frame will be set to display. You can also specify whether or not the animation will loop. If it loops, the only way to 'kill' the animation is with the endAnimation() function. If an animation is finished, calls to update() and draw() will do nothing. There is a generator class which exists like a partial function: It stores some metadata for some future animation, and then any number of times in the future you can call generate() to create a new animation. This is useful if you have lots of animations that are the same or if you want to pass some handle for creating animations without needing to also pass all the animation data.
+
+An AnimationGroup is a way to collect a bunch of animations together without having to manually manage them yourself. You can register any Animatable object, and it will automatically set their position based of its own position, update and draw them. If an animation ends or it is killed, it will be automatically deregistered from the group. An AnimationGroup can be registered to another AnimationGroup, as they are Animatable as well.
+
+This code example will create an explosion on the screen wherever the mouse button is clicked:
+
+```java
+
+package testers.animation;
+
+import simple.run.*;
+import simple.gui.*;
+import simple.gui.animation.Animation;
+import simple.gui.animation.AnimationGroup;
+import simple.gui.panel.*;
+
+import java.util.*;
+
+public class AnimationTest extends SimpleGUIApp {
+    public static void main(String[]args) { AnimationTest.start(new AnimationTest(), "Test Program"); } // Boilerplate code to start program
+    public AnimationTest() { super(1025, 1025, 144); } // More boilerplate, arguments are screen dimensions and frames per second desired
+
+    // This group will collectively update all explosion animations
+    AnimationGroup explosions;
+    /* Since all the explosions are pretty much the same in this case, we have a generator which
+     * will store metadata about each new explosion animation */
+    Animation.Generator explosionGenerator;
+    
+    // This is just a clickable surface to get a clicking event
+    Panel screen;
+    
+    public void setup() {
+        // Create list of images
+        ArrayList<Image> imageList = new ArrayList<Image>();
+        for (int i=5; i<=74; i++) {
+            /* The resloader is a useful tool for creating an inputstream from something in your classpath. 
+             * Absolutely necessary for runnable jar files. Ideally when running this program these image
+             * files are on your classpath under the folder explosion.
+             * Image can use an inputstream and turn it into a buffered image */
+            imageList.add(new Image(Image.ResLoader.load("explosion/explosion"+i+".png")));
+        }
+        
+        // Spans the whole window
+        screen = new BasicPanel(0, 0, getWidth(), getHeight());
+        /* Each animation will use imagelist, last 800 milliseconds and won't loop. Toggle the delay and 
+         * loop value to see what happens */
+        explosionGenerator = new Animation.Generator(imageList, 800, false);
+        // All registered animations will be offset relative to the point (0, 0).
+        explosions = new AnimationGroup(0, 0);
+    }
+    public void loop() {
+        screen.update();
+        // This will update all stored animations
+        explosions.update();
+
+        /* If screen is clicked, create a new animation. Register it at layer 0. The layer is just ordering. 
+         * Lower layers are drawn first. */
+        if (screen.clicked()) {
+            /* Note here that you could skip the generator and just make a new instance of Animation or some 
+             * other Animatable object and toss it in. The generator is just for convenience.
+             * Note the (-60, -60) offset. This is for centering the animation on the mouse.*/
+            explosions.registerAnimation(explosionGenerator.generate(Input.mouseX()-60, Input.mouseY()-60), 0);
+        }
+        
+        // Draw everything
+        screen.draw();
+        explosions.draw();
+        updateView();
+    }
+}
+```

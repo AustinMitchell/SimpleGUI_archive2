@@ -48,6 +48,9 @@ public class AnimationGroup implements Animatable {
 
     @Override
     public void updateInternal(long currentTime) {
+        if (_finished) {
+            return;
+        }
         for (Entry<Integer, ArrayList<Animatable>> entry: _animationMap.entrySet()) {
             Animatable a = null;
             for (Iterator<Animatable> listIter = _animationMap.get(entry.getKey()).iterator(); listIter.hasNext();) {
@@ -62,6 +65,9 @@ public class AnimationGroup implements Animatable {
 	
     @Override
     public void draw() {
+        if (_finished) {
+            return;
+        }
         for (Entry<Integer, ArrayList<Animatable>> entry: _animationMap.entrySet()) {
             for (Animatable a: _animationMap.get(entry.getKey())) {
                 a.draw();

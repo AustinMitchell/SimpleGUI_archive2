@@ -8,34 +8,49 @@ import simple.run.Timer;
 
 public class Animation implements Animatable {
     public static class Generator {
+        private Image _drawSurface;
         private List<Image> _images;
         private int _offsetx, _offsety;
         private int _animationTime;
         private boolean _loop;
         
+        public Generator(List<Image> images, int animationTime, boolean loop) {
+            this(images, 0, 0, animationTime, loop);
+        }
+        public Generator(Image drawSurface, List<Image> images, int animationTime, boolean loop) {
+            this(drawSurface, images, 0, 0, animationTime, loop);
+        }
         public Generator(List<Image> images, int offsetx, int offsety, int animationTime, boolean loop) {
+            this(null, images, offsetx, offsety, animationTime, loop);
+        }
+        public Generator(Image drawSurface, List<Image> images, int offsetx, int offsety, int animationTime, boolean loop) {
+            _drawSurface = drawSurface;
             _images = images; 
             _offsetx = offsetx; 
             _offsety = offsety; 
             _animationTime = animationTime;
             _loop = loop;
         }
-        public Generator(List<Image> images, int animationTime, boolean loop) {
-            this(images, 0, 0, animationTime, loop);
-        }
         
+        public Animation generate() {
+            return generate(_drawSurface);
+        }
         public Animation generate(Image drawSurface) {
-            return new Animation(drawSurface, _images, _offsetx, _offsety, _animationTime, _loop);
+            return generate(drawSurface, _offsetx, _offsety);
+        }
+        public Animation generate(int offsetx, int offsety) {
+            return generate(_drawSurface, offsetx, offsety);
         }
         public Animation generate(Image drawSurface, int offsetx, int offsety) {
             return new Animation(drawSurface, _images, offsetx, offsety, _animationTime, _loop);
         }
+        
     }
     
     protected Image       _drawSurface;
     protected List<Image> _images;
     protected int         _animationTime, _currentImage;
-    protected int	        _x, _y, _offsetx, _offsety;
+    protected int	      _x, _y, _offsetx, _offsety;
     protected boolean     _finished, _loop;
     protected float       _frameDelay;
     protected long        _initialTime;
@@ -52,6 +67,12 @@ public class Animation implements Animatable {
 	
 	public Animation(Image drawSurface, List<Image> images, int offsetx, int offsety, int animationTime, boolean loop) {
 	    this(drawSurface, images, 0, 0, offsetx, offsety, animationTime, loop);
+	}
+	public Animation(List<Image> images, int offsetx, int offsety, int animationTime, boolean loop) {
+        this(null, images, 0, 0, offsetx, offsety, animationTime, loop);
+    }
+	public Animation(List<Image> images, int x, int y, int offsetx, int offsety, int animationTime, boolean loop) {
+	    this(null, images, x, y, offsetx, offsety, animationTime, loop);
 	}
 	public Animation(Image drawSurface, List<Image> images, int x, int y, int offsetx, int offsety, int animationTime, boolean loop) {
 	    _drawSurface   = drawSurface;
@@ -76,7 +97,7 @@ public class Animation implements Animatable {
 	    if (_finished) {
             return;
         }
-	    if (!_loop && currentTime-_initialTime > _animationTime) {
+	    if (!_loop && currentTime-_initialTime >= _animationTime) {
             _finished = true;
             return;
         }
@@ -89,7 +110,6 @@ public class Animation implements Animatable {
 	        return;
 	    }
 	    
-	    System.out.println("Current image: " + _currentImage);
 	    if (_drawSurface == null) {
 	        Draw.image(_images.get(_currentImage), _x, _y);
 	    } else {
