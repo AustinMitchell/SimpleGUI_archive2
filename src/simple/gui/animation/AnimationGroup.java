@@ -30,12 +30,14 @@ public class AnimationGroup implements Animatable {
     }
     public void endAmination() { _finished = true; }
 	
-	public void registerAnimation(Animatable newAnimation, int layer) {
+	public Animatable.Handle registerAnimation(Animatable newAnimation, int layer) {
 	    if (!_animationMap.containsKey(layer)) {
 	        _animationMap.put(layer, new ArrayList<Animatable>());
 	    }
 	    _animationMap.get(layer).add(newAnimation);
 	    newAnimation.updatePosition(_x, _y);
+	    
+	    return newAnimation.handle();
 	}
 	
    public AnimationGroup(int x, int y) {        

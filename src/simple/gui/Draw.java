@@ -116,6 +116,38 @@ public class Draw {
 			g2D.drawRect(x, y, w, h);
 		}
 	}
+	/** Draws an arc. The outline is specified by stroke, the fill by fill. 
+     * @param x             x coordinate of the top left of the bounding box. 
+     * @param y             y coordinate of the top left of the bounding box. 
+     * @param w             x diameter of the oval. 
+     * @param h             y diameter of the oval. 
+     * @param startAngle    Angle to begin the arc at
+     * @param endAngle      Degrees to span arc*/
+    public static void arc(int x, int y, int w, int h, int startAngle, int endAngle) {
+        arc(_g, x, y, w, h, startAngle, endAngle);
+    }
+    /** Draws an arc onto an image. The outline is specified by stroke, the fill by fill. 
+     * @param x             x coordinate of the top left of the bounding box. 
+     * @param y             y coordinate of the top left of the bounding box. 
+     * @param w             x diameter of the oval. 
+     * @param h             y diameter of the oval. 
+     * @param startAngle    Angle to begin the arc at
+     * @param endAngle      Degrees to span arc*/
+    public static Image arc(Image image, int x, int y, int w, int h, int startAngle, int endAngle) {
+        arc(image.graphics2D(), x, y, w, h, startAngle, endAngle);
+        return image;
+    }
+    private static void arc(Graphics2D g2D, int x, int y, int w, int h, int startAngle, int endAngle) {
+        if (_fill != null) {
+            g2D.setColor(_fill);
+            g2D.fillArc(x, y, w, h, startAngle, endAngle);
+        }
+        if (_stroke != null) {
+            g2D.setColor(_stroke);
+            g2D.drawArc(x, y, w, h, startAngle, endAngle);
+        }
+    }
+	
 	/** Draws an oval. The outline is specified by stroke, the fill by fill. 
 	 * @param x			x coordinate of the top left of the bounding box. 
 	 * @param y			y coordinate of the top left of the bounding box. 

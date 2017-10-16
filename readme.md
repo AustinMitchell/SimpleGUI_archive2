@@ -527,7 +527,9 @@ The higher the hex is in a particular coordinate, the higher its corresponding c
 
 Also added in October 2017 are Animations. This is a convenient wrapper for having animations run alongside other drawing functions, and can be applied anywhere. You can inherit from widgets and add animations as part of the widget drawing. Three basic utilities are provided: Animatable interface, and Animation/AnimationGroup classes. The animatable interface describes a generic format for creating and interacting with animations. 
 
-An animation stores an image list and iterates over these images to display. Every time update() is called, it will figure out the current animation frame based off of how much time has passed since starting. For instance, if you have a 20 frame animation that you said will take 1 second to complete a cycle, then every 50ms the next frame will be set to display. You can also specify whether or not the animation will loop. If it loops, the only way to 'kill' the animation is with the endAnimation() function. If an animation is finished, calls to update() and draw() will do nothing. There is a generator class which exists like a partial function: It stores some metadata for some future animation, and then any number of times in the future you can call generate() to create a new animation. This is useful if you have lots of animations that are the same or if you want to pass some handle for creating animations without needing to also pass all the animation data.
+An animation stores an Animator object which tells us how long the animation is, how many frames and what to do each frame. Every time update() is called, it will figure out the current animation frame based off of how much time has passed since starting. For instance, if you have a 20 frame animation that you said will take 1 second to complete a cycle, then every 50ms the next frame will be set to display. You can also specify whether or not the animation will loop. If it loops, the only way to 'kill' the animation is with the endAnimation() function. If an animation is finished, calls to update() and draw() will do nothing. There is a generator class which exists like a partial function: It stores some metadata for some future animation, and then any number of times in the future you can call generate() to create a new animation. This is useful if you have lots of animations that are the same or if you want to pass some handle for creating animations without needing to also pass all the animation data.
+
+The Animation class comes with a method for creating an Image Animator, if your animation is just displaying a series of images over time. This can be used to pass into a new Animation instance or a generator to make an animation based off the images. The example below does just that.
 
 An AnimationGroup is a way to collect a bunch of animations together without having to manually manage them yourself. You can register any Animatable object, and it will automatically set their position based of its own position, update and draw them. If an animation ends or it is killed, it will be automatically deregistered from the group. An AnimationGroup can be registered to another AnimationGroup, as they are Animatable as well.
 
@@ -572,8 +574,8 @@ public class AnimationTest extends SimpleGUIApp {
         // Spans the whole window
         screen = new BasicPanel(0, 0, getWidth(), getHeight());
         /* Each animation will use imagelist, last 800 milliseconds and won't loop. Toggle the delay and 
-         * loop value to see what happens */
-        explosionGenerator = new Animation.Generator(imageList, 800, false);
+         * loop value to see what happens. To center the image, offset is -50, -50.  */
+        explosionGenerator = new Animation.Generator(Animation.createImageAnimator(imageList, 800), -50, -50, false);
         // All registered animations will be offset relative to the point (0, 0).
         explosions = new AnimationGroup(0, 0);
     }
@@ -587,8 +589,8 @@ public class AnimationTest extends SimpleGUIApp {
         if (screen.clicked()) {
             /* Note here that you could skip the generator and just make a new instance of Animation or some 
              * other Animatable object and toss it in. The generator is just for convenience.
-             * Note the (-60, -60) offset. This is for centering the animation on the mouse.*/
-            explosions.registerAnimation(explosionGenerator.generate(Input.mouseX()-60, Input.mouseY()-60), 0);
+             * Note the animation will be offset by (-60, -60) since we set this at the beginning. */
+            explosions.registerAnimation(explosionGenerator.generate(Input.mouseX(), Input.mouseY()), 0);
         }
         
         // Draw everything

@@ -2,8 +2,8 @@ package testers.animation;
 
 import simple.run.*;
 import simple.gui.*;
-import simple.gui.animation.CustomAnimation;
-import simple.gui.animation.CustomAnimation;
+import simple.gui.animation.Animation;
+import simple.gui.animation.Animation;
 import simple.gui.animation.AnimationGroup;
 import simple.gui.panel.*;
 
@@ -14,7 +14,7 @@ public class CustomAnimationTest extends SimpleGUIApp {
     public static void main(String[]args) { SimpleGUIApp.start(new CustomAnimationTest(), "Test Program"); } // Boilerplate code to start program
     public CustomAnimationTest() { super(1025, 1025, 144); } // More boilerplate, arguments are screen dimensions and frames per second desired
 
-    class LineAnimation implements CustomAnimation.Animator {
+    class LineAnimation implements Animation.Animator {
         int _startx, _starty, _endx, _endy;
         
         public LineAnimation(int startx, int starty, int endx, int endy) {
@@ -59,9 +59,9 @@ public class CustomAnimationTest extends SimpleGUIApp {
         if (screen.clicking()) {
             /* We made a custom animator, which will take old mouse and new mouse positions and draw a line
              * between them*/
-            CustomAnimation.Animator lineAnimator = new LineAnimation(Input.mouseOldX(), Input.mouseOldY(), Input.mouseX(), Input.mouseY());
+            Animation.Animator lineAnimator = new LineAnimation(Input.mouseOldX(), Input.mouseOldY(), Input.mouseX(), Input.mouseY());
             /* Offset is 0, 0, since we programmed it in a way where the offset doesn't do anything. We also want no looping*/
-            animations.registerAnimation(new CustomAnimation(lineAnimator, 0, 0, true), 0);
+            animations.registerAnimation(new Animation(lineAnimator, 0, 0, false), 0);
         }
         
         // Draw everything

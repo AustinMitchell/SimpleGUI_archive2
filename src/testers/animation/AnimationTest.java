@@ -35,8 +35,8 @@ public class AnimationTest extends SimpleGUIApp {
         // Spans the whole window
         screen = new BasicPanel(0, 0, getWidth(), getHeight());
         /* Each animation will use imagelist, last 800 milliseconds and won't loop. Toggle the delay and 
-         * loop value to see what happens. To center the image, offset is -50, -50 */
-        explosionGenerator = new Animation.Generator(imageList, -50, -50, 800, false);
+         * loop value to see what happens. To center the image, offset is -50, -50.  */
+        explosionGenerator = new Animation.Generator(Animation.createImageAnimator(imageList, 800), -50, -50, false);
         // All registered animations will be offset relative to the point (0, 0).
         explosions = new AnimationGroup(0, 0);
     }
