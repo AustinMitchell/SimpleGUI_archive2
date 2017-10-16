@@ -24,7 +24,7 @@ public class Draw {
 		Draw._app = app;
 		_bimage = new BufferedImage(app.windowWidth(), app.windowHeight(), BufferedImage.TYPE_INT_ARGB);
 		_g = (Graphics2D) _bimage.getGraphics();
-		_image = new Image(_bimage);
+		_image = new Image(_bimage, false);
 	}
 	/** Called within SimpleGUIApp. Don't call this yourself unless you know what you're doing. **/
 	public static void setGraphics() {
@@ -55,6 +55,8 @@ public class Draw {
 	public static void setStroke(Color stroke) { setStroke(stroke, 1); }
 	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
 	public static void setStroke(Color stroke, int thickness) { Draw._stroke = stroke; _g.setStroke(new BasicStroke(thickness)); }
+	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
+    public static void setStrokeRound(Color stroke, int thickness) { Draw._stroke = stroke; _g.setStroke(new BasicStroke(thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); }
 	/** Sets the class's local color fields. **/
 	public static void setColors(Color fill, Color stroke) {
 		setFill(fill);

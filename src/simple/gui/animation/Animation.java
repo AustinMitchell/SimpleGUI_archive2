@@ -32,17 +32,17 @@ public class Animation implements Animatable {
             _loop = loop;
         }
         
-        public Animation generate() {
-            return generate(_drawSurface);
+        public Animation generate(int x, int y) {
+            return generate(_drawSurface, x, y, _offsetx, _offsety);
         }
-        public Animation generate(Image drawSurface) {
+        public Animation generate(Image drawSurface, int x, int y) {
             return generate(drawSurface, _offsetx, _offsety);
         }
-        public Animation generate(int offsetx, int offsety) {
-            return generate(_drawSurface, offsetx, offsety);
+        public Animation generate(int x, int y, int offsetx, int offsety) {
+            return generate(_drawSurface, x, y, offsetx, offsety);
         }
-        public Animation generate(Image drawSurface, int offsetx, int offsety) {
-            return new Animation(drawSurface, _images, offsetx, offsety, _animationTime, _loop);
+        public Animation generate(Image drawSurface, int x, int y, int offsetx, int offsety) {
+            return new Animation(drawSurface, _images, x+_offsetx, y+_offsety, _animationTime, _loop);
         }
         
     }

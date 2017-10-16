@@ -35,8 +35,8 @@ public class AnimationTest extends SimpleGUIApp {
         // Spans the whole window
         screen = new BasicPanel(0, 0, getWidth(), getHeight());
         /* Each animation will use imagelist, last 800 milliseconds and won't loop. Toggle the delay and 
-         * loop value to see what happens */
-        explosionGenerator = new Animation.Generator(imageList, 800, false);
+         * loop value to see what happens. To center the image, offset is -50, -50 */
+        explosionGenerator = new Animation.Generator(imageList, -50, -50, 800, false);
         // All registered animations will be offset relative to the point (0, 0).
         explosions = new AnimationGroup(0, 0);
     }
@@ -50,8 +50,8 @@ public class AnimationTest extends SimpleGUIApp {
         if (screen.clicked()) {
             /* Note here that you could skip the generator and just make a new instance of Animation or some 
              * other Animatable object and toss it in. The generator is just for convenience.
-             * Note the (-60, -60) offset. This is for centering the animation on the mouse.*/
-            explosions.registerAnimation(explosionGenerator.generate(Input.mouseX()-60, Input.mouseY()-60), 0);
+             * Note the animation will be offset by (-60, -60) since we set this at the beginning. */
+            explosions.registerAnimation(explosionGenerator.generate(Input.mouseX(), Input.mouseY()), 0);
         }
         
         // Draw everything

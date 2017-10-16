@@ -131,22 +131,30 @@ public final class Image {
     }
 
     /** Creates an image using the same filename and color data from another image. **/
-    public Image(Image imageToCopy) {
-        _w = imageToCopy.w();
-        _h = imageToCopy.h();
+    public Image(Image image) {
+        _w = image.w();
+        _h = image.h();
         _image = new BufferedImage(_w, _h, BufferedImage.TYPE_INT_ARGB);
-        _filename = imageToCopy.fileName();
-        setPixels(imageToCopy.getPixelsNoCopy());
-        _orientation = imageToCopy.orientation();
+        _filename = image.fileName();
+        setPixels(image.getPixelsNoCopy());
+        _orientation = image.orientation();
     }
     
-    /** Creates and image with a default filename using the color data from a BufferedImage. **/
-    public Image(BufferedImage imageToCopy) {
-        _w = imageToCopy.getWidth();
-        _h = imageToCopy.getHeight();
-        _image = new BufferedImage(_w, _h, BufferedImage.TYPE_INT_ARGB);
+    /** Creates and image with a default filename using the color data from a BufferedImage. 
+     * @param image     BufferedImage object
+     * @param copyImage If enabled, it will make a new BufferedImage by copying pixel data from
+     * the original. Otherwise, it will use the same base object. **/
+    public Image(BufferedImage image, boolean copyImage) {
+        _w = image.getWidth();
+        _h = image.getHeight();
+        
+        if (copyImage) {
+            _image = new BufferedImage(_w, _h, BufferedImage.TYPE_INT_ARGB);
+            setPixels(((DataBufferInt)image.getRaster().getDataBuffer()).getData());
+        } else {
+            _image = image;
+        }
         _filename = _w + "-by-" + _h;
-        setPixels(((DataBufferInt)imageToCopy.getRaster().getDataBuffer()).getData());
         _orientation = Orientation.UP;
     }
     
