@@ -144,13 +144,31 @@ public class Tuple {
         _entry = entry;
     }
     public Tuple(Tuple other) {
-        _entry = Arrays.copyOf(other.get(), other.length());
+        _entry = Arrays.copyOf(other.entries(), other.length());
     }
     
     
-    public int   get(int i) { return _entry[i]; }
-    public int[] get()      { return _entry; }
+    public int   entry(int i) { return _entry[i]; }
+    public int[] entries()      { return _entry; }
     public int   length()   { return _entry.length; }
+    
+    public Tuple add(Tuple other) {
+        return add(other._entry);
+    }
+    public Tuple add(int[] other) {
+        Tuple newTuple = new Tuple(this);
+        for (int i=0; i<newTuple._entry.length; i++) {
+            newTuple._entry[i] += other[i];
+        }
+        return newTuple;
+    }
+    public Tuple mult(float scalar) {
+        Tuple newTuple = new Tuple(this);
+        for (int i=0; i<newTuple._entry.length; i++) {
+            newTuple._entry[i] = (int)(newTuple._entry[i]*scalar);
+        }
+        return newTuple;
+    }
     
     @Override
     public boolean equals(Object other) {

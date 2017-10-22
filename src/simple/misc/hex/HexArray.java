@@ -4,7 +4,8 @@ import java.util.*;
 
 public class HexArray<T> implements Iterable<HexData<T>> {     
                 
-     public static final int[][] DIRECTIONS = {
+    /** Coordinate differences between different hexes */
+    public static final int[][] DIRECTIONS = {
              // comments are in terms of pointy-top coordinates
              { 1, -1,  0}, // right
              { 1,  0, -1}, // right-up
@@ -24,50 +25,50 @@ public class HexArray<T> implements Iterable<HexData<T>> {
     protected Tuple.Generator _tupleGenerator;
     protected HexData.Generator<T> _dataGenerator;
     
-    public HexData<T> getBase(int x, int y)           { return getBase(new Tuple(x, y));       }
-    public HexData<T> getCube(int hx, int hy, int hz) { return getBase(new Tuple(hx, hy, hz)); }
-    public HexData<T> getBase(Tuple pair)   { return _baseMap.get(pair);   }
-    public HexData<T> getCube(Tuple triple) { return _cubeMap.get(triple); }
-    public HexData.CoordinateConverter getCoordConv() { return _coordConv; }
-    public Tuple.Generator getTupleGenerator() { return _tupleGenerator; }
-    public HexData.Generator<T> getDataGenerator() { return _dataGenerator; }
+    public HexData<T> atBaseIndex(int x, int y)           { return atBaseIndex(new Tuple(x, y));       }
+    public HexData<T> atCubeIndex(int hx, int hy, int hz) { return atBaseIndex(new Tuple(hx, hy, hz)); }
+    public HexData<T> atBaseIndex(Tuple pair)   { return _baseMap.get(pair);   }
+    public HexData<T> atCubeIndex(Tuple triple) { return _cubeMap.get(triple); }
+    public HexData.CoordinateConverter coordConverter() { return _coordConv; }
+    public Tuple.Generator tupleGenerator() { return _tupleGenerator; }
+    public HexData.Generator<T> dataGenerator() { return _dataGenerator; }
     
-    public void setBase(T data, int x, int y)           { getBase(new Tuple(x, y)).setData(data);  }
-    public void setCube(T data, int hx, int hy, int hz) { getBase(new Tuple(hx, hy, hz)).setData(data); }
-    public void setBase(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
-    public void setCube(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
+    public void setAtBaseIndex(T data, int x, int y)           { atBaseIndex(new Tuple(x, y)).setData(data);  }
+    public void setAtCubeIndex(T data, int hx, int hy, int hz) { atBaseIndex(new Tuple(hx, hy, hz)).setData(data); }
+    public void setAtBaseIndex(T data, Tuple pair)   { _baseMap.get(pair).setData(data);   }
+    public void setAtCubeIndex(T data, Tuple triple) { _cubeMap.get(triple).setData(data); }
     public void setTupleGenerator(Tuple.Generator newGenerator) { _tupleGenerator = newGenerator; }
     public void setDataGenerator(HexData.Generator<T> newGenerator) { _dataGenerator = newGenerator; }
     
     /* Adds a new item into the set*/
     public void put(HexData<T> hexData) { 
-        _baseMap.put(hexData.getBaseIndex(), hexData);
-        _cubeMap.put(hexData.getCubeIndex(), hexData);
+        _baseMap.put(hexData.baseIndex(), hexData);
+        _cubeMap.put(hexData.cubeIndex(), hexData);
     }
     public void remove(HexData<T> hexData) {
-        _baseMap.remove(hexData.getBaseIndex());
-        _cubeMap.remove(hexData.getCubeIndex());
+        _baseMap.remove(hexData.baseIndex());
+        _cubeMap.remove(hexData.cubeIndex());
     }
     
     public void putBaseCoord(Tuple baseCoord, T data) { 
-        put(new HexData<T>(data, baseCoord.get(0), baseCoord.get(1), _even, _coordConv));
+        put(new HexData<T>(data, baseCoord.entry(0), baseCoord.entry(1), _even, _coordConv));
     }
     public void removeBaseCoord(Tuple baseCoord) {
-        remove(new HexData<T>(null, baseCoord.get(0), baseCoord.get(1), _even, _coordConv));
+        remove(new HexData<T>(null, baseCoord.entry(0), baseCoord.entry(1), _even, _coordConv));
     }
     
     public void putCubeCoord(Tuple cubeCoord, T data) { 
-        put(new HexData<T>(data, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
+        put(new HexData<T>(data, cubeCoord.entry(0), cubeCoord.entry(1), _even, _coordConv));
     }
     public void removeCubeCoord(Tuple cubeCoord) {
-        remove(new HexData<T>(null, cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv));
+        remove(new HexData<T>(null, cubeCoord.entry(0), cubeCoord.entry(1), _even, _coordConv));
     }
     
     public void putBaseCoordGenerated(Tuple baseCoord) { 
-        put(new HexData<T>(baseCoord.get(0), baseCoord.get(1), _even, _coordConv, _dataGenerator));
+        put(new HexData<T>(baseCoord.entry(0), baseCoord.entry(1), _even, _coordConv, _dataGenerator));
     }
     public void putCubeCoordGenerated(Tuple cubeCoord) { 
-        put(new HexData<T>(cubeCoord.get(0), cubeCoord.get(1), _even, _coordConv, _dataGenerator));
+        put(new HexData<T>(cubeCoord.entry(0), cubeCoord.entry(1), _even, _coordConv, _dataGenerator));
     }
     
     /****************
@@ -86,8 +87,8 @@ public class HexArray<T> implements Iterable<HexData<T>> {
         if (_tupleGenerator != null) {
             for (Tuple t: _tupleGenerator) {
                 HexData<T> hexData = new HexData<T>(t, _even, _coordConv, _dataGenerator);
-                _baseMap.put(hexData.getBaseIndex(), hexData);
-                _cubeMap.put(hexData.getCubeIndex(), hexData);
+                _baseMap.put(hexData.baseIndex(), hexData);
+                _cubeMap.put(hexData.cubeIndex(), hexData);
             }
         }
     }

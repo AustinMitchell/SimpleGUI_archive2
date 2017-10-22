@@ -7,8 +7,8 @@ public class HexData<T> {
         public abstract Tuple baseToCubeIndex(int even, int... index);
         public abstract Tuple cubeToBaseIndex(int even, int... index);
         
-        public final Tuple baseToCubeIndex(int even, Tuple pair)   { return baseToCubeIndex(even, pair.get()); }
-        public final Tuple cubeToBaseIndex(int even, Tuple triple) { return cubeToBaseIndex(even, triple.get()); }
+        public final Tuple baseToCubeIndex(int even, Tuple pair)   { return baseToCubeIndex(even, pair.entries()); }
+        public final Tuple cubeToBaseIndex(int even, Tuple triple) { return cubeToBaseIndex(even, triple.entries()); }
     }
     public static final CoordinateConverter FLAT_TOP_COORD = new CoordinateConverter() {
         public final float[][] AXIS_VECTOR = {
@@ -77,9 +77,9 @@ public class HexData<T> {
     private T _data;
     private Tuple _baseIndex, _cubeIndex;
 
-    public Tuple getBaseIndex()  { return _baseIndex; }
-    public Tuple getCubeIndex()  { return _cubeIndex; }
-    public T     getData()       { return _data; }
+    public Tuple baseIndex()  { return _baseIndex; }
+    public Tuple cubeIndex()  { return _cubeIndex; }
+    public T     data()       { return _data; }
     
     public void  setData(T data) { _data = data; }
 
@@ -123,6 +123,38 @@ public class HexData<T> {
             _baseIndex = coordConv.cubeToBaseIndex(even, _cubeIndex);
         }
         _data = (dgen==null) ? null : dgen.generate(_baseIndex, _cubeIndex);
+    }
+    
+    public static Tuple[] adjecentEdges(Tuple cubeIndex) {
+        Tuple[] edges = {new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2), 
+                         new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2)};
+        for (int i=0; i<6; i++) {
+            edges[i] = edges[i].add(HexArray.DIRECTIONS[i]);
+        }
+        return edges;
+    }
+    public static Tuple[] adjecentCorners(Tuple cubeIndex) {
+        Tuple[] corners = {new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex)};
+        for (int i=0; i<6; i++) {
+            corners[i] = corners[i].add(HexCornerArray.DIRECTIONS[i]);
+        }
+        return corners;
+    }
+    public static Tuple[] adjecentHexes(Tuple cubeIndex) {
+        Tuple[] hexes = {new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex)};
+        for (int i=0; i<6; i++) {
+            hexes[i] = hexes[i].add(HexArray.DIRECTIONS[i]);
+        }
+        return hexes;
+    }
+    public Tuple[] adjecentEdges() {
+        return adjecentEdges(_cubeIndex);
+    }
+    public Tuple[] adjecentCorners() {
+        return adjecentCorners(_cubeIndex);
+    }
+    public Tuple[] adjecentHexes() {
+        return adjecentHexes(_cubeIndex);
     }
 }
 
