@@ -136,7 +136,7 @@ public class HexData<T> {
     public static Tuple[] adjecentCorners(Tuple cubeIndex) {
         Tuple[] corners = {new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex)};
         for (int i=0; i<6; i++) {
-            corners[i] = corners[i].add(HexCornerArray.DIRECTIONS[i]);
+            corners[i] = corners[i].add(HexCornerArray.DIRECTIONS[i&1][i>>1]);
         }
         return corners;
     }

@@ -16,32 +16,26 @@ public class CornerData<T> {
     }
     
     public static Tuple[] adjecentEdges(Tuple cubeIndex) {
-        // For figuring out which corners are adjacent, we need an offset for the directions in HexCornerArray
-        // Adding all coordinates gives 1 or -1. Map to 0 or 1 respectively.
-        int dirOffset = ((cubeIndex.entry(0) + cubeIndex.entry(1) + cubeIndex.entry(2))*-1 + 1) / 2;
+        int[][] directions = HexCornerArray.validDirectionsToCorner(cubeIndex);
         Tuple[] edges = {new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2), new Tuple(cubeIndex).mult(2)};
         for (int i=0; i<3; i++) {
-            edges[i] = edges[i].add(HexCornerArray.DIRECTIONS[i*2 + dirOffset]);
+            edges[i] = edges[i].add(directions[i]);
         }
         return edges;
     }
     public static Tuple[] adjecentCorners(Tuple cubeIndex) {
-        // For figuring out which corners are adjacent, we need an offset for the directions in HexCornerArray
-        // Adding all coordinates gives 1 or -1. Map to 0 or 1 respectively.
-        int dirOffset = ((cubeIndex.entry(0) + cubeIndex.entry(1) + cubeIndex.entry(2))*-1 + 1) / 2;
+        int[][] directions = HexCornerArray.validDirectionsToCorner(cubeIndex);
         Tuple[] corners = {new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex)};
         for (int i=0; i<3; i++) {
-            corners[i] = corners[i].add(HexCornerArray.DIRECTIONS[i*2 + dirOffset]);
+            corners[i] = corners[i].add(directions[i]);
         }
         return corners;
     }
     public static Tuple[] adjecentHexes(Tuple cubeIndex) {
-        // For figuring out which corners are adjacent, we need an offset for the directions in HexCornerArray
-        // Adding all coordinates gives 1 or -1. Map to 0 or 1 respectively.
-        int dirOffset = ((cubeIndex.entry(0) + cubeIndex.entry(1) + cubeIndex.entry(2))*-1 + 1) / 2;
+        int[][] directions = HexCornerArray.validDirectionsToHex(cubeIndex);
         Tuple[] hexes = {new Tuple(cubeIndex), new Tuple(cubeIndex), new Tuple(cubeIndex)};
         for (int i=0; i<3; i++) {
-            hexes[i] = hexes[i].add(HexCornerArray.DIRECTIONS[i*2 + dirOffset^1]);
+            hexes[i] = hexes[i].add(directions[i]);
         }
         return hexes;
     }

@@ -230,8 +230,11 @@ public class HexTest extends SimpleGUIApp {
                 Draw.setColors(null, Color.DARK_GRAY, 5);
                 Draw.line(offsetx+adjCorners[0].x(), offsety+adjCorners[0].y(), offsetx+adjCorners[1].x(), offsety+adjCorners[1].y());
                 
-                Draw.setColors(Color.BLACK, Color.BLACK, 2);
                 for (int j=0; j<4; j++) {
+                    Draw.setColors(null, Color.DARK_GRAY, 5);
+                    Draw.line(offsetx+adjEdges[j].x(), offsety+adjEdges[j].y(), offsetx+adjCorners[j/2].x(), offsety+adjCorners[j/2].y());
+                    
+                    Draw.setColors(Color.BLACK, Color.BLACK, 2);
                     Draw.ovalCentered(offsetx+adjEdges[j].x(), offsety+adjEdges[j].y(), 7, 7);
                 }
                 

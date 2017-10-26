@@ -6,15 +6,31 @@ import java.util.Map;
 
 public class HexCornerArray<T> implements Iterable<CornerData<T>> {
     /** Coordinate differences between different corners (although only 3 are valid per corner) */
-    public static final int[][] DIRECTIONS = {
+    public static final int[][][] DIRECTIONS = {
             // Directions in terms of triangles making up a flat-top hexagon
-            { 1,  0,  0}, // right-up
-            { 0,  0, -1}, // up
-            { 0,  1,  0}, // left-up
-            {-1,  0,  0}, // left-down
-            { 0,  0,  1}, // down
-            { 0, -1,  0}  // right-down
+            {
+                { 1,  0,  0}, // right-up
+                { 0,  1,  0}, // left-up
+                { 0,  0,  1} // down
+            },
+            {
+                { 0,  0, -1}, // up
+                {-1,  0,  0}, // left-down
+                { 0, -1,  0}  // right-down
+            }
         };
+    
+    public static int[][] validDirectionsToCorner(Tuple cornerCoord) {
+        // For figuring out which corners are adjacent, we need an offset for the directions in HexCornerArray
+        // Adding all coordinates gives 1 or -1. Map to 0 or 1 respectively.
+        return DIRECTIONS[((cornerCoord.entry(0) + cornerCoord.entry(1) + cornerCoord.entry(2))*-1 + 1) / 2];
+    }
+    public static int[][] validDirectionsToHex(Tuple cornerCoord) {
+        // For figuring out which corners are adjacent, we need an offset for the directions in HexCornerArray
+        // Adding all coordinates gives 1 or -1. Map to 0 or 1 respectively.
+        return DIRECTIONS[((cornerCoord.entry(0) + cornerCoord.entry(1) + cornerCoord.entry(2)) + 1) / 2];
+    }
+    
     
     // Coordinates only made of cube coordinates
     protected Map<Tuple, CornerData<T>> _cubeMap;
