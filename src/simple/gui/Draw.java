@@ -377,7 +377,7 @@ public class Draw {
 		if (_stroke != null) {
 			g2D.setColor(_stroke);
 			FontMetrics fm = getFontMetrics(g2D);
-			g2D.drawString(textToDraw, x - fm.stringWidth(textToDraw)/2, y + fm.getMaxAscent()/2);
+			g2D.drawString(textToDraw, x - fm.stringWidth(textToDraw)/2, (int)(y + fm.getStringBounds(textToDraw, g2D).getHeight()/4.0));
 		}
 	}
 	

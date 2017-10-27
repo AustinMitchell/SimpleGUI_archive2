@@ -106,6 +106,10 @@ public class Button extends Widget {
 	public Button(int x, int y, int w, int h, String text, Image image) {
 		super(x, y, w, h);
 		
+		_hoverColor = Draw.scaleColor(_fillColor, 0.92f);
+        _clickColor = Draw.scaleColor(_fillColor, 0.86f);
+        _disabledColor = Draw.scaleColor(_fillColor, 0.8f);
+		
 		_textLabel = new Label(x, y, w, h, (text==null)?"":text);
 		_textLabel.setAlignment(TextArea.Alignment.CENTER);
 		
