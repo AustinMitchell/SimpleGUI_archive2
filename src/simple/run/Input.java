@@ -4,6 +4,8 @@ import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import simple.misc.Vector;
+
 /** This is a static class which allows for a simple interface with the mouse and keyboard. **/
 public class Input {
 	static class Listener implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
@@ -66,6 +68,10 @@ public class Input {
     public static int mouseShiftX() { return x-oldx; }
     /** Returns the y coordinate of the mouse from the current frame **/
     public static int mouseShiftY() { return y-oldy; }
+    
+    public static Vector mouse()      { return new Vector(x, y); }
+    public static Vector mouseOld()   { return new Vector(oldx, oldy); }
+    public static Vector mouseShift() { return new Vector(x-oldx, y-oldy); }
     
     public static int mouseWheelNotches()  { return mouseNotches; }
     public static boolean mouseWheelUp()   { return mouseNotches < 0; }

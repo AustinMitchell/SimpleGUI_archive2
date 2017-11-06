@@ -29,6 +29,7 @@ public class AnimationTest extends SimpleGUIApp {
              * Absolutely necessary for runnable jar files. Ideally when running this program these image
              * files are on your classpath under the folder explosion.
              * Image can use an inputstream and turn it into a buffered image */
+            System.out.println("Loading image " + i + "...");
             imageList.add(new Image(Image.ResLoader.load("explosion/explosion"+i+".png")));
         }
         

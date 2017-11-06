@@ -45,9 +45,35 @@ public class Vector {
 	public Vector copy() { return new Vector(x, y); }
 	
 	/** Returns the magnitude(length) of this vector **/
-	public double mag() { return Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5); }
+	public double mag() { return Math.sqrt(x*x + y*y); }
 	/** Returns the distance between this vector and another vector. **/
 	public double dist(Vector v) { return sub(v).mag(); }
+	/** Returns the distance between this vector and another vector using an approximation with integers **/
+    public int approxdist(Vector v) {
+        int min, max, approx;
+        int dx, dy;
+        dx = (int)(x-v.x);
+        dy = (int)(y-v.y);
+
+        if ( dx < 0 ) dx = -dx;
+        if ( dy < 0 ) dy = -dy;
+
+        if ( dx < dy )
+        {
+           min = (int)dx;
+           max = (int)dy;
+        } else {
+           min = (int)dy;
+           max = (int)dx;
+        }
+
+        approx = ( max * 1007 ) + ( min * 441 );
+        if ( max < ( min << 4 ))
+           approx -= ( max * 40 );
+
+        // add 512 for proper rounding
+        return (( approx + 512 ) >> 10 );
+    }
 	
 	/** Returns the dotproduct of this and another vector **/
 	public double dotProduct(Vector v) { return x*v.x + y*v.y; }

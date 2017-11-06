@@ -134,6 +134,8 @@ public class Main extends SimpleGUIApp {
 				public ImageBox doWork(List inputs) {
 					ImageBox image = new ImageBox(new Image((Integer)inputs.get(0), (Integer)inputs.get(0)));
 					convertToImage(image.image(), (Map)inputs.get(1));
+					image.resetBaseImage();
+					image.setSize(1000, 1000);
 					return image;
 				}
 			}, null);
