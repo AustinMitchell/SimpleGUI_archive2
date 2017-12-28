@@ -16,16 +16,7 @@ public class HexTest extends SimpleGUIApp {
 
     // Sets hex orientation, pointy-top or flat-top
     final static HexWidget.HexType hexType = HexWidget.HexType.POINT_TOP;
-    // This will be used in the hex array to switch between 2D and 3D hex coordinates
-    final static HexData.CoordinateConverter coord = (hexType == HexWidget.HexType.FLAT_TOP) ?
-                                                               HexData.FLAT_TOP_COORD :
-                                                               HexData.POINT_TOP_COORD;
-    // determines offset of the grid for 2D coordinates.
-    final static int even = 1;
-    // Width of grid if using a 2D array system
-    final static int width = 8;
-    // Height of grid if using a 2D array system
-    final static int height = 8;
+
     // Radius of the drawn hexagons. Used for the hex widgets themselves
     final static int hex_draw_radius = 60;
     // If using a radial hex array, determines the radius in terms of number of hexes from the center
@@ -59,12 +50,12 @@ public class HexTest extends SimpleGUIApp {
         HexData.Generator<HexButton> dgen = new HexData.Generator<HexButton>() {
 
             @Override
-            public HexButton generate(int x, int y, int hx, int hy, int hz) {
-                return generate(null, new Tuple(hx, hy, hz));
+            public HexButton generate(int hx, int hy, int hz) {
+                return generate(new Tuple(hx, hy, hz));
             }
 
             @Override
-            public HexButton generate(Tuple base, Tuple cube) {
+            public HexButton generate(Tuple cube) {
                 // This vector will determine the visual offset for each hex when drawn
                 Vector shift = new Vector(0, 0);
                 for (int axis=0; axis<3; axis++) {
@@ -109,11 +100,11 @@ public class HexTest extends SimpleGUIApp {
         
         // Sets the 3 coordinate directions depending whether its a pointy-top or flat-top hexagon.
         // Scales each vector by the size of the hexagon radius
-        scaledAxes[0] = new Vector(coord.getAxisVectors()[0]).mult(hex_draw_radius);
-        scaledAxes[1] = new Vector(coord.getAxisVectors()[1]).mult(hex_draw_radius);
-        scaledAxes[2] = new Vector(coord.getAxisVectors()[2]).mult(hex_draw_radius);
+        scaledAxes[0] = new Vector(HexWidget.getAxisVectors(hexType)[0]).mult(hex_draw_radius);
+        scaledAxes[1] = new Vector(HexWidget.getAxisVectors(hexType)[1]).mult(hex_draw_radius);
+        scaledAxes[2] = new Vector(HexWidget.getAxisVectors(hexType)[2]).mult(hex_draw_radius);
         // Using the radial hex constructor. When you iterate through this array, it will also iterate in radial form
-        hexArray = new HexArray<HexButton>(even, coord, Tuple.createRadialHexGenerator(hex_grid_radius), dgen);
+        hexArray = new HexArray<HexButton>(Tuple.createRadialHexGenerator(hex_grid_radius), dgen);
     
     }
 
@@ -133,7 +124,7 @@ public class HexTest extends SimpleGUIApp {
             
             // If a hex is clicked, update the label with the coordinates of that hexagon
             if (hb.data().clicked()) {
-                hexLabel.setText("2D: " + hb.baseIndex() + " | 3D: " + hb.cubeIndex());
+                hexLabel.setText("Coordinates: " + hb.cubeIndex());
                 cornerSet = hb.adjecentCorners();
                 edgeSet = hb.adjecentEdges();
                 for (int i=0; i<6; i++) {

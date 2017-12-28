@@ -1,24 +1,15 @@
 package simple.misc.hex;
 
 public class HexData<T> {
-    public static abstract class CoordinateConverter {
-        public abstract float[][] getAxisVectors();
-        
+    public static abstract class CoordinateConverter {        
         public abstract Tuple baseToCubeIndex(int even, int... index);
         public abstract Tuple cubeToBaseIndex(int even, int... index);
         
         public final Tuple baseToCubeIndex(int even, Tuple pair)   { return baseToCubeIndex(even, pair.entries()); }
         public final Tuple cubeToBaseIndex(int even, Tuple triple) { return cubeToBaseIndex(even, triple.entries()); }
     }
-    public static final CoordinateConverter FLAT_TOP_COORD = new CoordinateConverter() {
-        public final float[][] AXIS_VECTOR = {
-                {(float)Math.cos( Math.PI*2.0/6), (float)Math.sin( Math.PI*2.0/6)},
-                {(float)Math.cos(-Math.PI*2.0/6), (float)Math.sin(-Math.PI*2.0/6)},
-                {-1, 0}
-            };
     
-        public float[][] getAxisVectors() { return AXIS_VECTOR; }
-        
+    public static final CoordinateConverter FLAT_TOP_COORD = new CoordinateConverter() {        
         /** Based on a formula for turning offset-square grid coordinates into cube flat-top-hexagon coordinates
          *  e = evenness of grid, 0 or 1
          *  x = square x index
@@ -40,14 +31,6 @@ public class HexData<T> {
         }};
         
     public static final CoordinateConverter POINT_TOP_COORD = new CoordinateConverter() {
-        public final float[][] AXIS_VECTOR = {
-                {(float)Math.cos(Math.PI*1.0/6), (float)Math.sin(Math.PI*1.0/6)},
-                {(float)Math.cos(Math.PI*5.0/6), (float)Math.sin(Math.PI*5.0/6)},
-                {0, -1}
-            };
-        
-        public float[][] getAxisVectors() { return AXIS_VECTOR; }
-    
         /** Based on a formula for turning offset-square grid coordinates into cube pointy-top-hexagon coordinates
          *  e = evenness of grid, 0 or 1
          *  x = square x index
@@ -70,59 +53,34 @@ public class HexData<T> {
         }};
         
     public abstract interface Generator<E> {
-        public E generate(int x, int y, int hx, int hy, int hz);
-        public E generate(Tuple base, Tuple cube);
+        public E generate(int hx, int hy, int hz);
+        public E generate(Tuple cube);
     }
     
     private T _data;
-    private Tuple _baseIndex, _cubeIndex;
+    private Tuple _index;
 
-    public Tuple baseIndex()  { return _baseIndex; }
-    public Tuple cubeIndex()  { return _cubeIndex; }
+    public Tuple cubeIndex()  { return _index; }
     public T     data()       { return _data; }
     
     public void  setData(T data) { _data = data; }
 
-    public HexData(T data, int x, int y, int even, CoordinateConverter coordConv) {
+    public HexData(T data, int hx, int hy, int hz) {
         _data = data;
-        _baseIndex = new Tuple(x, y);
-        _cubeIndex = coordConv.baseToCubeIndex(even, _baseIndex);
+        _index = new Tuple(hx, hy, hz);
     }
-    public HexData(T data, int hx, int hy, int hz, int even, CoordinateConverter coordConv) {
+    public HexData(T data, Tuple pos) {
         _data = data;
-        _cubeIndex = new Tuple(hx, hy, hz);
-        _baseIndex = coordConv.cubeToBaseIndex(even, _cubeIndex);
+        _index = new Tuple(pos);
     }
-    public HexData(T data, Tuple pos, int even, CoordinateConverter coordConv) {
-        _data = data;
-        if (pos.length() == 2) {
-            _baseIndex = new Tuple(pos);
-            _cubeIndex = coordConv.baseToCubeIndex(even, _baseIndex);
-        } else {
-            _cubeIndex = new Tuple(pos);
-            _baseIndex = coordConv.cubeToBaseIndex(even, _cubeIndex);
-        }
+
+    public HexData(int hx, int hy, int hz, Generator<T> dgen) {
+        _index = new Tuple(hx, hy, hz);
+        _data = (dgen==null) ? null : dgen.generate(_index);
     }
-    
-    public HexData(int x, int y, int even, CoordinateConverter coordConv, Generator<T> dgen) {
-        _baseIndex = new Tuple(x, y);
-        _cubeIndex = coordConv.baseToCubeIndex(even, _baseIndex);
-        _data = (dgen==null) ? null : dgen.generate(_baseIndex, _cubeIndex);
-    }
-    public HexData(int hx, int hy, int hz, int even, CoordinateConverter coordConv, Generator<T> dgen) {
-        _cubeIndex = new Tuple(hx, hy, hz);
-        _baseIndex = coordConv.cubeToBaseIndex(even, _cubeIndex);
-        _data = (dgen==null) ? null : dgen.generate(_baseIndex, _cubeIndex);
-    }
-    public HexData(Tuple pos, int even, CoordinateConverter coordConv, Generator<T> dgen) {
-        if (pos.length() == 2) {
-            _baseIndex = new Tuple(pos);
-            _cubeIndex = coordConv.baseToCubeIndex(even, _baseIndex);
-        } else {
-            _cubeIndex = new Tuple(pos);
-            _baseIndex = coordConv.cubeToBaseIndex(even, _cubeIndex);
-        }
-        _data = (dgen==null) ? null : dgen.generate(_baseIndex, _cubeIndex);
+    public HexData(Tuple pos, Generator<T> dgen) {
+        _index = new Tuple(pos);
+        _data = (dgen==null) ? null : dgen.generate(_index);
     }
     
     public static Tuple[] adjecentEdges(Tuple cubeIndex) {
@@ -148,13 +106,13 @@ public class HexData<T> {
         return hexes;
     }
     public Tuple[] adjecentEdges() {
-        return adjecentEdges(_cubeIndex);
+        return adjecentEdges(_index);
     }
     public Tuple[] adjecentCorners() {
-        return adjecentCorners(_cubeIndex);
+        return adjecentCorners(_index);
     }
     public Tuple[] adjecentHexes() {
-        return adjecentHexes(_cubeIndex);
+        return adjecentHexes(_index);
     }
 }
 

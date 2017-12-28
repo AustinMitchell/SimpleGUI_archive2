@@ -76,6 +76,15 @@ public class Animation implements Animatable {
                 }
             };
     }
+    public static Animator createCenteredImageAnimator(final List<Image> images, final int animationTime) {
+        return new Animator() {
+                public int numFrames() { return images.size(); }
+                public int animationTime() { return animationTime; }
+                public void drawFrame(Image drawSurface, int frame, int x, int y) {
+                    Draw.imageCentered(drawSurface, images.get(frame), x, y);
+                }
+            };
+    }
     
     protected Image       _drawSurface;
     protected Animator    _animator;

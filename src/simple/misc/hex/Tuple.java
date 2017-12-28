@@ -19,15 +19,17 @@ public class Tuple {
      *      
      *      Each iteration results in a 2-tuple
      *      
-     *      @param width    maximum value for i
-     *      @param height   maximum value for j
+     *      @param width        maximum value for i
+     *      @param height       maximum value for j
+     *      @param even         'evenness' of the array (sets offset layer)
+     *      @param coordConv    Converter for 2D coordinates to 3D hex coordinates
      * */
-    public static Generator createArrayGenerator(final int width, final int height) {
+    public static Generator createArrayGenerator(final int width, final int height, final int even, HexData.CoordinateConverter coordConv) {
         return new Generator() {
             final List<Tuple> tupleList = new ArrayList<Tuple>(){{
                     for (int i=0; i<width; i++) {
                         for (int j=0; j<height; j++) {
-                            add(new Tuple(i, j));
+                            add(coordConv.baseToCubeIndex(even&1, new Tuple(i, j)));
                         }
                     }}};
             @Override

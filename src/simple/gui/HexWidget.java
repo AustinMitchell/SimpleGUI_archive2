@@ -3,7 +3,32 @@ package simple.gui;
 import simple.run.Input;
 
 public abstract class HexWidget extends Widget {
-    public enum HexType { POINT_TOP, FLAT_TOP }
+    public static enum HexType { 
+        POINT_TOP, FLAT_TOP 
+    }
+    
+    private static final float[][] AXIS_VECTOR_FLAT = {
+            {(float)Math.cos( Math.PI*2.0/6), (float)Math.sin( Math.PI*2.0/6)},
+            {(float)Math.cos(-Math.PI*2.0/6), (float)Math.sin(-Math.PI*2.0/6)},
+            {-1, 0}
+        };
+    private static final float[][] AXIS_VECTOR_POINT = {
+            {(float)Math.cos(Math.PI*1.0/6), (float)Math.sin(Math.PI*1.0/6)},
+            {(float)Math.cos(Math.PI*5.0/6), (float)Math.sin(Math.PI*5.0/6)},
+            {0, -1}
+        };
+    public static float[][] getAxisVectors(HexType hexType) {
+        switch(hexType) {
+        case FLAT_TOP:
+            return AXIS_VECTOR_FLAT;
+        case POINT_TOP:
+            return AXIS_VECTOR_POINT;
+        default:
+            return null;
+        }
+    }
+    
+    
     
     protected int[][] _hexPoints;
     protected int _centerx, _centery;
