@@ -57,7 +57,11 @@ public class Draw {
 	public static void setStroke(Color stroke, int thickness) { Draw._stroke = stroke; _g.setStroke(new BasicStroke(thickness)); }
 	/** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
     public static void setStrokeRound(Color stroke, int thickness) { Draw._stroke = stroke; _g.setStroke(new BasicStroke(thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); }
-	/** Sets the class's local color fields. **/
+    /** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
+    public static void setStroke(Image image, Color stroke, int thickness) { Draw._stroke = stroke; image.graphics2D().setStroke(new BasicStroke(thickness)); }
+    /** Sets the class's local stroke field. Stroke is used for the borders of shapes as well as for rendering text. **/
+    public static void setStrokeRound(Image image, Color stroke, int thickness) { Draw._stroke = stroke; image.graphics2D().setStroke(new BasicStroke(thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)); }
+    /** Sets the class's local color fields. **/
 	public static void setColors(Color fill, Color stroke) {
 		setFill(fill);
 		setStroke(stroke);

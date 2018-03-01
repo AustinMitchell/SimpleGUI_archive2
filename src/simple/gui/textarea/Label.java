@@ -1,5 +1,6 @@
 package simple.gui.textarea;
 
+import simple.gui.Draw;
 import simple.gui.textarea.TextArea.Alignment;
 
 /** A floating text box that is uneditable. **/
@@ -33,6 +34,6 @@ public class Label extends TextArea {
 		if (_boxVisible) {
 			drawBox();
 		}
-		drawText();
+		Draw.image(_textRender, _x, _y);
 	}	
 }

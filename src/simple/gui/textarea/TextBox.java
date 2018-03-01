@@ -2,6 +2,7 @@ package simple.gui.textarea;
 
 import java.awt.event.KeyEvent;
 
+import simple.gui.Draw;
 import simple.run.Input;
 
 // creates a floating text box. Only works if clicked(active)
@@ -49,6 +50,7 @@ public class TextBox extends TextArea {
 		if (_boxVisible) {
 			drawBox();
 		}
-		drawText();
+		Draw.image(_textRender, _x, _y);
+        drawCursor();
 	}	
 }
