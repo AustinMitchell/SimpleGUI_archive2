@@ -38,6 +38,35 @@ public class Input {
 		public void mouseExited(MouseEvent e) {}
 	}
 	
+	public static class OffsetMouse {
+	    private int _offsetx, _offsety;
+	    
+	    public void setLocation(int x, int y) {
+	        _offsetx = x;
+	        _offsety = y;
+	    }
+	    
+	    public OffsetMouse(int x, int y) {
+	        _offsetx = x;
+            _offsety = y;
+	    }
+	    
+	    public Vector pos() { return new Vector(x, y); }
+	    public Vector old() { return new Vector(oldx, oldy); }
+	    public Vector shift() { return new Vector(x-oldx, y-oldy); }
+	    
+	    public int x() { return x+_offsetx; }
+	    public int y() { return y+_offsety; }
+	    public int oldx() { return oldx+_offsetx; }
+        public int oldy() { return oldy+_offsety; }
+        public int shiftx() { return x-oldx; }
+        public int shifty() { return y-oldy; }
+        public int wheelNotches() { return mouseNotches; }
+        public boolean wheelUp()   { return mouseNotches < 0; }
+        public boolean wheelDown() { return mouseNotches > 0; }
+        public boolean pressed() { return mouseDown; }
+	}
+	
 	private static int x=0, y=0, newx=0, newy=0, oldx=0, oldy=0;
 	private static boolean mouseDown = false;
 	private static int bufferedNotches=0, mouseNotches=0;
