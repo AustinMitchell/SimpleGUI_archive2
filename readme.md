@@ -651,10 +651,12 @@ public class AnimationTest extends SimpleGUIApp {
         updateView();
     }
 }
+
+```
+
 ![][animation-test]
 
 [ball-bounce]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/ball-bounce-app.png "Ball Bounce App"
 [ball-widget]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/ball-widget-app.png "Ball Widget App"
 [hex-tester]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/hex-tester.png "Hex Tester App"
 [animation-test]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/animation-test.png "Animation Tester App"
-```
