@@ -199,6 +199,8 @@ public class BallInputApp extends SimpleGUIApp {
 }
 ```
 
+![][ball-bounce]
+
 This is one of the few facets of the Input class: In this program, keyDown(char c) will determine whether c is being pressed down or not. Alternatively, you can also use key codes in java.awt.event.KeyEvent for non character keys, such as backspace, shift, etc. Input can also be used for mouse, getting the last character typed, and more.
 
 Vector is essentially just a pair of integers, x and y, with a variety of functions around them (such as adding vectors, multiplying by scalars, etc.)
@@ -369,6 +371,8 @@ public class BallWidgetApp extends SimpleGUIApp {
     }
 }
 ```
+
+![][ball-widget]
 
 Essentially all this adds is the ability to exit with a button on screen, change the ball's color and change the maximum speed. All widgets have an update() and draw() function, and various other functions to change the state of the widget (position, size, color, etc.)
 
@@ -563,6 +567,8 @@ public class HexTest extends SimpleGUIApp {
 
 ```
 
+![][hex-tester]
+
 The hex array stores references to parameterized *HexData* objects, which store a piece of data (a *HexButton*, in this case), as well as the 3D coordinate. We use use the 3D coordinates to determine where hexes are relative to eachother, draw them, get distances, create paths, walk directions, etc. Just like a 2D array can be navigated in 4 directions using 2 coordinates, a *HexArray* can be navigated in 6 directions using pairs from 3 coordinates. A link with more information can be found above the code example. 2D coordinates are also possible in this system, but it is generally a special case and requires using a coordinate converter from HexData to use.
 
 This program creates a radial hex array, which is an array where the (0, 0, 0) coordinate is at the center and the rule is that given radius *r* and coordinate (*x, y, z*): `max(x, y, z) <= r`
@@ -645,6 +651,10 @@ public class AnimationTest extends SimpleGUIApp {
         updateView();
     }
 }
+![][animation-test]
 
-
+[ball-bounce]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/ball-bounce-app.png "Ball Bounce App"
+[ball-widget]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/ball-widget-app.png "Ball Widget App"
+[hex-tester]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/hex-tester.png "Hex Tester App"
+[animation-test]: https://github.com/AustinMitchell/SimpleGUI_archive2/tree/master/readme_images/animation-test.png "Animation Tester App"
 ```
