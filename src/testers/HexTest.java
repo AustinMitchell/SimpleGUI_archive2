@@ -19,10 +19,13 @@ public class HexTest extends SimpleGUIApp {
 
     // Radius of the drawn hexagons. Used for the hex widgets themselves
     final static int hex_draw_radius = 60;
+
     // If using a radial hex array, determines the radius in terms of number of hexes from the center
     final static int hex_grid_radius = 3;
+
     // used for color display for each hex widget
     final static int grid_color_offset = 3;
+
     // Used to draw the background line grid
     final static int gridline_radius = hex_draw_radius;
     
@@ -30,10 +33,9 @@ public class HexTest extends SimpleGUIApp {
     final static int offsetx = 400;
     final static int offsety = 400;
     
-    // When you click on a hex the 2D and 3D coordinates will display on the label
-    Label hexLabel;
-    // Hex array collection object
-    HexArray<HexButton> hexArray;
+    Label hexLabel; // When you click on a hex the 2D and 3D coordinates will display on the label
+    HexArray<HexButton> hexArray; // Hex array collection object
+
     // Will be used to determine where to place each hexagon. Uses the 3D coordinates to determine position
     Vector[] scaledAxes = {
             null,
@@ -41,12 +43,18 @@ public class HexTest extends SimpleGUIApp {
             null
     };
     
-    Tuple[] edgeSet, cornerSet;
-    Label[] hexEdges, hexCorners;
-    Label edgeLabel, cornerLabel;
+    Tuple[] edgeSet;      // When a hex is clicked, we will request for the set of edges to set the edge labels.
+    Tuple[] cornerSet;    // When a hex is clicked, we will request for the set of corners to set the corner labels.
+    Label[] hexEdges;     // Label for the coordinate of each corner around a selected hex
+    Label[] hexCorners;   // Label for the coordinate of each edge around a selected hex
+    Label   edgeLabel;    // Header label for edge labels
+    Label   cornerLabel;  // header lable for corner labels
        
     @Override
     public void setup() {
+        /* This generator is helpful for setting up initial data in your hex array. This serves as a factory
+        for the hexarray to generate new items given a coordinate, and will only be used for instantiation. 
+        Not necessary but allows for decoupling. */
         HexData.Generator<HexButton> dgen = new HexData.Generator<HexButton>() {
 
             @Override
@@ -79,11 +87,12 @@ public class HexTest extends SimpleGUIApp {
         };
         
         hexLabel = new Label(930, 10, 240, 50);
-        // The containing box for the label is normally not drawn unless specifically requested
+        // The containing box for the label is normally not drawn unless specifically requested by the following call:
         hexLabel.setBoxVisible(true);
         
-        hexCorners = new Label[6];
-        hexEdges = new Label[6];
+        // Set header labels and initial corner/edge labels
+        hexCorners  = new Label[6];
+        hexEdges    = new Label[6];
         cornerLabel = new Label(950,  70, 200, 30, "Corners:");
         cornerLabel.setTextColor(Color.white);
         cornerLabel.setAlignment(TextArea.Alignment.WEST);
@@ -103,7 +112,9 @@ public class HexTest extends SimpleGUIApp {
         scaledAxes[0] = new Vector(HexWidget.getAxisVectors(hexType)[0]).mult(hex_draw_radius);
         scaledAxes[1] = new Vector(HexWidget.getAxisVectors(hexType)[1]).mult(hex_draw_radius);
         scaledAxes[2] = new Vector(HexWidget.getAxisVectors(hexType)[2]).mult(hex_draw_radius);
-        // Using the radial hex constructor. When you iterate through this array, it will also iterate in radial form
+
+        // Using the radial tuple generator. When you iterate through this array, it will also iterate in radial form.
+        // To set initial data, also pass our data generator from above.
         hexArray = new HexArray<HexButton>(Tuple.createRadialHexGenerator(hex_grid_radius), dgen);
     
     }
@@ -135,6 +146,7 @@ public class HexTest extends SimpleGUIApp {
             }
         }
         
+        // Draws separating rectangle on the right
         Draw.setColors(new Color(50, 50, 50), null);
         Draw.rect(900, 0, 300, 800);
         
@@ -146,105 +158,7 @@ public class HexTest extends SimpleGUIApp {
             hexEdges[i].update();
             hexCorners[i].draw();
             hexEdges[i].draw();
-            
-            // When hovering over a corner dispaly label, this will indicate all the adjacent data with draw commands
-            if (hexCorners[i].hovering() && cornerSet != null) {
-                CornerData<Void> currentCornerData = new CornerData<Void>(cornerSet[i]);
-                Vector currentCornerShift = new Vector(0, 0);
-                
-                Vector[] adjCorners = {new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjCornerData = currentCornerData.adjecentCorners();  
-                Vector[] adjEdges   = {new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjEdgeData = currentCornerData.adjecentEdges();  
-                Vector[] adjHexes   = {new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjHexData = currentCornerData.adjecentHexes();  
-                
-                for (int axis=0; axis<3; axis++) {
-                    // Takes each component of the cube coordinates and multiplies it by the same base vector component
-                    // Adds it to the shift
-                    currentCornerShift = currentCornerShift.add(scaledAxes[axis].mult(currentCornerData.index().entry(axis)));
-                    for(int j=0; j<3; j++) {
-                        adjCorners[j] = adjCorners[j].add(scaledAxes[axis].mult(adjCornerData[j].entry(axis)));
-                        // Edges coordinate systems are multiplied by 2
-                        adjEdges[j] = adjEdges[j].add(scaledAxes[axis].mult(0.5f).mult(adjEdgeData[j].entry(axis)));
-                        adjHexes[j] = adjHexes[j].add(scaledAxes[axis].mult(adjHexData[j].entry(axis)));
-                    }
-                }
-                
-                Draw.setColors(null, Color.DARK_GRAY, 5);
-                for (int j=0; j<3; j++) {
-                    Draw.line(offsetx+currentCornerShift.x(), offsety+currentCornerShift.y(), offsetx+adjCorners[j].x(), offsety+adjCorners[j].y());
-                }
-                
-                Draw.setColors(Color.BLACK, Color.BLACK, 2);
-                for (int j=0; j<3; j++) {
-                    Draw.ovalCentered(offsetx+adjEdges[j].x(), offsety+adjEdges[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(Color.WHITE, Color.BLACK, 2);
-                for (int j=0; j<3; j++) {
-                    Draw.ovalCentered(offsetx+adjCorners[j].x(), offsety+adjCorners[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(new Color(255, 125, 125), Color.BLACK, 2);
-                for (int j=0; j<3; j++) {
-                    Draw.ovalCentered(offsetx+adjHexes[j].x(), offsety+adjHexes[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(Color.YELLOW, Color.BLACK, 1);
-                Draw.ovalCentered(offsetx+currentCornerShift.x(), offsety+currentCornerShift.y(), 10, 10);
-            }
-            if (hexEdges[i].hovering() && edgeSet != null) {
-                EdgeData<Void> currentEdgeData = new EdgeData<Void>(edgeSet[i]);
-                Vector currentEdgeShift = new Vector(0, 0);
-                
-                Vector[] adjCorners = {new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjCornerData = currentEdgeData.adjecentCorners();  
-                Vector[] adjEdges   = {new Vector(0, 0), new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjEdgeData = currentEdgeData.adjecentEdges();  
-                Vector[] adjHexes   = {new Vector(0, 0), new Vector(0, 0)};
-                Tuple[] adjHexData = currentEdgeData.adjecentHexes();  
-                
-                for (int axis=0; axis<3; axis++) {
-                    // Takes each component of the cube coordinates and multiplies it by the same base vector component
-                    // Adds it to the shift
-                    currentEdgeShift = currentEdgeShift.add(scaledAxes[axis].mult(currentEdgeData.visualIndex()[axis]));
-                    for(int j=0; j<2; j++) {
-                        adjCorners[j] = adjCorners[j].add(scaledAxes[axis].mult(adjCornerData[j].entry(axis)));
-                        // Edges coordinate systems are multiplied by 2
-                        adjEdges[j*2] = adjEdges[j*2].add(scaledAxes[axis].mult(0.5f).mult(adjEdgeData[j*2].entry(axis)));
-                        adjEdges[j*2+1] = adjEdges[j*2+1].add(scaledAxes[axis].mult(0.5f).mult(adjEdgeData[j*2+1].entry(axis)));
-                        adjHexes[j] = adjHexes[j].add(scaledAxes[axis].mult(adjHexData[j].entry(axis)));
-                    }
-                }
-                
-                Draw.setColors(null, Color.DARK_GRAY, 5);
-                Draw.line(offsetx+adjCorners[0].x(), offsety+adjCorners[0].y(), offsetx+adjCorners[1].x(), offsety+adjCorners[1].y());
-                
-                for (int j=0; j<4; j++) {
-                    Draw.setColors(null, Color.DARK_GRAY, 5);
-                    Draw.line(offsetx+adjEdges[j].x(), offsety+adjEdges[j].y(), offsetx+adjCorners[j/2].x(), offsety+adjCorners[j/2].y());
-                    
-                    Draw.setColors(Color.BLACK, Color.BLACK, 2);
-                    Draw.ovalCentered(offsetx+adjEdges[j].x(), offsety+adjEdges[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(Color.WHITE, Color.BLACK, 2);
-                for (int j=0; j<2; j++) {
-                    Draw.ovalCentered(offsetx+adjCorners[j].x(), offsety+adjCorners[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(new Color(255, 125, 125), Color.BLACK, 2);
-                for (int j=0; j<2; j++) {
-                    Draw.ovalCentered(offsetx+adjHexes[j].x(), offsety+adjHexes[j].y(), 7, 7);
-                }
-                
-                Draw.setColors(Color.YELLOW, Color.BLACK, 1);
-                Draw.ovalCentered(offsetx+currentEdgeShift.x(), offsety+currentEdgeShift.y(), 10, 10);
-            }
         }
-        
-        
         
         updateView();
     }
